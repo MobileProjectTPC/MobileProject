@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "844703805650",
+    "firebase_url": "https://mobileproject-d35cd.firebaseio.com",
+    "project_id": "mobileproject-d35cd",
+    "storage_bucket": "mobileproject-d35cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844703805650:android:6c628e899d7a229f",
+        "android_client_info": {
+          "package_name": "com.example.joni.mobileproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "844703805650-c33mq3q4cedj1rvnf9s95l06b3gll088.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBENANCkFY9IHfgyuZ8TOwIWxXrgwJYg4A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
