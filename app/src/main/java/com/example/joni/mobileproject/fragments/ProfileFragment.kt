@@ -1,4 +1,4 @@
-package com.example.joni.mobileproject.Fragments
+package com.example.joni.mobileproject.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.example.joni.mobileproject.Fragments.HomeFragment
-import com.example.joni.mobileproject.Fragments.NotificationsFragment
-import com.example.joni.mobileproject.Fragments.ProfileFragment
+import com.example.joni.mobileproject.fragments.HomeFragment
+import com.example.joni.mobileproject.fragments.NotificationsFragment
+import com.example.joni.mobileproject.fragments.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
