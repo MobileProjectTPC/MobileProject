@@ -1,6 +1,7 @@
 package com.example.joni.mobileproject.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
@@ -13,11 +14,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.VideoActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.home_fragment_layout.*
+import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -31,6 +35,7 @@ class HomeFragment: Fragment() {
     private var dialog: AlertDialog? = null
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
+    private val firebaseStorage = FirebaseStorage.getInstance()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.home_fragment_layout, container, false)
@@ -45,10 +50,10 @@ class HomeFragment: Fragment() {
         workspace = "/workspace"
         // scan the NFC-tag and assign value to tool variable
         // remember put / first
-        tool = ""
+        tool = "/tool1"
         // define what you want to get from that tool, images, videos, pdfs
         // remember put / first
-        dataType = ""
+        dataType = "/videos"
 
         Log.d("HomeFragment", "HomeFragment created")
 
@@ -59,6 +64,8 @@ class HomeFragment: Fragment() {
                 getStuffFromFirebaseDB(workspace!!, tool!!, dataType!!)
             }
         }
+
+        createTempFile()
     }
 
     // modify this to get wanted stuff, testing with one image
@@ -125,6 +132,30 @@ class HomeFragment: Fragment() {
         }
     }
 
+    // download video file from firebase and create a tempfile from it
+    // display it in another activity
+    // tested only with video, make modifications so it can be used
+    // for videos and pdfs
+    private fun createTempFile(/*dataType: String, fileId: String*/){
+        //firebaseStorage.reference.child("/$dataType/
+
+        //for testing
+        val videoRef = firebaseStorage.reference.child("/videos/0607eb9e-a714-480e-a4cd-d9e56e5805af")
+        val localVideoFile = File.createTempFile("videos", "")
+        localVideoFile.deleteOnExit()
+
+        Log.d("HomeFragment", "Here should be the loaded file: ${localVideoFile.absolutePath}")
+
+        videoRef.getFile(localVideoFile).addOnSuccessListener {
+            Log.d("HomeFragment", "Get some: $it")
+            val intent = Intent(activity, VideoActivity::class.java)
+            intent.putExtra("videofile", localVideoFile.absolutePath)
+            startActivity(intent)
+        }.addOnFailureListener {
+            Log.d("HomeFragment", "Something fucked: $it")
+            localVideoFile.delete()
+        }
+    }
 }
 
 class Image(val imageId: String, val imageUrl: String, val title: String){
