@@ -73,7 +73,7 @@ class HomeFragment: Fragment() {
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
         val ref = firebaseDatabase.getReference("$workspace/tools$tool$dataType")
-        //showUploadDialog("Loading image")
+        //showLoadingDialog("Loading image")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -99,7 +99,7 @@ class HomeFragment: Fragment() {
         })
     }
 
-    private fun showUploadDialog(message: String) {
+    private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
         val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
@@ -137,7 +137,11 @@ class HomeFragment: Fragment() {
     // tested only with video, make modifications so it can be used
     // for videos and pdfs
     private fun createTempFile(/*dataType: String, fileId: String*/){
-        //firebaseStorage.reference.child("/$dataType/
+        showLoadingDialog("Loading file")
+
+        //val ref = firebaseStorage.reference.child("/$dataType/$fileId")
+        //val localFile = File.createTempFile("", "")
+        //localFile.deleteOnExit()
 
         //for testing
         val videoRef = firebaseStorage.reference.child("/videos/0607eb9e-a714-480e-a4cd-d9e56e5805af")
@@ -150,10 +154,12 @@ class HomeFragment: Fragment() {
             Log.d("HomeFragment", "Get some: $it")
             val intent = Intent(activity, VideoActivity::class.java)
             intent.putExtra("videofile", localVideoFile.absolutePath)
+            Handler().post { dialog?.dismiss() }
             startActivity(intent)
         }.addOnFailureListener {
             Log.d("HomeFragment", "Something fucked: $it")
             localVideoFile.delete()
+            Handler().post { dialog?.dismiss() }
         }
     }
 }
