@@ -60,13 +60,17 @@ class HomeFragment: Fragment() {
 
         // replace the download button with NFC scanner
         //
-        btnDownload.setOnClickListener {
+        btnDownloadPdf.setOnClickListener {
+            /*
             if (workspace != null && tool != null && dataType != null ){
                 getStuffFromFirebaseDB(workspace!!, tool!!, dataType!!)
             }
+            */
+            createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
         }
-
-        createTempFile()
+        btnDownloadVideo.setOnClickListener {
+            createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
+        }
     }
 
     // modify this to get wanted stuff, testing with one image
@@ -135,8 +139,6 @@ class HomeFragment: Fragment() {
 
     // download video or pdf file from firebase and create a tempfile from it
     // display it in another activity
-    // tested only with another project because, free limits of firebase have reached
-    // TODO test tomorrow, when this projects firebase storage is in use
     // dataType = pdfs or videos
     private fun createTempFile(dataType: String, fileId: String){
         showLoadingDialog("Loading file")
