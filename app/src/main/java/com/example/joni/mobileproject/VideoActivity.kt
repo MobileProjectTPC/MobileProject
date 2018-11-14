@@ -38,7 +38,7 @@ class VideoActivity: AppCompatActivity(){
         if (videoFile != null){
             videoFile!!.delete()
         }
-        Log.d("VIDEOACTIVITY", "Destroyed")
+        Log.d("VideoActivity", "Destroyed")
     }
 
 }

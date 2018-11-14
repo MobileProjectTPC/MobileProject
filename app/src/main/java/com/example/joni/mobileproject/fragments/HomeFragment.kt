@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.VideoActivity
 import com.google.firebase.database.DataSnapshot
@@ -132,34 +133,47 @@ class HomeFragment: Fragment() {
         }
     }
 
-    // download video file from firebase and create a tempfile from it
+    // download video or pdf file from firebase and create a tempfile from it
     // display it in another activity
-    // tested only with video, make modifications so it can be used
-    // for videos and pdfs
-    private fun createTempFile(/*dataType: String, fileId: String*/){
+    // tested only with another project because, free limits of firebase have reached
+    // TODO test tomorrow, when this projects firebase storage is in use
+    // dataType = pdfs or videos
+    private fun createTempFile(dataType: String, fileId: String){
         showLoadingDialog("Loading file")
 
-        //val ref = firebaseStorage.reference.child("/$dataType/$fileId")
-        //val localFile = File.createTempFile("", "")
-        //localFile.deleteOnExit()
+        val ref = firebaseStorage.reference.child("/$dataType/$fileId")
+        val localFile = File.createTempFile("file", "")
+        localFile.deleteOnExit()
 
-        //for testing
-        val videoRef = firebaseStorage.reference.child("/videos/0607eb9e-a714-480e-a4cd-d9e56e5805af")
-        val localVideoFile = File.createTempFile("videos", "")
-        localVideoFile.deleteOnExit()
+        if (dataType.equals("videos")){
+            Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
-        Log.d("HomeFragment", "Here should be the loaded file: ${localVideoFile.absolutePath}")
+            ref.getFile(localFile).addOnSuccessListener {
+                Log.d("TAG", "Get some: $it")
+                val intent = Intent(activity, VideoActivity::class.java)
+                intent.putExtra("videofile", localFile.absolutePath)
+                Handler().post { dialog?.dismiss() }
+                startActivity(intent)
+            }.addOnFailureListener {
+                Log.d("HomeFragment", "Something fucked: $it")
+                localFile.delete()
+                Handler().post { dialog?.dismiss() }
+            }
+        }
+        else if (dataType.equals("pdfs")){
+            Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
-        videoRef.getFile(localVideoFile).addOnSuccessListener {
-            Log.d("HomeFragment", "Get some: $it")
-            val intent = Intent(activity, VideoActivity::class.java)
-            intent.putExtra("videofile", localVideoFile.absolutePath)
-            Handler().post { dialog?.dismiss() }
-            startActivity(intent)
-        }.addOnFailureListener {
-            Log.d("HomeFragment", "Something fucked: $it")
-            localVideoFile.delete()
-            Handler().post { dialog?.dismiss() }
+            ref.getFile(localFile).addOnSuccessListener {
+                Log.d("TAG", "Get some: $it")
+                val intent = Intent(activity, PdfActivity::class.java)
+                intent.putExtra("pdffile", localFile.absolutePath)
+                Handler().post { dialog?.dismiss() }
+                startActivity(intent)
+            }.addOnFailureListener {
+                Log.d("HomeFragment", "Something fucked: $it")
+                localFile.delete()
+                Handler().post { dialog?.dismiss() }
+            }
         }
     }
 }

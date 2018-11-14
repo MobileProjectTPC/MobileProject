@@ -3,4 +3,5 @@
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
     <string name="title_notifications">Notifications</string>
+    <string name="app_name_with_index">PdfRendererBasic (%1$d/%2$d)</string>
 </resources>

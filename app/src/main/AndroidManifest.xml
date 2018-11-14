@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".VideoActivity"></activity>
+        <activity android:name=".PdfActivity"></activity>
     </application>
 
 </manifest>
