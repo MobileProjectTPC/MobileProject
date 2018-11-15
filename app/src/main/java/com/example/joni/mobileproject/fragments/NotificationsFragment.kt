@@ -10,6 +10,11 @@ import com.example.joni.mobileproject.R
 
 class NotificationsFragment: Fragment() {
 
+    companion object {
+        fun newInstance(): NotificationsFragment =
+                NotificationsFragment()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.notifications_fragment_layout, container, false)
 

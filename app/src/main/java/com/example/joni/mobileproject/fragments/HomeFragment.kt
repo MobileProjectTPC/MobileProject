@@ -1,26 +1,36 @@
 package com.example.joni.mobileproject.fragments
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.ScanActivity
 import com.example.joni.mobileproject.VideoActivity
+import com.example.joni.mobileproject.slidingImages.ImageModel
+import com.example.joni.mobileproject.slidingImages.SlidingImageAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.viewpagerindicator.CirclePageIndicator
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
@@ -38,9 +48,50 @@ class HomeFragment: Fragment() {
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val firebaseStorage = FirebaseStorage.getInstance()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.home_fragment_layout, container, false)
+    private var imageModelArrayList: java.util.ArrayList<ImageModel>? = null
+    private val myImageList = intArrayOf(
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text
+    )
+    private lateinit var mPager: ViewPager
+    private lateinit var indicator: CirclePageIndicator
+    private lateinit var scanButton: Button
 
+    companion object {
+        fun newInstance(): HomeFragment =
+                HomeFragment()
+        private var currentPage = 0
+        const val RECORD_REQUEST_CODE = 1
+        var tvResult: TextView? = null
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.home_fragment_layout, container, false)
+
+        imageModelArrayList = ArrayList()
+        imageModelArrayList = populateList()
+
+        mPager = rootView.findViewById(R.id.pager)
+        mPager.adapter = SlidingImageAdapter(
+                context!!,
+                this.imageModelArrayList!!
+        )
+        indicator = rootView.findViewById(R.id.indicator)
+
+        tvResult = rootView.findViewById(R.id.tvresult)
+
+        scanButton = rootView.findViewById(R.id.button_scan_qr)
+
+
+        setupPermissions()
+
+        init()
+
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,6 +229,73 @@ class HomeFragment: Fragment() {
             }
         }
     }
+
+    private fun populateList(): java.util.ArrayList<ImageModel> {
+
+        val list = java.util.ArrayList<ImageModel>()
+
+        for (i in 0..5) {
+            val imageModel = ImageModel()
+            imageModel.setImageDrawables(myImageList[i])
+            list.add(imageModel)
+        }
+
+        return list
+    }
+
+    private fun init() {
+
+        scanButton.setOnClickListener {
+            val permission = ContextCompat.checkSelfPermission(context!!,
+                    Manifest.permission.CAMERA)
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                makeRequestCamera()
+            }
+            else {
+                val intent = Intent(context!!, ScanActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        indicator.setViewPager(mPager)
+
+        val density = resources.displayMetrics.density
+
+        //Set circle indicator radius
+        indicator.radius = 5 * density
+
+        // Pager listener over indicator
+        indicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageSelected(position: Int) {
+                currentPage = position
+            }
+
+            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
+
+            }
+
+            override fun onPageScrollStateChanged(pos: Int) {
+
+            }
+        })
+    }
+
+    private fun setupPermissions() {
+        val permission = ContextCompat.checkSelfPermission(context!!,
+                Manifest.permission.CAMERA)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            makeRequestCamera()
+        }
+    }
+
+    private fun makeRequestCamera() {
+        ActivityCompat.requestPermissions(activity!!,
+                arrayOf(Manifest.permission.CAMERA),
+                RECORD_REQUEST_CODE
+        )
+    }
+
 }
 
 class Image(val imageId: String, val imageUrl: String, val title: String){
