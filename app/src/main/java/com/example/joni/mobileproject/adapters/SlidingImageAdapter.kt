@@ -1,4 +1,4 @@
-package com.example.joni.mobileproject.slidingImages
+package com.example.joni.mobileproject.adapters
 
 import android.content.Context
 import android.os.Parcelable
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.models.ImageModel
 import java.util.ArrayList
 
 class SlidingImageAdapter(context: Context, private val imageModelArrayList: ArrayList<ImageModel>) : PagerAdapter() {

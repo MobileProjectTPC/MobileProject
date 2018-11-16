@@ -1,4 +1,4 @@
-package com.example.joni.mobileproject.slidingImages
+package com.example.joni.mobileproject.models
 
 class ImageModel {
 

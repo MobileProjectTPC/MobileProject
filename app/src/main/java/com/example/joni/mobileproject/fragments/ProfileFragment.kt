@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.example.joni.mobileproject.MainActivity
 import com.example.joni.mobileproject.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -22,8 +23,15 @@ import kotlinx.android.synthetic.main.profile_fragment_layout.*
 class ProfileFragment: Fragment() {
 
     private val TAG = "FirebaseEmailPassword"
-    private lateinit var mAuth: FirebaseAuth
+    lateinit var mAuth: FirebaseAuth
     private val viewGroup: ViewGroup? = null
+    private lateinit var btnEmailSignIn: Button
+    private lateinit var btnEmailCreateAccount: Button
+    private lateinit var btnVerifyEmail: Button
+    private lateinit var btnRefresh: Button
+    private lateinit var toolbar: Toolbar
+    private lateinit var mainActivity: MainActivity
+    private var launched = false
     private var dialog: AlertDialog? = null
 
     companion object {
@@ -34,43 +42,51 @@ class ProfileFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.profile_fragment_layout, container, false)
 
-        val btnEmailSignIn = rootView.findViewById<Button>(R.id.btn_email_sign_in)
-        btnEmailSignIn.setOnClickListener { signIn(edtEmail.text.toString(), edtPassword.text.toString()) }
-        val btnEmailCreateAccount = rootView.findViewById<Button>(R.id.btn_email_create_account)
-        btnEmailCreateAccount.setOnClickListener { createAccount(edtEmail.text.toString(), edtPassword.text.toString()) }
-        //val btnSignOut = rootView.findViewById<Button>(R.id.btn_sign_out)
-        //btnSignOut.setOnClickListener { signOut() }
-        val btnVerifyEmail = rootView.findViewById<Button>(R.id.btn_verify_email)
-        btnVerifyEmail.setOnClickListener { sendEmailVerification() }
-        val btnRefresh = rootView.findViewById<Button>(R.id.btn_refresh)
-        btnRefresh.setOnClickListener {
-            //mAuth.signOut()
-            //mAuth.signInWithEmailAndPassword(edtEmail.text.toString(), edtPassword.text.toString())
-            //updateUI(mAuth.currentUser)
-            val currentUser = mAuth.currentUser
-            if (currentUser != null) {
-                progressbar.visibility = ProgressBar.VISIBLE
-                object : CountDownTimer(REFRESH_TIME, REFRESH_TIME) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-                    override fun onFinish() {
-                        currentUser.reload()
-                        if (!currentUser.isEmailVerified) {
-                            Toast.makeText(context!!, "Email is not verified", Toast.LENGTH_SHORT).show()
-                        }
-                        progressbar.visibility = ProgressBar.GONE
-                        updateUI(currentUser)
-                    }
-                }.start()
-            }
-
-
-        }
+        btnEmailSignIn = rootView.findViewById(R.id.btn_email_sign_in)
+        btnEmailCreateAccount = rootView.findViewById(R.id.btn_email_create_account)
+        btnVerifyEmail = rootView.findViewById(R.id.btn_verify_email)
+        btnRefresh = rootView.findViewById(R.id.btn_refresh)
 
         mAuth = FirebaseAuth.getInstance()
+        toolbar = activity!!.findViewById<View>(R.id.toolbar) as Toolbar
 
+        init()
+        return rootView
+    }
 
-        val toolbar = activity!!.findViewById<View>(R.id.toolbar) as Toolbar
+    override fun onStart() {
+        super.onStart()
+        val currentUser = mAuth.currentUser
+        updateUI(currentUser)
+    }
+
+    private fun init() {
+
+        mainActivity = MainActivity()
+
+        btnEmailSignIn.setOnClickListener {
+            signIn(edtEmail.text.toString(), edtPassword.text.toString())
+        }
+
+        btnEmailCreateAccount.setOnClickListener {
+            createAccount(edtEmail.text.toString(), edtPassword.text.toString())
+        }
+
+        btnVerifyEmail.setOnClickListener {
+            sendEmailVerification()
+        }
+
+        btnRefresh.setOnClickListener {
+            val currentUser = mAuth.currentUser
+            if (currentUser != null) {
+                currentUser.reload()
+                if (!currentUser.isEmailVerified) {
+                    Toast.makeText(context!!, "Email is not verified", Toast.LENGTH_SHORT).show()
+                }
+                updateUI(currentUser)
+            }
+        }
+
         if (!toolbar.menu.hasVisibleItems()) {
             toolbar.inflateMenu(R.menu.logout)
 
@@ -85,19 +101,6 @@ class ProfileFragment: Fragment() {
                 true
             }
         }
-
-        return rootView
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val currentUser = mAuth.currentUser
-        updateUI(currentUser)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        activity!!.findViewById<View>(R.id.log_out_button).visibility = View.INVISIBLE
     }
 
     private fun createAccount(email: String, password: String) {
@@ -197,11 +200,9 @@ class ProfileFragment: Fragment() {
         return true
     }
 
-    private fun updateUI(user: FirebaseUser?) {
+    fun updateUI(user: FirebaseUser?) {
 
         if (user != null && !user.isEmailVerified) {
-            //tvStatus.text = "User Email: " + user.email + "(verified: " + user.isEmailVerified + ")"
-            //tvDetail.text = "Firebase User ID: " + user.uid
 
             email_password_buttons.visibility = View.GONE
             email_password_fields.visibility = View.GONE
@@ -213,8 +214,6 @@ class ProfileFragment: Fragment() {
             activity!!.findViewById<View>(R.id.log_out_button).visibility = View.VISIBLE
         }
         else if (user != null && user.isEmailVerified) {
-            //tvStatus.text = "User Email: " + user.email + "(verified: " + user.isEmailVerified + ")"
-            //tvDetail.text = "Firebase User ID: " + user.uid
             email_password_buttons.visibility = View.GONE
             email_password_fields.visibility = View.GONE
             layout_signed_in_buttons.visibility = View.GONE
@@ -224,8 +223,6 @@ class ProfileFragment: Fragment() {
         }
 
         else {
-            //tvStatus.text = "Signed Out"
-            //tvDetail.text = null
             activity!!.findViewById<View>(R.id.log_out_button).visibility = View.INVISIBLE
             email_password_buttons.visibility = View.VISIBLE
             email_password_fields.visibility = View.VISIBLE
@@ -233,13 +230,11 @@ class ProfileFragment: Fragment() {
             authentication.visibility = View.VISIBLE
             profile.visibility = View.GONE
         }
-    }
 
-    private fun refreshFragment(fragment: Fragment, fragmentName: String) {
-        val transaction = fragmentManager!!.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment, fragmentName)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        if (!launched) {
+            activity!!.findViewById<View>(R.id.log_out_button).visibility = View.INVISIBLE
+            launched = true
+        }
     }
 
 }

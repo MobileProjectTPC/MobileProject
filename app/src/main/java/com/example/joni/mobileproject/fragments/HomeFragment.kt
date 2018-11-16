@@ -23,8 +23,8 @@ import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.ScanActivity
 import com.example.joni.mobileproject.VideoActivity
-import com.example.joni.mobileproject.slidingImages.ImageModel
-import com.example.joni.mobileproject.slidingImages.SlidingImageAdapter
+import com.example.joni.mobileproject.models.ImageModel
+import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

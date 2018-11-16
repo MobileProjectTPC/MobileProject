@@ -1,4 +1,4 @@
-package com.example.joni.mobileproject.nfc
+package com.example.joni.mobileproject.objects
 
 import android.app.Activity
 import android.app.PendingIntent
