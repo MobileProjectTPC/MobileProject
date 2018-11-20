@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:id="@+id/registerLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@+id/txtEmailNotVeried"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email not verified, please check your mail. If you have not received the verification mail, you can resend it by pressing the resend button."
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnSendVerificationEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send verification email"
+                android:background="@drawable/button"
+                android:textColor="@color/colorWhite"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnSignout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign out"
+                android:background="@drawable/button"
+                android:textColor="@color/colorWhite"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

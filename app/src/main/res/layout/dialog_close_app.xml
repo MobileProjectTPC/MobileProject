@@ -5,11 +5,12 @@
               android:padding="16dp">
 
     <TextView
-            android:id="@+id/dialog_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:textSize="18sp"/>
+        android:id="@+id/dialog_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Sign out?"
+        android:foreground="?attr/selectableItemBackground"
+        android:textSize="18sp"/>
 
 </LinearLayout>
