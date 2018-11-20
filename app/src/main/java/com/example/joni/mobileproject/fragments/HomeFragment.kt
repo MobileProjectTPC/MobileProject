@@ -98,14 +98,11 @@ class HomeFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // select workspace and assign it to workspace variable
-        // remember put / first
-        workspace = "/workspace"
+        workspace = "workspace"
         // scan the NFC-tag and assign value to tool variable
-        // remember put / first
-        tool = "/tool1"
+        tool = "tool1"
         // define what you want to get from that tool, images, videos, pdfs
-        // remember put / first
-        dataType = "/videos"
+        dataType = "videos"
 
         Log.d("HomeFragment", "HomeFragment created")
 
@@ -128,7 +125,7 @@ class HomeFragment: Fragment() {
     // get all data to list and add item selector
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
-        val ref = firebaseDatabase.getReference("$workspace/tools$tool$dataType")
+        val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
         //showLoadingDialog("Loading image")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -296,8 +293,4 @@ class HomeFragment: Fragment() {
         )
     }
 
-}
-
-class Image(val imageId: String, val imageUrl: String, val title: String){
-    constructor(): this("", "", "")
 }
