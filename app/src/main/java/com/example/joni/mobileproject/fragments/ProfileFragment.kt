@@ -15,7 +15,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.example.joni.mobileproject.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.profile_fragment_layout.*
 import java.util.*
@@ -50,6 +53,13 @@ class ProfileFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val user = firebaseAuth.currentUser
+
+        Log.d("ProfileFragment", "ProfileFragment created")
+
+        getUserInformation(user!!.uid)
+
 
         btnUploadImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -170,6 +180,23 @@ class ProfileFragment: Fragment() {
                 }
                 .setNegativeButton("No") { _, _ ->
                 }.show()
+    }
+
+    private fun getUserInformation(user: String){
+        val ref = firebaseDatabase.getReference("/users/$user")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(p0: DataSnapshot) {
+                Log.d("ProfileFragment", "Value: ${p0.value}")
+                Log.d("ProfileFragment", "Child: ${p0.children}")
+                Log.d("ProfileFragment", "Child path firstname: ${p0.child("firstName").value}")
+
+                txtProfile.text = "First name: ${p0.child("firstName").value} Last name: ${p0.child("lastName").value}"
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
     }
 }
 

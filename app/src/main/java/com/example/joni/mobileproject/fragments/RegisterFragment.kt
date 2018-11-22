@@ -24,8 +24,11 @@ class RegisterFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        if (firebaseAuth.currentUser != null){
+        if (firebaseAuth.currentUser != null && firebaseAuth.currentUser!!.isEmailVerified){
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, ProfileFragment()).commit()
+        }
+        else if (firebaseAuth.currentUser != null && !firebaseAuth.currentUser!!.isEmailVerified){
+            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, EmailNotVerifiedFragment()).commit()
         }
 
         return inflater.inflate(R.layout.register_fragment_layout, container, false)
@@ -75,7 +78,7 @@ class RegisterFragment: Fragment() {
                     Log.d("RegisterFragment", "Saved the user to Firebase database")
                     Handler().post { dialog?.dismiss() }
                     firebaseAuth.currentUser!!.sendEmailVerification()
-                    fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, ProfileFragment()).commit()
+                    fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, EmailNotVerifiedFragment()).commit()
                 }
                 .addOnFailureListener{
                     Log.d("RegisterFragment", "Saving user to database failed: ${it.message}")
