@@ -37,7 +37,7 @@ class RegisterFragment: Fragment() {
         Log.d("RegisterFragment", "RegisterFragment created")
 
         btnRegister.setOnClickListener {
-            createAccount(edtEmail.text.toString(), edtPassword.text.toString(), edtConfirmPassword.text.toString())
+            createAccount(edtEmail.text.toString(), edtPassword.text.toString(), edtConfirmPassword.text.toString(), edtFirstName.text.toString(), edtLastName.text.toString())
         }
 
         txtAlready.setOnClickListener {
@@ -45,9 +45,9 @@ class RegisterFragment: Fragment() {
         }
     }
 
-    private fun createAccount(email: String, password: String, confirmPassword: String) {
+    private fun createAccount(email: String, password: String, confirmPassword: String, firstName: String, lastName: String) {
         Log.e("RegisterFragment", "createAccount: $email")
-        if (!validateForm(email, password, confirmPassword)) {
+        if (!validateForm(email, password, confirmPassword, firstName, lastName)) {
             return
         }
         showLoadingDialog("Registering user")
@@ -55,21 +55,20 @@ class RegisterFragment: Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.e("RegisterFragment", "createAccount: Success!")
-                        saveUserToFirebaseDatabase(email)
+                        saveUserToFirebaseDatabase(email, firstName, lastName)
                     } else {
                         Log.e("RegisterFragment", "createAccount: Fail!", task.exception)
                         Toast.makeText(context!!, "Authentication failed!", Toast.LENGTH_SHORT).show()
-                        //updateUI(null)
                         Handler().post { dialog?.dismiss() }
                     }
                 }
     }
 
-    private fun saveUserToFirebaseDatabase(email: String){
+    private fun saveUserToFirebaseDatabase(email: String, firstName: String, lastName: String){
         val uid = firebaseAuth.uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val user = User(uid, email)
+        val user = User(uid, email, firstName, lastName)
 
         ref.setValue(user)
                 .addOnSuccessListener {
@@ -84,7 +83,17 @@ class RegisterFragment: Fragment() {
                 }
     }
 
-    private fun validateForm(email: String, password: String, confirmPassword: String): Boolean {
+    private fun validateForm(email: String, password: String, confirmPassword: String, firstName: String, lastName: String): Boolean {
+
+        if (TextUtils.isEmpty(firstName)) {
+            Toast.makeText(context!!, "Enter first name address!", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            Toast.makeText(context!!, "Enter last name address!", Toast.LENGTH_SHORT).show()
+            return false
+        }
 
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(context!!, "Enter email address!", Toast.LENGTH_SHORT).show()
@@ -124,4 +133,4 @@ class RegisterFragment: Fragment() {
 
 }
 
-class User(val uid: String, val username: String)
+class User(val uid: String, val email: String, val firstName: String, val lastName: String)
