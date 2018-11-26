@@ -191,7 +191,9 @@ class ProfileFragment: Fragment() {
                 Log.d("ProfileFragment", "Child: ${p0.children}")
                 Log.d("ProfileFragment", "Child path firstname: ${p0.child("firstName").value}")
 
-                txtProfile.text = "First name: ${p0.child("firstName").value} Last name: ${p0.child("lastName").value}"
+                if (txtProfile != null){
+                    txtProfile.text = "First name: ${p0.child("firstName").value} Last name: ${p0.child("lastName").value}"
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {
