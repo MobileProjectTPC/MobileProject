@@ -83,6 +83,10 @@ class ProfileFragment: Fragment() {
             signOut()
         }
 
+        btnUpdate.setOnClickListener {
+            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, UpdateUserDataFragment()).commit()
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
 

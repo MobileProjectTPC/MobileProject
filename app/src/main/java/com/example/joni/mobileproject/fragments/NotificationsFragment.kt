@@ -18,7 +18,7 @@ class NotificationsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("ProfileFragment", "ProfileFragment created")
+        Log.d("NotificationsFragment", "NotificationsFragment created")
     }
 
 }
