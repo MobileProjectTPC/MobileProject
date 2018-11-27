@@ -64,6 +64,7 @@ class UpdateUserDataFragment: Fragment() {
                                     .child(user)
                                     .child("email")
                                     .setValue(newEmail)
+                            firebaseAuth.currentUser!!.sendEmailVerification()
                         }
                         .addOnFailureListener {
                             Log.d("UpdateUserDataFragment", "Foggening $it")
