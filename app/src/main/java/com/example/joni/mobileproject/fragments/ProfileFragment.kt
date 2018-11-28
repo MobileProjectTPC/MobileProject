@@ -14,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.PDF
+import com.example.joni.mobileproject.models.Video
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -204,14 +207,4 @@ class ProfileFragment: Fragment() {
             }
         })
     }
-}
-
-class Image(val imageId: String, val imageUrl: String, val title: String){
-    constructor(): this("", "", "")
-}
-class PDF(val PDFId: String, val PDFUrl: String, val title: String){
-    constructor(): this("", "", "")
-}
-class Video(val videoId: String, val videoUrl: String, val title: String){
-    constructor(): this("", "", "")
 }
