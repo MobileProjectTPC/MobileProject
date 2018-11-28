@@ -18,8 +18,7 @@ import com.example.joni.mobileproject.MainActivity
 import kotlinx.android.synthetic.main.fragment_detail.*
 import java.lang.Exception
 import android.graphics.BitmapFactory
-
-
+import com.example.joni.mobileproject.models.Image
 
 
 class DetailFragment : Fragment() {
