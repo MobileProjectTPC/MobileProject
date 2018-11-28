@@ -110,10 +110,15 @@ class MainActivity : AppCompatActivity() {
         if (currentFragment != null && currentFragment.isVisible) {
             //vibrator.vibrate(VIBRATION_TIME)
             //Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
+            /*
             val tool = NFCUtil.retrieveNFCMessage(intent)
             val toolIntent = Intent(this, ToolsActivity::class.java)
             toolIntent.putExtra("Tool", tool)
             startActivity(toolIntent)
+            */
+            vibrator.vibrate(VIBRATION_TIME)
+            Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
+
         }
     }
 }

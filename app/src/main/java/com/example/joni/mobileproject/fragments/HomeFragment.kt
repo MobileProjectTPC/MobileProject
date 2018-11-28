@@ -1,5 +1,6 @@
 package com.example.joni.mobileproject.fragments
 
+
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
@@ -145,7 +146,7 @@ class HomeFragment: Fragment() {
     // modify this to get wanted stuff, testing with one image
     // get all data to list and add item selector
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
-    fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
+    private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
         val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
         //showLoadingDialog("Loading image")
 
@@ -330,6 +331,3 @@ class HomeFragment: Fragment() {
 
 }
 
-class Image(val imageId: String, val imageUrl: String, val title: String): Serializable{
-    constructor(): this("", "", "")
-}

@@ -19,6 +19,11 @@ class EmailNotVerifiedFragment: Fragment() {
     private val viewGroup: ViewGroup? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        if (firebaseAuth.currentUser!!.isEmailVerified) {
+            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, ProfileFragment()).commit()
+        }
+
         return inflater.inflate(R.layout.email_not_verified_fragment_layout, container, false)
     }
 
