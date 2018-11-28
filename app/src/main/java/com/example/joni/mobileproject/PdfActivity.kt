@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -32,6 +32,9 @@ class PdfActivity: AppCompatActivity(), View.OnClickListener{
     private lateinit var btnNext: Button
     private var pageIndex: Int = INITIAL_PAGE_INDEX
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf)
@@ -48,6 +51,9 @@ class PdfActivity: AppCompatActivity(), View.OnClickListener{
         } else {
             pageIndex = INITIAL_PAGE_INDEX
         }
+
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -66,6 +72,7 @@ class PdfActivity: AppCompatActivity(), View.OnClickListener{
         try {
             openRenderer(this)
             showPage(pageIndex)
+
         } catch (e: IOException) {
             Log.d(TAG, e.toString())
         }
@@ -170,4 +177,5 @@ class PdfActivity: AppCompatActivity(), View.OnClickListener{
         }
         Log.d("PdfActivity", "Destroyed")
     }
+
 }

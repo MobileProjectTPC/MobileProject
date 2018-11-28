@@ -1,16 +1,15 @@
 package com.example.joni.mobileproject
 
-
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -31,28 +30,35 @@ class MainActivity : AppCompatActivity() {
     private val registerFragment = RegisterFragment()
     private val notificationsFragment = NotificationsFragment()
 
+    companion object {
+        const val HOME_FRAGMENT_TAG = "HomeFragment"
+        const val REGISTER_FRAGMENT_TAG = "RegisterFragment"
+        const val NOTIFICTIONS_FRAGMENT_TAG = "NotificationFragment"
+        const val CLOSE_APP = "Do you want to close the app?"
+        const val VIBRATION_TIME: Long = 100
+    }
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment).commit()
-                Log.d("MainActivity", "Home pressed")
-                //message.setText(R.string.title_home)
+                setupFragment(homeFragment, HOME_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, registerFragment).commit()
-                Log.d("MainActivity", "Profile pressed")
-                //message.setText(R.string.title_dashboard)
+                setupFragment(registerFragment, REGISTER_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, notificationsFragment).commit()
-                Log.d("MainActivity", "Notifications pressed")
-                //message.setText(R.string.title_notifications)
+                setupFragment(notificationsFragment, NOTIFICTIONS_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
+    }
+
+    private fun setupFragment(fragment: Fragment, name: String) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment, name).commit()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         scrollView.isFillViewport = true
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, "HomeFragment").commit()
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
 
     }
 
@@ -74,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_close_app, viewGroup)
         val dialogText: TextView = dialogView.findViewById(R.id.dialog_text)
-        dialogText.text = "Do you want to close the app?"
+        dialogText.text = CLOSE_APP
         builder.setView(dialogView)
                 .setPositiveButton("Yes") { _, _ ->
                     finish()
@@ -102,8 +108,12 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         val currentFragment = supportFragmentManager.findFragmentByTag("HomeFragment")
         if (currentFragment != null && currentFragment.isVisible) {
-            vibrator.vibrate(100)
-            Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
+            //vibrator.vibrate(VIBRATION_TIME)
+            //Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
+            val tool = NFCUtil.retrieveNFCMessage(intent)
+            val toolIntent = Intent(this, ToolsActivity::class.java)
+            toolIntent.putExtra("Tool", tool)
+            startActivity(toolIntent)
         }
     }
 }

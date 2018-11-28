@@ -10,8 +10,10 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,21 +21,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import com.example.joni.mobileproject.PdfActivity
+import android.widget.Toast
+import com.example.joni.mobileproject.*
 import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.ScanActivity
-import com.example.joni.mobileproject.VideoActivity
+import com.example.joni.mobileproject.R.id.image
 import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
+import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -49,7 +49,7 @@ class HomeFragment: Fragment() {
     private val firebaseStorage = FirebaseStorage.getInstance()
 
     private var imageModelArrayList: java.util.ArrayList<ImageModel>? = null
-    private val myImageList = intArrayOf(
+    val myImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -60,6 +60,10 @@ class HomeFragment: Fragment() {
     private lateinit var mPager: ViewPager
     private lateinit var indicator: CirclePageIndicator
     private lateinit var scanButton: Button
+
+    private lateinit var toolsButton: Button
+
+    val mutableList : MutableList<Image> = ArrayList()
 
     companion object {
         fun newInstance(): HomeFragment =
@@ -80,6 +84,7 @@ class HomeFragment: Fragment() {
                 context!!,
                 this.imageModelArrayList!!
         )
+
         indicator = rootView.findViewById(R.id.indicator)
 
         tvResult = rootView.findViewById(R.id.tvresult)
@@ -90,6 +95,14 @@ class HomeFragment: Fragment() {
         setupPermissions()
 
         init()
+
+        toolsButton = rootView.findViewById(R.id.btn_tools)
+        toolsButton.setOnClickListener {
+            val intent = Intent(context, ToolsActivity::class.java)
+            startActivity(intent)
+        }
+
+
 
         return rootView
     }
@@ -122,20 +135,32 @@ class HomeFragment: Fragment() {
         btnDownloadVideo.setOnClickListener {
             createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
         }
+
+
+        //getStuffFromFirebaseDB("workspace", "tool1", "images")
+
+
     }
 
     // modify this to get wanted stuff, testing with one image
     // get all data to list and add item selector
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
-    private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
-        val ref = firebaseDatabase.getReference("$workspace/tools$tool$dataType")
+    fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
+        val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
         //showLoadingDialog("Loading image")
+
+
+
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
                     Log.d("HomeFragment", "Stuff: $it")
+                    if (mutableList.isEmpty()) {
+                        mutableList.add(it.getValue(Image::class.java)!!)
+                    }
+
                 }
 
                 // test with one image
@@ -154,6 +179,10 @@ class HomeFragment: Fragment() {
             }
         })
     }
+
+
+
+
 
     private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
@@ -278,7 +307,10 @@ class HomeFragment: Fragment() {
             override fun onPageScrollStateChanged(pos: Int) {
 
             }
+
+
         })
+
     }
 
     private fun setupPermissions() {
@@ -298,6 +330,6 @@ class HomeFragment: Fragment() {
 
 }
 
-class Image(val imageId: String, val imageUrl: String, val title: String){
+class Image(val imageId: String, val imageUrl: String, val title: String): Serializable{
     constructor(): this("", "", "")
 }

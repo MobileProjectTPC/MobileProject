@@ -1,8 +1,12 @@
 <resources>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="app_name">WorkShop Tutor</string>
+    <string name="tools">Tools</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
     <string name="title_notifications">Notifications</string>
     <string name="app_name_with_index">PdfRendererBasic (%1$d/%2$d)</string>
+
+    <string name="transition_text">text</string>
+    <string name="transition_image">image</string>
 </resources>
