@@ -19,7 +19,7 @@ import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.ToolsActivity
 import com.example.joni.mobileproject.databinding.ListItemBinding
 import com.example.joni.mobileproject.fragments.HomeFragment
-import com.example.joni.mobileproject.Image
+import com.example.joni.mobileproject.models.Image
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

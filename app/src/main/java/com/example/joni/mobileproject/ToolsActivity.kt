@@ -13,7 +13,7 @@ import android.util.Log
 import android.view.View
 import com.example.joni.mobileproject.adapters.TransitionNavigation
 import com.example.joni.mobileproject.fragments.DetailFragment
-import com.example.joni.mobileproject.Image
+import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.fragments.ToolFragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

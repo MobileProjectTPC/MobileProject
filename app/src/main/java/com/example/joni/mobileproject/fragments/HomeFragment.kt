@@ -37,6 +37,7 @@ import java.io.InputStream
 import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.joni.mobileproject.models.Image
 
 class HomeFragment: Fragment() {
 
