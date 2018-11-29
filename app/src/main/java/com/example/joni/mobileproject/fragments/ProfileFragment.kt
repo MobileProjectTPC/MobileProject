@@ -90,6 +90,10 @@ class ProfileFragment: Fragment() {
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, UpdateUserDataFragment()).commit()
         }
 
+        btnMyPortfolio.setOnClickListener{
+            // To my profolio
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
 
