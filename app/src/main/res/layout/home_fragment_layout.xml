@@ -17,16 +17,6 @@ tools:context=".MainActivity">
     android:textColor="@color/colorWhite"
     android:text="Scan QR code" />
 
-<TextView
-    android:id="@+id/tvresult"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:textColor="@color/colorWhite"
-    android:layout_marginTop="10dp"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text="Result will be here"/>
-
 <RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="100dp"

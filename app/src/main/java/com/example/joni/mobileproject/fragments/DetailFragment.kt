@@ -4,7 +4,6 @@ import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +68,6 @@ class DetailFragment : Fragment() {
                     putInt(EXTRA_PAGE, page)
                     putSerializable(MY_LIST, myList)
                     putBoolean(NFC_TRUE, nfcTrue)
-                    Log.d("tää", "null? $myList")
                 }
             }
         }

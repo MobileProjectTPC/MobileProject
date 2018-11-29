@@ -43,7 +43,6 @@ class TransitionPageFragment : Fragment() {
                 arguments = Bundle().apply {
                     putInt(EXTRA_PAGE, page)
                     putSerializable(MY_LIST, myList)
-                    //putParcelableArrayList(MY_LIST, myList)
                 }
             }
         }

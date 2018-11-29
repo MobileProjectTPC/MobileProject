@@ -67,7 +67,6 @@ class HomeFragment: Fragment() {
                 HomeFragment()
         private var currentPage = 0
         const val RECORD_REQUEST_CODE = 1
-        var tvResult: TextView? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,8 +82,6 @@ class HomeFragment: Fragment() {
         )
 
         indicator = rootView.findViewById(R.id.indicator)
-
-        tvResult = rootView.findViewById(R.id.tvresult)
 
         scanButton = rootView.findViewById(R.id.button_scan_qr)
 

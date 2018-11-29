@@ -9,7 +9,6 @@ import android.transition.ChangeBounds
 import android.transition.ChangeClipBounds
 import android.transition.ChangeTransform
 import android.transition.TransitionSet
-import android.util.Log
 import android.view.View
 import com.example.joni.mobileproject.adapters.TransitionNavigation
 import com.example.joni.mobileproject.fragments.DetailFragment
@@ -113,10 +112,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
-                    Log.d("HomeFragment", "Stuff: $it")
                     newList.add(it.getValue(Image::class.java)!!)
-                    Log.d("tää", "tää ois tää $newList")
-
                 }
 
                 if (toolName != null) {
@@ -163,7 +159,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
                 goToDetailFromNFC(tool, false)
             }
             else {
-                Toast.makeText(this, "Unrecognizable NFC tag!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, applicationContext.getText(R.string.unrecognizable_nfc_tag), Toast.LENGTH_SHORT).show()
             }
         }
     }
