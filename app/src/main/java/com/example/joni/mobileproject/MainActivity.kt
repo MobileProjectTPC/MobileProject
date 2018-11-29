@@ -18,6 +18,7 @@ import com.example.joni.mobileproject.fragments.NotificationsFragment
 import com.example.joni.mobileproject.fragments.RegisterFragment
 import com.example.joni.mobileproject.objects.NFCUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,11 +35,15 @@ class MainActivity : AppCompatActivity() {
         const val HOME_FRAGMENT_TAG = "HomeFragment"
         const val REGISTER_FRAGMENT_TAG = "RegisterFragment"
         const val NOTIFICTIONS_FRAGMENT_TAG = "NotificationFragment"
-        const val CLOSE_APP = "Do you want to close the app?"
         const val VIBRATION_TIME: Long = 100
+        const val TOOL = "Tool"
+        val listOfTools = arrayListOf(
+                "tool1", "tool2", "tool3"
+        )
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
                 setupFragment(homeFragment, HOME_FRAGMENT_TAG)
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_close_app, viewGroup)
         val dialogText: TextView = dialogView.findViewById(R.id.dialog_text)
-        dialogText.text = CLOSE_APP
+        dialogText.text = "Do you want to close the app?" //Make strings for these
         builder.setView(dialogView)
                 .setPositiveButton("Yes") { _, _ ->
                     finish()
@@ -103,21 +108,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val currentFragment = supportFragmentManager.findFragmentByTag("HomeFragment")
+        val currentFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG)
         if (currentFragment != null && currentFragment.isVisible) {
-            //vibrator.vibrate(VIBRATION_TIME)
-            //Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
-            /*
-            val tool = NFCUtil.retrieveNFCMessage(intent)
-            val toolIntent = Intent(this, ToolsActivity::class.java)
-            toolIntent.putExtra("Tool", tool)
-            startActivity(toolIntent)
-            */
             vibrator.vibrate(VIBRATION_TIME)
-            Toast.makeText(this, NFCUtil.retrieveNFCMessage(intent), Toast.LENGTH_SHORT).show()
+            val tool = NFCUtil.retrieveNFCMessage(intent)
+
+            if (listOfTools.contains(tool)) {
+                val toolIntent = Intent(this, ToolsActivity::class.java)
+                toolIntent.putExtra(TOOL, tool)
+                startActivity(toolIntent)
+            }
+            else {
+                Toast.makeText(this, "Unrecognizable NFC tag!", Toast.LENGTH_SHORT).show()
+            }
 
         }
     }

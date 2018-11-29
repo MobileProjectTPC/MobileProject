@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.register_fragment_layout.*
@@ -136,4 +137,3 @@ class RegisterFragment: Fragment() {
 
 }
 
-class User(val uid: String, val email: String, val firstName: String, val lastName: String)

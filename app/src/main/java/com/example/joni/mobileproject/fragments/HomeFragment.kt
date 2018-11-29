@@ -11,10 +11,8 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,10 +20,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.example.joni.mobileproject.*
 import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.R.id.image
 import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.google.firebase.database.*
@@ -34,7 +30,6 @@ import com.viewpagerindicator.CirclePageIndicator
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
-import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
 import com.example.joni.mobileproject.models.Image

@@ -3,7 +3,6 @@ package com.example.joni.mobileproject.fragments
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
@@ -14,8 +13,6 @@ import com.example.joni.mobileproject.adapters.TransitionListAdapter
 import com.example.joni.mobileproject.adapters.TransitionNavigation
 import com.example.joni.mobileproject.databinding.FragmentPageTransitionBinding
 import java.io.Serializable
-import java.util.ArrayList
-
 
 class TransitionPageFragment : Fragment() {
 
@@ -30,7 +27,6 @@ class TransitionPageFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //val myList: ArrayList<String> = arguments!!.getStringArrayList("Parcel");
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_page_transition, container, false)
         binding.listItem.layoutManager = GridLayoutManager(activity, 2)
         binding.listItem.adapter = TransitionListAdapter(navigation, arguments?.getInt(EXTRA_PAGE) ?: 0, arguments!!.getSerializable(MY_LIST))
@@ -51,7 +47,5 @@ class TransitionPageFragment : Fragment() {
                 }
             }
         }
-
     }
-
 }

@@ -1,8 +1,8 @@
 package com.example.joni.mobileproject
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.content.Context
+import android.content.Intent
+import android.nfc.NfcAdapter
 import android.os.*
 import android.support.v7.app.AppCompatActivity
 import android.transition.ChangeBounds
@@ -19,27 +19,22 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.home_fragment_layout.*
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 import android.os.Bundle
 import android.widget.Toast
-import com.google.android.gms.common.util.IOUtils.toByteArray
-import java.io.ByteArrayOutputStream
-
+import com.example.joni.mobileproject.objects.NFCUtil
 
 class ToolsActivity : AppCompatActivity(), TransitionNavigation {
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
-
-    val newlist = java.util.ArrayList<Image>()
-
-    val bitmapList = java.util.ArrayList<ByteArray>()
-
+    val newList = java.util.ArrayList<Image>()
     lateinit var detailFragment: DetailFragment
+    private lateinit var vibrator: Vibrator
+    private var toolName: String? = null
+    private var mNfcAdapter: NfcAdapter? = null
 
-    var tool: String? = null
+    companion object {
+        const val DETAIL_FRAGMENT_TAG = "DetailFragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,59 +42,47 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
 
         getStuffFromFirebaseDB("workspace", "tool1", "images")
 
-        tool = if (savedInstanceState == null) {
+        toolName = if (savedInstanceState == null) {
             val extras = intent.extras
-            extras?.getString("Tool")
+            extras?.getString(MainActivity.TOOL)
         } else {
             //savedInstanceState.getSerializable("Tool") as String
-            savedInstanceState.getString("Tool")
+            savedInstanceState.getString(MainActivity.TOOL)
         }
 
-        Log.d("tää", "tool??? = $tool")
-
-        /*
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.root, ToolFragment())
-                .commitAllowingStateLoss()
-                */
-
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
-    fun taaniivitusti(tool: String) {
+    fun goToDetailFromNFC(tool: String, nfcTrue: Boolean) {
         var position = 0
         var page = 0
-        Log.d("tää", "tool!!!!!! = $tool")
 
-        if (tool == "tool1") {
-            position = 0
-            page = 0
-            Log.d("tää", "tool1 = $tool")
-        }
-        else if (tool == "tool2") {
-            position = 1
-            page = 1
-            Log.d("tää", "tool2 = $tool")
-        }
-        else {
-            position = 2
-            page = 2
-            Log.d("tää", "tool3 = $tool")
+        when (tool) {
+            MainActivity.listOfTools[0] -> {
+                position = 0
+                page = 0
+            }
+            MainActivity.listOfTools[1] -> {
+                position = 1
+                page = 1
+            }
+            else -> {
+                position = 2
+                page = 2
+            }
         }
 
         val transaction = supportFragmentManager.beginTransaction()
 
+        detailFragment = DetailFragment.newInstance(position, page, newList, nfcTrue)
 
-
-        detailFragment = DetailFragment.newInstance(position, page, newlist)
-
-
-        transaction.replace(R.id.root, detailFragment)
+        transaction.replace(R.id.root, detailFragment, DETAIL_FRAGMENT_TAG)
         transaction.addToBackStack(null)
         transaction.commit()
     }
 
     override fun goToDetail(transitionItems: List<View>, position: Int, page: Int) {
-
 
         val transaction = supportFragmentManager.beginTransaction()
 
@@ -107,7 +90,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
             transaction.addSharedElement(it, it.transitionName)
         }
 
-        detailFragment = DetailFragment.newInstance(position, page, newlist)
+        detailFragment = DetailFragment.newInstance(position, page, newList, false)
 
         val transitionSet = TransitionSet().apply {
             addTransition(ChangeTransform())
@@ -118,87 +101,37 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
         detailFragment.sharedElementEnterTransition = transitionSet
         detailFragment.sharedElementReturnTransition = transitionSet
 
-        transaction.replace(R.id.root, detailFragment)
+        transaction.replace(R.id.root, detailFragment, DETAIL_FRAGMENT_TAG)
         transaction.addToBackStack(null)
         transaction.commit()
-
-
     }
-
-
-    inner class GetCont(): AsyncTask<URL, Unit, Bitmap>() {
-
-
-        override fun doInBackground(vararg url: URL?): Bitmap {
-            lateinit var bm: Bitmap
-            try {
-                val myConn = url[0]!!.openConnection() as HttpURLConnection
-                val iStream: InputStream = myConn.inputStream
-                bm = BitmapFactory.decodeStream(iStream)
-                myConn.disconnect()
-            } catch (e:Exception) {
-                Log.e("Connection", "Reading error", e)
-            }
-            return bm
-        }
-
-        override fun onPostExecute(result: Bitmap) {
-
-            val stream = ByteArrayOutputStream()
-            result.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
-            bitmapList.add(byteArray)
-
-
-            Log.d("tää", "$bitmapList")
-            /*
-            val stream = ByteArrayOutputStream()
-            result.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
-
-            val b = Bundle()
-            b.putByteArray("image", byteArray)
-            */
-
-
-
-
-        }
-    }
-
-
 
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String) {
         val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
-        //showLoadingDialog("Loading image")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
                     Log.d("HomeFragment", "Stuff: $it")
-                    newlist.add(it.getValue(Image::class.java)!!)
-                    Log.d("tää", "tää ois tää $newlist")
-                    //GetCont().execute(URL(it.getValue(Image::class.java)!!.imageUrl))
+                    newList.add(it.getValue(Image::class.java)!!)
+                    Log.d("tää", "tää ois tää $newList")
 
                 }
 
-                if (tool != null) {
-                    taaniivitusti(tool)
+                if (toolName != null) {
+                    goToDetailFromNFC(toolName!!, true)
                 }
                 else {
                     val mfc = ToolFragment()
                     val b = Bundle()
-                    b.putSerializable("Parcel", newlist)
+                    b.putSerializable("Parcel", newList)
                     mfc.arguments = b
 
                     supportFragmentManager.beginTransaction()
                             .add(R.id.root, mfc)
                             .commitAllowingStateLoss()
                 }
-
-
-
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -206,4 +139,32 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        mNfcAdapter?.let {
+            NFCUtil.enableNFCInForeground(it, this, javaClass)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mNfcAdapter?.let {
+            NFCUtil.disableNFCInForeground(it, this)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val currentFragment = supportFragmentManager.findFragmentByTag(DETAIL_FRAGMENT_TAG)
+        if (currentFragment == null) {
+            vibrator.vibrate(MainActivity.VIBRATION_TIME)
+            val tool = NFCUtil.retrieveNFCMessage(intent)
+            if (MainActivity.listOfTools.contains(tool)) {
+                goToDetailFromNFC(tool, false)
+            }
+            else {
+                Toast.makeText(this, "Unrecognizable NFC tag!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

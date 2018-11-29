@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity
 import android.transition.Explode
 import android.view.Window
 import android.app.ActivityOptions
+import android.nfc.NfcAdapter
 import android.os.CountDownTimer
+import com.example.joni.mobileproject.objects.NFCUtil
 
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var mDelayHandler: Handler
+    private var mNfcAdapter: NfcAdapter? = null
     private val delay: Long = 2000
     private val wait: Long = 3000
 
@@ -32,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         setContentView(R.layout.activity_splash)
         mDelayHandler = Handler()
         mDelayHandler.postDelayed(mRunnable, delay)
@@ -41,6 +44,20 @@ class SplashActivity : AppCompatActivity() {
     public override fun onDestroy() {
         mDelayHandler.removeCallbacks(mRunnable)
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mNfcAdapter?.let {
+            NFCUtil.enableNFCInForeground(it, this, javaClass)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mNfcAdapter?.let {
+            NFCUtil.disableNFCInForeground(it, this)
+        }
     }
 
 }
