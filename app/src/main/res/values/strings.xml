@@ -9,4 +9,10 @@
 
     <string name="transition_text">text</string>
     <string name="transition_image">image</string>
+    <string name="unrecognizable_qr_code">Unrecognizable QR code!</string>
+    <string name="unrecognizable_nfc_tag">Unrecognizable NFC tag!</string>
+    <string name="close_app">Do you want to close the app?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="sign_out">Sign out?</string>
 </resources>

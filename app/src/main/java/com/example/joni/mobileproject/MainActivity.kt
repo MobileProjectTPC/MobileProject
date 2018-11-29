@@ -85,12 +85,12 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_close_app, viewGroup)
         val dialogText: TextView = dialogView.findViewById(R.id.dialog_text)
-        dialogText.text = "Do you want to close the app?" //Make strings for these
+        dialogText.text = applicationContext.getText(R.string.close_app)
         builder.setView(dialogView)
-                .setPositiveButton("Yes") { _, _ ->
+                .setPositiveButton(R.string.yes) { _, _ ->
                     finish()
                 }
-                .setNegativeButton("No") { _, _ ->
+                .setNegativeButton(R.string.no) { _, _ ->
                 }.show()
     }
 
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(toolIntent)
             }
             else {
-                Toast.makeText(this, "Unrecognizable NFC tag!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, applicationContext.getText(R.string.unrecognizable_nfc_tag), Toast.LENGTH_SHORT).show()
             }
 
         }

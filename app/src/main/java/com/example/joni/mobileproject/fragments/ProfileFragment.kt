@@ -185,11 +185,11 @@ class ProfileFragment: Fragment() {
         val builder = AlertDialog.Builder(context!!)
         val dialogView = layoutInflater.inflate(R.layout.dialog_close_app, viewGroup)
         builder.setView(dialogView)
-                .setPositiveButton("Yes") { _, _ ->
+                .setPositiveButton(R.string.yes) { _, _ ->
                     firebaseAuth.signOut()
                     fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, SigninFragment()).commit()
                 }
-                .setNegativeButton("No") { _, _ ->
+                .setNegativeButton(R.string.no) { _, _ ->
                 }.show()
     }
 

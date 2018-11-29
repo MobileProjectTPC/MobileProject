@@ -1,8 +1,9 @@
 package com.example.joni.mobileproject
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.example.joni.mobileproject.fragments.HomeFragment
+import android.widget.Toast
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
@@ -12,43 +13,38 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     public override fun onCreate(state: Bundle?) {
         super.onCreate(state)
-        mScannerView = ZXingScannerView(this)   // Programmatically initialize the scanner view
-        setContentView(mScannerView)                // Set the scanner view as the content view
+        mScannerView = ZXingScannerView(this)
+        setContentView(mScannerView)
     }
 
     override fun onStart() {
         super.onStart()
-        //overridePendingTransition(0, 0)
-        mScannerView!!.setResultHandler(this) // Register ourselves as a handler for scan results.
+        mScannerView!!.setResultHandler(this)
         mScannerView!!.startCamera()
     }
 
     public override fun onResume() {
         super.onResume()
-        mScannerView!!.setResultHandler(this) // Register ourselves as a handler for scan results.
-        mScannerView!!.startCamera()          // Start camera on resume
+        mScannerView!!.setResultHandler(this)
+        mScannerView!!.startCamera()
     }
 
     public override fun onPause() {
         super.onPause()
-        mScannerView!!.stopCamera()           // Stop camera on pause
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        //overridePendingTransition(0, 0)
+        mScannerView!!.stopCamera()
     }
 
     override fun handleResult(rawResult: Result) {
-        // Do something with the result here
-        // Log.v("tag", rawResult.getText()); // Prints scan results
-        // Log.v("tag", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
-
-        HomeFragment.tvResult!!.text = rawResult.text
-        onBackPressed()
-
-        // If you would like to resume scanning, call this method below:
-        //mScannerView.resumeCameraPreview(this);
+        val tool = rawResult.text
+        if (MainActivity.listOfTools.contains(tool)) {
+            val toolIntent = Intent(this, ToolsActivity::class.java)
+            toolIntent.putExtra(MainActivity.TOOL, tool)
+            startActivity(toolIntent)
+            onBackPressed()
+        }
+        else {
+            Toast.makeText(this, applicationContext.getText(R.string.unrecognizable_qr_code), Toast.LENGTH_SHORT).show()
+            mScannerView!!.resumeCameraPreview(this)
+        }
     }
 }

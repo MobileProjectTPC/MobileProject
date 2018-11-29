@@ -78,7 +78,6 @@ class HomeFragment: Fragment() {
                 HomeFragment()
         private var currentPage = 0
         const val RECORD_REQUEST_CODE = 1
-        var tvResult: TextView? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -107,6 +106,8 @@ class HomeFragment: Fragment() {
         portfolioIndicator = rootView.findViewById(R.id.portfolioIndicator)
 
         tvResult = rootView.findViewById(R.id.tvresult)
+
+        //6098530220cc996d7d8bc83c72e0b5bcae6195fa?
 
         scanButton = rootView.findViewById(R.id.button_scan_qr)
 
@@ -370,4 +371,3 @@ class HomeFragment: Fragment() {
     }
 
 }
-

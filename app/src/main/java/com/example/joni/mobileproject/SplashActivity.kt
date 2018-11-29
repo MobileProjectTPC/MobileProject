@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
-import android.transition.Explode
-import android.view.Window
 import android.app.ActivityOptions
 import android.nfc.NfcAdapter
 import android.os.CountDownTimer
@@ -22,7 +20,6 @@ class SplashActivity : AppCompatActivity() {
         if (!isFinishing) {
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-            //startActivity(intent)
             object : CountDownTimer(wait, wait) {
                 override fun onTick(millisUntilFinished: Long) {
                 }
