@@ -49,6 +49,10 @@
             android:label="@string/tools"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".PortfolioActivity"
+            android:label="@string/portfolio"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
