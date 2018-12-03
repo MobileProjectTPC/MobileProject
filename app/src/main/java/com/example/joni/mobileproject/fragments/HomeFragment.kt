@@ -68,8 +68,8 @@ class HomeFragment: Fragment() {
     private lateinit var mPortfolioPager: ViewPager
     private lateinit var portfolioIndicator: CirclePageIndicator
     private lateinit var scanButton: Button
-
     private lateinit var toolsButton: Button
+    private lateinit var portfolioButton: Button
 
     val mutableList : MutableList<Image> = ArrayList()
 
@@ -120,6 +120,14 @@ class HomeFragment: Fragment() {
         toolsButton = rootView.findViewById(R.id.btn_tools)
         toolsButton.setOnClickListener {
             val intent = Intent(context, ToolsActivity::class.java)
+            startActivity(intent)
+        }
+
+        portfolioButton = rootView.findViewById(R.id.btnPortfolio)
+        portfolioButton.setOnClickListener {
+            val intent = Intent(context, PortfolioActivity::class.java)
+            intent.putExtra("origin", 0)
+            intent.putExtra("workspace", workspace)
             startActivity(intent)
         }
 

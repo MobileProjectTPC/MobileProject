@@ -93,6 +93,7 @@ class ProfileFragment: Fragment() {
 
         btnMyPortfolio.setOnClickListener {
             val intent = Intent(context, PortfolioActivity::class.java)
+            intent.putExtra("origin",1)
             startActivity(intent)
         }
 

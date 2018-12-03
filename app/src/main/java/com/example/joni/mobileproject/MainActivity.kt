@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d("MainActivity", "MainActivity started")
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

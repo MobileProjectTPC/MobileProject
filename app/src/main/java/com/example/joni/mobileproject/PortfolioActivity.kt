@@ -15,9 +15,8 @@ import android.widget.Toast
 import com.example.joni.mobileproject.adapters.TransitionNavigation
 import com.example.joni.mobileproject.fragments.DetailFragment
 import com.example.joni.mobileproject.fragments.PortfolioFragment
-import com.example.joni.mobileproject.fragments.ToolFragment
+import com.example.joni.mobileproject.fragments.DetailPortfolioFragment
 import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.objects.NFCUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -25,31 +24,35 @@ import com.google.firebase.database.*
 class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     val newList = java.util.ArrayList<Image>()
-    lateinit var detailFragment: DetailFragment
+    lateinit var detailPortfolioFragment: DetailPortfolioFragment
     private lateinit var vibrator: Vibrator
     private val firebaseAuth = FirebaseAuth.getInstance()
     private var user: FirebaseUser? = null
+    private var origin: Int? = null  // origin: 0 = From Home, 1 = From Profile
+    private var workspace:String? = null
 
     companion object {
-        const val DETAIL_FRAGMENT_TAG = "DetailFragment"
+        const val DETAIL_FRAGMENT_TAG = "DetailPortfolioFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("PortfolioActivity_test", "PortfolioActivity Created")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_portfolio)
-        user = firebaseAuth.currentUser
-        getStuffFromFirebaseDB(user!!)
-        /*
-        profileName = if (savedInstanceState == null) {
-            val extras = intent.extras
-            extras?.getString(MainActivity.TOOL)
-        } else {
-            //savedInstanceState.getSerializable("Tool") as String
-            savedInstanceState.getString(MainActivity.TOOL)
+        Log.d("PortfolioActivity_test", "PortfolioActivity Created")
+        origin = intent.getIntExtra("origin", -1)
+        Log.d("PortfolioActivity_test", origin.toString())
+        if (origin == 1){
+            user = firebaseAuth.currentUser
+            getStuffFromFirebaseDB(1, user, null)
         }
-        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        */
+        else if (origin == 0){
+            workspace = intent.getStringExtra("workspace")
+            Log.d("PortfolioActivity", workspace)
+            getStuffFromFirebaseDB(2, null, workspace)
+        }
+        else if (origin == -1){
+            Log.d("PortfolioActivity", "Error")
+        }
     }
 
     override fun goToDetail(transitionItems: List<View>, position: Int, page: Int) {
@@ -60,7 +63,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
             transaction.addSharedElement(it, it.transitionName)
         }
 
-        detailFragment = DetailFragment.newInstance(position, page, newList, false)
+        detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, true)
 
         val transitionSet = TransitionSet().apply {
             addTransition(ChangeTransform())
@@ -68,30 +71,40 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
             addTransition(ChangeBounds())
         }
 
-        detailFragment.sharedElementEnterTransition = transitionSet
-        detailFragment.sharedElementReturnTransition = transitionSet
+        detailPortfolioFragment.sharedElementEnterTransition = transitionSet
+        detailPortfolioFragment.sharedElementReturnTransition = transitionSet
 
-        transaction.replace(R.id.root, detailFragment, ToolsActivity.DETAIL_FRAGMENT_TAG)
+        transaction.replace(R.id.root, detailPortfolioFragment, PortfolioActivity.DETAIL_FRAGMENT_TAG)
         transaction.addToBackStack(null)
         transaction.commit()
     }
 
-    private fun getStuffFromFirebaseDB(user: FirebaseUser) {
+    private fun getStuffFromFirebaseDB(mode: Int, user: FirebaseUser?, workspace: String?) {
         Log.d("PortfolioActivity_test", "getStuffFromFirebase")
-        val query: Query = firebaseDatabase.getReference("portfolio").orderByChild("uid").equalTo(user.uid)
-        Log.d("PortfolioActivity_test", query.toString())
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
+        var query: Query?
 
+        if (mode == 1){
+            query = firebaseDatabase.getReference("portfolio").orderByChild("user").equalTo(user?.uid)
+        }
+        else{
+            query = firebaseDatabase.getReference("portfolio").orderByChild("workspace").equalTo(workspace)
+        }
+        Log.d("PortfolioActivity_test", query.toString())
+
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d("PortfolioActivity_Test", p0.toString())
-                if (p0 == null || p0.value == null){
-                    Toast.makeText(applicationContext, "You have not created any portfolio", Toast.LENGTH_SHORT).show()
-                }
-                else
-
-                p0.children.forEach {
-                    newList.add(it.getValue(Image::class.java)!!)
-                }
+                if (p0?.value == null) {
+                    if (mode == 1) {
+                        Toast.makeText(applicationContext, "You have not created any portfolio yet", Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        Toast.makeText(applicationContext, "There hasn't been any portfolio added in this workspace yet", Toast.LENGTH_LONG).show()
+                    }
+                } else
+                    p0.children.forEach {
+                        newList.add(it.getValue(Image::class.java)!!)
+                    }
                 val mfc = PortfolioFragment()
                 val b = Bundle()
                 b.putSerializable("Parcel", newList)
@@ -100,27 +113,10 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                 supportFragmentManager.beginTransaction()
                         .add(R.id.root, mfc)
                         .commitAllowingStateLoss()
-
             }
 
             override fun onCancelled(p0: DatabaseError) {
             }
-
         })
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        val currentFragment = supportFragmentManager.findFragmentByTag(ToolsActivity.DETAIL_FRAGMENT_TAG)
-        if (currentFragment == null) {
-            vibrator.vibrate(MainActivity.VIBRATION_TIME)
-            val tool = NFCUtil.retrieveNFCMessage(intent)
-            if (MainActivity.listOfTools.contains(tool)) {
-
-            }
-            else {
-                Toast.makeText(this, applicationContext.getText(R.string.unrecognizable_nfc_tag), Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }
