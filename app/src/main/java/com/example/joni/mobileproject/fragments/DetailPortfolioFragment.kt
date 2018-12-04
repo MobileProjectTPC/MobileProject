@@ -9,14 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.databinding.FragmentDetailBinding
+import com.example.joni.mobileproject.databinding.FragmentPortfolioDetailBinding
 import com.example.joni.mobileproject.models.Image
 import com.squareup.picasso.Picasso
 import java.io.Serializable
 
 class DetailPortfolioFragment : Fragment() {
 
-    private lateinit var binding: FragmentDetailBinding
+    private lateinit var binding: FragmentPortfolioDetailBinding
     private var position: Int = 0
     private var page: Int = 0
     private var myList = java.util.ArrayList<Image>()

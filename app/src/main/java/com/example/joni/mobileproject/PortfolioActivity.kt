@@ -87,7 +87,12 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
             query = firebaseDatabase.getReference("portfolio").orderByChild("user").equalTo(user?.uid)
         }
         else{
-            query = firebaseDatabase.getReference("portfolio").orderByChild("workspace").equalTo(workspace)
+            if (workspace.equals("/workspace")){
+                query = firebaseDatabase.getReference("portfolio")
+            }
+            else{
+                query = firebaseDatabase.getReference("portfolio").orderByChild("workspace").equalTo(workspace)
+            }
         }
         Log.d("PortfolioActivity_test", query.toString())
 
@@ -103,6 +108,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                     }
                 } else
                     p0.children.forEach {
+                        Log.d("PortfolioActivity_test it: ", it.toString())
                         newList.add(it.getValue(Image::class.java)!!)
                     }
                 val mfc = PortfolioFragment()
