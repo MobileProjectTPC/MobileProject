@@ -1,10 +1,12 @@
 package com.example.joni.mobileproject
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
-import android.os.Bundle
-import android.os.Vibrator
+import android.os.*
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
@@ -31,6 +33,17 @@ class MainActivity : AppCompatActivity() {
     private val homeFragment = HomeFragment()
     private val registerFragment = RegisterFragment()
     private val notificationsFragment = NotificationsFragment()
+
+    private var mBluetoothAdapter: BluetoothAdapter? = null
+
+    private val mHandler: Handler = object:
+            Handler(Looper.getMainLooper()){
+        override fun handleMessage(inputMessage: Message) {
+            if(inputMessage.what == 0){
+                Log.d("MainActivity", "You are in this workspace: ${inputMessage.obj}")
+            }
+        }
+    }
 
     companion object {
         const val HOME_FRAGMENT_TAG = "HomeFragment"
@@ -78,6 +91,22 @@ class MainActivity : AppCompatActivity() {
 
         scrollView = findViewById(R.id.nested_scrollview)
         scrollView.isFillViewport = true
+
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        mBluetoothAdapter = bluetoothManager.adapter
+
+        hasPermissions()
+
+        if (mBluetoothAdapter != null){
+            if (mBluetoothAdapter!!.isEnabled){
+                val myRunnable = BleScan(mHandler, mBluetoothAdapter!!)
+                val myThread = Thread(myRunnable)
+                myThread.start()
+            }
+            else {
+                Log.d("MainActivity", "Turn on the bluetooth")
+            }
+        }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
@@ -128,5 +157,19 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun hasPermissions(): Boolean {
+        if (mBluetoothAdapter == null || !mBluetoothAdapter!!.isEnabled) {
+            Log.d("DBG", "No Bluetooth LE capability")
+            return false
+        } else if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            Log.d("DBG", "No fine location access")
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            return true // assuming that the user grants permission
+        }
+
+        return true
     }
 }
