@@ -95,17 +95,9 @@ class MainActivity : AppCompatActivity() {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         mBluetoothAdapter = bluetoothManager.adapter
 
-        hasPermissions()
 
-        if (mBluetoothAdapter != null){
-            if (mBluetoothAdapter!!.isEnabled){
-                val myRunnable = BleScan(mHandler, mBluetoothAdapter!!)
-                val myThread = Thread(myRunnable)
-                myThread.start()
-            }
-            else {
-                Log.d("MainActivity", "Turn on the bluetooth")
-            }
+        if (hasPermissions()){
+            startBLEScannerThread()
         }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
@@ -159,17 +151,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // if user allows the fine_location start BLEScanner
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d("MainActivity", "onRequest... requestCode: $requestCode permissions: ${permissions[0]} grantResult: ${grantResults[0]}")
+
+
+        if (requestCode == 1 && permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION && grantResults[0] == 0){
+            startBLEScannerThread()
+        }
+
+    }
+
+    // check permissions, fine_location and camera
+    // if fine_location permission is granted, return true and then the BLEScanner thread is able to start
     private fun hasPermissions(): Boolean {
+
         if (mBluetoothAdapter == null || !mBluetoothAdapter!!.isEnabled) {
             Log.d("DBG", "No Bluetooth LE capability")
             return false
-        } else if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            Log.d("DBG", "No fine location access")
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
-            return true // assuming that the user grants permission
-        }
+        } else if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.CAMERA), 1)
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                return true
+            }
 
+            return false
+        }
         return true
+    }
+
+    // if bluetooth is on start the BLEScanner thread
+    private fun startBLEScannerThread(){
+        if (mBluetoothAdapter != null){
+            Log.d("MainActivity", "mBluetoothAdapter not null")
+            if (mBluetoothAdapter!!.isEnabled){
+                Log.d("MainActivity", "mBluetoothAdapter isEnable")
+                val myRunnable = BleScan(mHandler, mBluetoothAdapter!!)
+                val myThread = Thread(myRunnable)
+                myThread.start()
+            }
+            else {
+                Log.d("MainActivity", "Turn on the bluetooth")
+            }
+        }
     }
 }

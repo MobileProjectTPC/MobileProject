@@ -113,7 +113,7 @@ class HomeFragment: Fragment() {
         scanButton = rootView.findViewById(R.id.button_scan_qr)
 
 
-        setupPermissions()
+        //setupPermissions()
 
         init()
 
@@ -364,6 +364,7 @@ class HomeFragment: Fragment() {
 
     }
 
+    /*
     private fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(context!!,
                 Manifest.permission.CAMERA)
@@ -371,8 +372,9 @@ class HomeFragment: Fragment() {
             makeRequestCamera()
         }
     }
-
+    */
     private fun makeRequestCamera() {
+        Log.d("MainActivity", "makeRCamera")
         ActivityCompat.requestPermissions(activity!!,
                 arrayOf(Manifest.permission.CAMERA),
                 RECORD_REQUEST_CODE
