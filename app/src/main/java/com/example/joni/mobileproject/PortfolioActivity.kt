@@ -17,10 +17,7 @@ import com.example.joni.mobileproject.adapters.TransitionNavigation
 import com.example.joni.mobileproject.fragments.DetailFragment
 import com.example.joni.mobileproject.fragments.PortfolioFragment
 import com.example.joni.mobileproject.fragments.DetailPortfolioFragment
-import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.models.Portfolio
-import com.example.joni.mobileproject.models.Progress
-import com.example.joni.mobileproject.models.Video
+import com.example.joni.mobileproject.models.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -46,14 +43,13 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         Log.d("PortfolioActivity_test", "PortfolioActivity Created")
         origin = intent.getIntExtra("origin", -1)
         Log.d("PortfolioActivity_test", origin.toString())
+        user = firebaseAuth.currentUser
         if (origin == 1){
-            user = firebaseAuth.currentUser
             getStuffFromFirebaseDB(1, user, null)
         }
         else if (origin == 0){
             workspace = intent.getStringExtra("workspace")
-            Log.d("PortfolioActivity", workspace)
-            getStuffFromFirebaseDB(2, null, workspace)
+            getStuffFromFirebaseDB(2, user, workspace)
         }
         else if (origin == -1){
             Log.d("PortfolioActivity", "Error")
@@ -68,7 +64,12 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
             transaction.addSharedElement(it, it.transitionName)
         }
 
-        detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, true)
+        if(user == null){
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, "", true)
+        }
+        else {
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, user!!.uid, true)
+        }
 
         val transitionSet = TransitionSet().apply {
             addTransition(ChangeTransform())
@@ -117,11 +118,18 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                         Log.d("PortfolioActivity_test it: ", it.child("images").toString())
                         Log.d("PortfolioActivity it:.getValue()", it.child("images").getValue(Image::class.java).toString())
 
-                        newList.add(portfolios.last().images.get(0))
+                        newList.add(portfolios.last().images[0])
                     }
                 val mfc = PortfolioFragment()
                 val b = Bundle()
                 b.putSerializable("Parcel", newList)
+                b.putSerializable("Portfolios", portfolios)
+                if (user == null){
+                    b.putString("User", "")
+                }
+                else {
+                    b.putString("User", user?.uid)
+                }
                 mfc.arguments = b
 
                 supportFragmentManager.beginTransaction()
@@ -139,35 +147,43 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         Log.d("makePortfolio_dS", dS.child("images").value.toString())
         var date: String = dS.child("date").value.toString()
 
+        var name: String = dS.child("name").value.toString()
+
         var images: ArrayList<Image> = java.util.ArrayList()
         var numberImages:Long = dS.child("images").childrenCount
         Log.d("makePortfolio_dS", numberImages.toString())
-        images.add(Image("", dS.child("images").child("mainImage").value.toString(), ""))
-        for (i in 1 until numberImages - 1){
+        images.add(Image("", dS.child("images").child("mainImage").value.toString(), name))
+        for (i in 1 until numberImages){
             images.add(Image("", dS.child("images").child("image$i").value.toString(), ""))
         }
 
-        var name: String = dS.child("name").value.toString()
+        var pdfs: ArrayList<PDF> = java.util.ArrayList()
+        var numberPDF: Long = dS.child("pdfs").childrenCount
+        for (i in 1 until numberPDF + 1){
+            pdfs.add(PDF("", dS.child("pdfs").child("pdf$i").value.toString(), ""))
+        }
 
         var progresses: ArrayList<Progress> = java.util.ArrayList()
         var numberProgress: Long = dS.child("progresses").childrenCount
-        for (i in 1 until numberProgress){
+        Log.d("PortfolioActivity_test", "Number of Progress is: " + numberProgress.toString())
+        for (i in 1 until numberProgress + 1){
+            Log.d("PortfolioActivity_test", "Run loop?")
             var date: String = dS.child("progresses").child("progress$i").child("date").value.toString()
 
             var progressImages: ArrayList<Image> = java.util.ArrayList()
             var numberImages:Long = dS.child("processes").child("process$i").child("images").childrenCount
-            for (i in 1 until numberImages){
-                progressImages.add(Image("", dS.child("progresses").child("progress$i").child("images").child("image$i").value.toString(), ""))
+            for (i in 1 until numberImages + 1){
+                progressImages.add(Image("", dS.child("progresses").child("progress$i").child("images").child("image$i").value.toString(), name))
             }
 
             var summary: String = dS.child("progresses").child("progress$i").child("summary").value.toString()
 
             var progressVideos: ArrayList<Video> = java.util.ArrayList()
             var numberVideos:Long = dS.child("processes").child("process$i").child("videos").childrenCount
-            for (i in 1 until numberVideos){
+            for (i in 1 until numberVideos + 1){
                 progressVideos.add(Video("", dS.child("progresses").child("progress$i").child("videos").child("video$i").value.toString(), ""))
             }
-
+            Log.d("PortfolioActivity_test", "progress added")
             progresses.add(Progress(date, progressImages, summary, progressVideos))
         }
 
@@ -178,13 +194,13 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
 
         var videos: ArrayList<Video> = java.util.ArrayList()
         var numberVideos:Long = dS.child("videos").childrenCount
-        for (i in 1 until numberVideos){
+        for (i in 1 until numberVideos + 1){
             videos.add(Video("", dS.child("videos").child("video$i").value.toString(), ""))
         }
 
         var workspace: String = dS.child("workspace").value.toString()
 
-        portfolios.add(Portfolio(date, images, name, progresses, summary, tool, uid, user, videos, workspace))
+        portfolios.add(Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace))
 
     }
 }
