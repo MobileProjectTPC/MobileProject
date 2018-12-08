@@ -1,18 +1,25 @@
 package com.example.joni.mobileproject.fragments
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.DataBindingUtil.setContentView
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
+import android.widget.TextView
+import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.VideoActivity
 import com.example.joni.mobileproject.adapters.DocumentsAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.example.joni.mobileproject.databinding.FragmentPortfolioDetailBinding
@@ -25,6 +32,8 @@ import com.viewpagerindicator.CirclePageIndicator
 import java.io.Serializable
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class DetailPortfolioFragment : Fragment() {
 
@@ -36,6 +45,8 @@ class DetailPortfolioFragment : Fragment() {
     private lateinit var imageUri: Uri
     private var user:String =""
     private var nfcTrue = false
+    private var dialog: AlertDialog? = null
+    private val firebaseStorage = FirebaseStorage.getInstance()
 
     private var summaryImageModelArrayList: java.util.ArrayList<ImageModel>? = null
     val mySummaryImageList = intArrayOf(
@@ -143,8 +154,17 @@ class DetailPortfolioFragment : Fragment() {
             }
         })
 
+        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs.size.toString())
         var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs)
         binding.listViewDocuments?.adapter = adapter
+        getListViewSize(binding.listViewDocuments)
+
+        binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            // value of item that is clicked
+            //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
+
+            createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
+        }
 
         binding.progressImageIndicator.setViewPager(binding.progressImagePager)
 
@@ -204,5 +224,77 @@ class DetailPortfolioFragment : Fragment() {
                 }
             }
         }
+    }
+
+    // download video or pdf file from firebase and create a tempfile from it
+    // display it in another activity
+    // dataType = pdfs or videos
+    private fun createTempFile(dataType: String, fileId: String){
+        showLoadingDialog("Loading file")
+
+        val ref = firebaseStorage.reference.child("/$dataType/$fileId")
+        val localFile = File.createTempFile("file", "")
+        localFile.deleteOnExit()
+
+        if (dataType.equals("videos")){
+            Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
+
+            ref.getFile(localFile).addOnSuccessListener {
+                Log.d("TAG", "Get some: $it")
+                val intent = Intent(activity, VideoActivity::class.java)
+                intent.putExtra("videofile", localFile.absolutePath)
+                Handler().post { dialog?.dismiss() }
+                startActivity(intent)
+            }.addOnFailureListener {
+                Log.d("HomeFragment", "Something fucked: $it")
+                localFile.delete()
+                Handler().post { dialog?.dismiss() }
+            }
+        }
+        else if (dataType.equals("pdfs")){
+            Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
+
+            ref.getFile(localFile).addOnSuccessListener {
+                Log.d("TAG", "Get some: $it")
+                val intent = Intent(activity, PdfActivity::class.java)
+                intent.putExtra("pdffile", localFile.absolutePath)
+                Handler().post { dialog?.dismiss() }
+                startActivity(intent)
+            }.addOnFailureListener {
+                Log.d("HomeFragment", "Something fucked: $it")
+                localFile.delete()
+                Handler().post { dialog?.dismiss() }
+            }
+        }
+    }
+
+    private fun showLoadingDialog(message: String) {
+        val builder = AlertDialog.Builder(context)
+        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
+        val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
+        dialogTxtView.text = message
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        dialog = builder.create()
+        dialog!!.show()
+    }
+
+    fun getListViewSize(myListView: ListView) {
+        val myListAdapter = myListView.adapter
+                ?: //do nothing return null
+                return
+        //set listAdapter in loop for getting final size
+        var totalHeight = 0
+        for (size in 0 until myListAdapter.count) {
+            val listItem = myListAdapter.getView(size, null, myListView)
+            listItem.measure(0, 0)
+            totalHeight += listItem.measuredHeight
+        }
+        //setting listview item in adapter
+        val params = myListView.layoutParams
+        params.height = totalHeight + myListView.dividerHeight * (myListAdapter.count - 1)
+        myListView.layoutParams = params
+        // print height of adapter on log
+        Log.i("height of listItem:", totalHeight.toString())
     }
 }

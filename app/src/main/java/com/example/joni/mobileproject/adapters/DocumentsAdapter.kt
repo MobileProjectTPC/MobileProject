@@ -20,12 +20,6 @@ import android.net.Uri
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.support.design.widget.CoordinatorLayout.Behavior.setTag
 
-
-
-
-
-
-
 class DocumentsAdapter(var activity: Context, var listPDF: ArrayList<PDF>) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -45,11 +39,14 @@ class DocumentsAdapter(var activity: Context, var listPDF: ArrayList<PDF>) : Bas
 
         val PDFname = view.findViewById<TextView>(R.id.document_name) as TextView
         val PDFicon = view.findViewById<ImageView>(R.id.document_icon) as ImageView
+        val PDFfilename = view.findViewById<TextView>(R.id.document_file_name) as TextView
 
 
         PDFname.text = listPDF[position].title
 
         Picasso.get().load(R.drawable.pdf_icon).into(PDFicon)
+
+        PDFfilename.text = listPDF[position].PDFId
 
         return view
     }

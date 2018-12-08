@@ -159,8 +159,10 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
 
         var pdfs: ArrayList<PDF> = java.util.ArrayList()
         var numberPDF: Long = dS.child("pdfs").childrenCount
+        Log.d("numberPDF", numberPDF.toString())
         for (i in 1 until numberPDF + 1){
-            pdfs.add(PDF("", dS.child("pdfs").child("pdf$i").value.toString(), ""))
+            Log.d("numberPDF", i.toString())
+            pdfs.add(PDF("This is hardcode", dS.child("pdfs").child("pdf$i").value.toString(), "This is hardcode"))
         }
 
         var progresses: ArrayList<Progress> = java.util.ArrayList()
