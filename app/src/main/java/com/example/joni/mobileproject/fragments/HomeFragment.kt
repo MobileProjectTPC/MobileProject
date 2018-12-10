@@ -24,6 +24,7 @@ import com.example.joni.mobileproject.*
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
+import com.example.joni.mobileproject.adapters.SlidingImage_Adapter
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
@@ -33,6 +34,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import com.example.joni.mobileproject.models.Image
+import java.io.Serializable
 
 class HomeFragment: Fragment() {
 
@@ -63,10 +65,29 @@ class HomeFragment: Fragment() {
     val mutableList : MutableList<Image> = ArrayList()
 
     companion object {
-        fun newInstance(): HomeFragment =
-                HomeFragment()
         private var currentPage = 0
         const val RECORD_REQUEST_CODE = 1
+
+        const val TOOL_LIST = "TOOL_LIST"
+
+        fun newInstance(myList: Serializable): DetailFragment {
+            return DetailFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(TOOL_LIST, myList)
+                }
+            }
+        }
+    }
+
+    //private var toolList = java.util.ArrayList<Image>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /*
+        arguments?.let {
+            toolList = it.getSerializable(TOOL_LIST) as java.util.ArrayList<Image>
+        }
+        */
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,10 +96,25 @@ class HomeFragment: Fragment() {
         imageModelArrayList = ArrayList()
         imageModelArrayList = populateList()
 
+
         mPager = rootView.findViewById(R.id.pager)
+        /*
+
         mPager.adapter = SlidingImageAdapter(
                 context!!,
                 this.imageModelArrayList!!
+        )
+        */
+
+        val toolList = arguments!!.getSerializable(TOOL_LIST) as java.util.ArrayList<Image>
+        val arrayList = ArrayList<String>()
+        toolList.forEach {
+            arrayList.add(it.imageUrl)
+        }
+        val urls: Array<String> = arrayList.toArray(arrayOfNulls<String>(arrayList.size))
+        mPager.adapter = SlidingImage_Adapter(
+                context!!,
+                urls
         )
 
         indicator = rootView.findViewById(R.id.indicator)
@@ -321,6 +357,10 @@ class HomeFragment: Fragment() {
                 RECORD_REQUEST_CODE
         )
     }
+
+
+
+
 
 }
 

@@ -12,6 +12,7 @@ import com.example.joni.mobileproject.databinding.FragmentDetailBinding
 import com.squareup.picasso.Picasso
 import java.io.Serializable
 import com.example.joni.mobileproject.models.Image
+import kotlinx.android.synthetic.main.fragment_detail.*
 
 
 class DetailFragment : Fragment() {
@@ -43,6 +44,8 @@ class DetailFragment : Fragment() {
         binding.image.transitionName = "${getString(R.string.transition_image)}_${page}_$position"
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
         binding.text.text = myList[position].title
+
+        binding.description.text = "put descriptions here"
 
         imageUri = Uri.parse(myList[position].imageUrl)
         Picasso.get()

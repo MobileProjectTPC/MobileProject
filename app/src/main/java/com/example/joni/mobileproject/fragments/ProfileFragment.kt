@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.example.joni.mobileproject.ProjectCreateActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.PDF
@@ -44,6 +45,9 @@ class ProfileFragment: Fragment() {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     private lateinit var toolbar: Toolbar
+
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -90,8 +94,15 @@ class ProfileFragment: Fragment() {
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, UpdateUserDataFragment()).commit()
         }
 
+        btnCreateProject.setOnClickListener {
+            val projectIntent = Intent(context!!, ProjectCreateActivity::class.java)
+            startActivity(projectIntent)
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

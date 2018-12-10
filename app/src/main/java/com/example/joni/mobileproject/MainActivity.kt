@@ -14,8 +14,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.example.joni.mobileproject.fragments.HomeFragment
+import com.example.joni.mobileproject.fragments.HomeFragment.Companion.TOOL_LIST
 import com.example.joni.mobileproject.fragments.NotificationsFragment
 import com.example.joni.mobileproject.fragments.RegisterFragment
+import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.objects.NFCUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
@@ -30,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private val homeFragment = HomeFragment()
     private val registerFragment = RegisterFragment()
     private val notificationsFragment = NotificationsFragment()
+
+    var toolList = java.util.ArrayList<Image>()
 
     companion object {
         const val HOME_FRAGMENT_TAG = "HomeFragment"
@@ -46,6 +50,9 @@ class MainActivity : AppCompatActivity() {
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
+                val b = Bundle()
+                b.putSerializable(TOOL_LIST, toolList)
+                homeFragment.arguments = b
                 setupFragment(homeFragment, HOME_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
             }
@@ -70,6 +77,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        toolList = if (savedInstanceState == null) {
+            val extras = intent.extras
+            extras?.getSerializable("toolList") as java.util.ArrayList<Image>
+        } else {
+            //savedInstanceState.getSerializable("Tool") as String
+            savedInstanceState.getSerializable("toolList") as java.util.ArrayList<Image>
+        }
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
@@ -77,6 +92,12 @@ class MainActivity : AppCompatActivity() {
         scrollView.isFillViewport = true
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val homeFragment = HomeFragment()
+        val b = Bundle()
+        b.putSerializable(TOOL_LIST, toolList)
+        homeFragment.arguments = b
+
         supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
 
     }

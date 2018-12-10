@@ -30,6 +30,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
     private lateinit var vibrator: Vibrator
     private var toolName: String? = null
     private var mNfcAdapter: NfcAdapter? = null
+    private var listRetrieved = false
 
     companion object {
         const val DETAIL_FRAGMENT_TAG = "DetailFragment"
@@ -114,6 +115,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
                 p0.children.forEach {
                     newList.add(it.getValue(Image::class.java)!!)
                 }
+                listRetrieved = true
 
                 if (toolName != null) {
                     goToDetailFromNFC(toolName!!, true)
@@ -152,7 +154,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val currentFragment = supportFragmentManager.findFragmentByTag(DETAIL_FRAGMENT_TAG)
-        if (currentFragment == null) {
+        if (currentFragment == null && listRetrieved) {
             vibrator.vibrate(MainActivity.VIBRATION_TIME)
             val tool = NFCUtil.retrieveNFCMessage(intent)
             if (MainActivity.listOfTools.contains(tool)) {
