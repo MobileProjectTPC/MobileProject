@@ -44,7 +44,7 @@ class BleScan(mHand: Handler, private val bluetoothAdapter: BluetoothAdapter): R
 
         filters.add(filter)
 
-        mBluetoothLeScanner!!.startScan(filters, settings, mScanCallback)
+        //mBluetoothLeScanner!!.startScan(filters, settings, mScanCallback)
     }
 
     // If scanner find a beacon, add it to the results

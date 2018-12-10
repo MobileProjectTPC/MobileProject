@@ -21,6 +21,7 @@ import com.example.joni.mobileproject.fragments.HomeFragment.Companion.TOOL_LIST
 import com.example.joni.mobileproject.fragments.NotificationsFragment
 import com.example.joni.mobileproject.fragments.RegisterFragment
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Tool
 import com.example.joni.mobileproject.objects.NFCUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private val registerFragment = RegisterFragment()
     private val notificationsFragment = NotificationsFragment()
 
-    var toolList = java.util.ArrayList<Image>()
+    var toolList = java.util.ArrayList<Tool>()
 
     private var mBluetoothAdapter: BluetoothAdapter? = null
 
@@ -93,10 +94,10 @@ class MainActivity : AppCompatActivity() {
 
         toolList = if (savedInstanceState == null) {
             val extras = intent.extras
-            extras?.getSerializable("toolList") as java.util.ArrayList<Image>
+            extras?.getSerializable("toolList") as java.util.ArrayList<Tool>
         } else {
             //savedInstanceState.getSerializable("Tool") as String
-            savedInstanceState.getSerializable("toolList") as java.util.ArrayList<Image>
+            savedInstanceState.getSerializable("toolList") as java.util.ArrayList<Tool>
         }
         Log.d("MainActivity", "MainActivity started")
 

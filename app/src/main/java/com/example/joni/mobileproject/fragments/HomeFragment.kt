@@ -34,6 +34,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Tool
 import java.io.Serializable
 
 class HomeFragment: Fragment() {
@@ -119,10 +120,12 @@ class HomeFragment: Fragment() {
         )
         */
 
-        val toolList = arguments!!.getSerializable(TOOL_LIST) as java.util.ArrayList<Image>
+        val toolList = arguments!!.getSerializable(TOOL_LIST) as java.util.ArrayList<Tool>
+        Log.d("HomeFragment", "Some ${toolList[0].image}")
         val arrayList = ArrayList<String>()
         toolList.forEach {
-            arrayList.add(it.imageUrl)
+            Log.d("HomeFragment", "${it.image}")
+            arrayList.add(it.image)
         }
         val urls: Array<String> = arrayList.toArray(arrayOfNulls<String>(arrayList.size))
         mPager.adapter = SlidingImage_Adapter(
