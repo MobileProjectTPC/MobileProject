@@ -75,8 +75,8 @@ class SlidingImageVideoAdapter(context: Context, private val imageVideoArrayList
             image.setImageBitmap(thumbnail)
             //image.background = null
             */
-            val thumbnail = retriveVideoFrameFromVideo(imageVideoArrayList[position].url)
-            image.setImageBitmap(thumbnail)
+            //val thumbnail = retriveVideoFrameFromVideo(imageVideoArrayList[position].url)
+            //image.setImageBitmap(thumbnail)
     }
 
         imageLayout.setOnClickListener {

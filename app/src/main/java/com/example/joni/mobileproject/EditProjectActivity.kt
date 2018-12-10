@@ -33,7 +33,7 @@ class EditProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_project)
-
+        Log.d("EditProjectActivity_Test", "Set Text?")
 
         var project: Portfolio = intent.getSerializableExtra("Project") as Portfolio
 
@@ -51,7 +51,9 @@ class EditProjectActivity : AppCompatActivity() {
         }
 
         val title: EditText = view.findViewById(R.id.title)
-        title.setText(project.name)
+        Log.d("EditProjectActivity_Test", "Set Text?")
+        //title.setText(project.name)
+        title.setText("Fuck You")
 
         val summaryText: EditText = view.findViewById(R.id.summaryText)
         summaryText.setText(project.summary)

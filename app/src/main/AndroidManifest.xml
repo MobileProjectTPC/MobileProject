@@ -71,6 +71,8 @@
         <activity android:name=".PortfolioActivity"
             android:label="@string/portfolio">
         </activity>
+        <activity android:name=".EditProjectActivity">
+        </activity>
     </application>
 
 </manifest>
