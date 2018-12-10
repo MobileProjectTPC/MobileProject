@@ -97,8 +97,8 @@ class ProfileFragment: Fragment() {
 
 
         btnCreateProject.setOnClickListener {
-            val projectIntent = Intent(context!!, ProjectCreateActivity::class.java)
-            startActivity(projectIntent)
+                val projectIntent = Intent(context!!, ProjectCreateActivity::class.java)
+                startActivity(projectIntent)
         }
         btnMyPortfolio.setOnClickListener {
             val intent = Intent(context, PortfolioActivity::class.java)

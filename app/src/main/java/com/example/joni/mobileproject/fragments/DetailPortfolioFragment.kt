@@ -22,6 +22,7 @@ import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.VideoActivity
 import com.example.joni.mobileproject.adapters.DocumentsAdapter
+import com.example.joni.mobileproject.adapters.DocumentsEditAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageVideoAdapter
 import com.example.joni.mobileproject.databinding.FragmentPortfolioDetailBinding
@@ -67,11 +68,6 @@ class DetailPortfolioFragment : Fragment() {
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text
     )
-    private lateinit var mSummaryPager: ViewPager
-    private lateinit var summaryIndicator: CirclePageIndicator
-    private lateinit var mProgressPager: ViewPager
-    private lateinit var progressIndicator: CirclePageIndicator
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

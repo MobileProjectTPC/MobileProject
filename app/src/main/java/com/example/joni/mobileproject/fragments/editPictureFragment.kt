@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.profile_fragment_layout.*
 import java.io.File
 import java.util.*
 
-class AddPictureFragment: Fragment() {
+class editPictureFragment: Fragment() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     var mCurrentPhotoPath: String? = null
@@ -56,12 +56,6 @@ class AddPictureFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
-
-        var mode: Int = arguments!!.getInt("Mode")
-        var myproject: Portfolio? = null
-        if (mode == 1){
-            myproject = arguments!!.getSerializable("Project") as Portfolio
-        }
 
         pictureButton = rootView.findViewById(R.id.picture)
         pictureButton.setOnClickListener {
@@ -81,10 +75,8 @@ class AddPictureFragment: Fragment() {
                 startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
-        if (mode != 1) {
-            projectName = activity!!.findViewById(R.id.final_project_name)
-        }
 
+        projectName = activity!!.findViewById(R.id.final_project_name)
 
         addPictureButton = rootView.findViewById(R.id.add_picture)
         addPictureButton.setOnClickListener {
@@ -93,16 +85,8 @@ class AddPictureFragment: Fragment() {
                     text_picture_description.text.isNotEmpty()) {
 
                 //PUT FILE TO THE DATABASE HERE!!
-                var project: String? = null
-                if (mode != 1){
-                    project = projectName.text.toString()
-                }
-                else{
-                    if (myproject != null) {
-                        project = myproject.name.toString()
-                    }
-                }
 
+                val project = projectName.text.toString()
 
                 val title = text_picture_title.text.toString()
                 val description = text_picture_description.text.toString()
@@ -118,7 +102,7 @@ class AddPictureFragment: Fragment() {
 
                             ref.downloadUrl.addOnSuccessListener {
                                 Log.d("TAG", "File location: $it")
-                                saveFileToDatabase(filename, it.toString(), title, description, project!!)
+                                saveFileToDatabase(filename, it.toString(), title, description, project)
                                 Handler().post { dialog!!.dismiss() }
                             }
 

@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.profile_fragment_layout.*
 import java.io.File
 import java.util.*
 
-class AddPictureFragment: Fragment() {
+class EditMainPictureFragment: Fragment() {
 
     val REQUEST_IMAGE_CAPTURE = 1
     var mCurrentPhotoPath: String? = null
@@ -57,11 +57,9 @@ class AddPictureFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
 
-        var mode: Int = arguments!!.getInt("Mode")
-        var myproject: Portfolio? = null
-        if (mode == 1){
-            myproject = arguments!!.getSerializable("Project") as Portfolio
-        }
+
+        var myproject = arguments!!.getSerializable("Project") as Portfolio
+
 
         pictureButton = rootView.findViewById(R.id.picture)
         pictureButton.setOnClickListener {
@@ -81,10 +79,6 @@ class AddPictureFragment: Fragment() {
                 startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
-        if (mode != 1) {
-            projectName = activity!!.findViewById(R.id.final_project_name)
-        }
-
 
         addPictureButton = rootView.findViewById(R.id.add_picture)
         addPictureButton.setOnClickListener {
@@ -93,21 +87,14 @@ class AddPictureFragment: Fragment() {
                     text_picture_description.text.isNotEmpty()) {
 
                 //PUT FILE TO THE DATABASE HERE!!
-                var project: String? = null
-                if (mode != 1){
-                    project = projectName.text.toString()
-                }
-                else{
-                    if (myproject != null) {
-                        project = myproject.name.toString()
-                    }
-                }
+                var project: String = myproject.name.toString()
 
 
                 val title = text_picture_title.text.toString()
                 val description = text_picture_description.text.toString()
 
-                val filename = UUID.randomUUID().toString()
+                //val filename = UUID.randomUUID().toString()
+                val filename = "0"
                 val ref = firebaseStorage.getReference("/portfolio/$project/$filename")
 
                 val file = File(mCurrentPhotoPath!!)
@@ -128,13 +115,9 @@ class AddPictureFragment: Fragment() {
                             Log.d("TAG", "Something went wrong when loading the file")
                         }
 
-
-
-
                 activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                 showUploadDialog("Uploading file")
                 //Toast.makeText(context!!, "Picture added to the project ${projectName.text}", Toast.LENGTH_SHORT).show()
-
             }
             else {
                 Toast.makeText(context!!, "null", Toast.LENGTH_SHORT).show()
