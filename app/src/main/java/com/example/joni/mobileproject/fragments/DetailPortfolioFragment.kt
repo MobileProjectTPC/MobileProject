@@ -129,7 +129,7 @@ class DetailPortfolioFragment : Fragment() {
         progressImageVideoModelArrayList = populateList(myProgressImageList)
 
         summaryImageVideoArrayList = ArrayList()
-        summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos)
+        summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
 
         binding.summaryImagePager.adapter = SlidingImageVideoAdapter(
                 context!!,
@@ -165,7 +165,6 @@ class DetailPortfolioFragment : Fragment() {
             }
         })
 
-<<<<<<< HEAD
         /*
         http://developine.com/develop-android-image-gallery-app-kotlin-with-source-code/
         https://www.nplix.com/create-animated-video-thumbnail-android/
@@ -186,12 +185,9 @@ class DetailPortfolioFragment : Fragment() {
         setScaleAnimation(imageView);
         */
 
-        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs.size.toString())
-        var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs)
-=======
         Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
         var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
->>>>>>> a73cdd525a7712ceddc0dfc886a585c58b2ac9b0
+
         binding.listViewDocuments?.adapter = adapter
         getListViewSize(binding.listViewDocuments)
 
