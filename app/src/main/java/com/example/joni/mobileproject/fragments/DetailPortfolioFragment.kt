@@ -17,16 +17,15 @@ import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
+import com.example.joni.mobileproject.EditProjectActivity
 import com.example.joni.mobileproject.PdfActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.VideoActivity
 import com.example.joni.mobileproject.adapters.DocumentsAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
+import com.example.joni.mobileproject.adapters.SlidingImageVideoAdapter
 import com.example.joni.mobileproject.databinding.FragmentPortfolioDetailBinding
-import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.models.ImageModel
-import com.example.joni.mobileproject.models.Portfolio
-import com.example.joni.mobileproject.models.User
+import com.example.joni.mobileproject.models.*
 import com.squareup.picasso.Picasso
 import com.viewpagerindicator.CirclePageIndicator
 import java.io.Serializable
@@ -48,7 +47,7 @@ class DetailPortfolioFragment : Fragment() {
     private var dialog: AlertDialog? = null
     private val firebaseStorage = FirebaseStorage.getInstance()
 
-    private var summaryImageModelArrayList: java.util.ArrayList<ImageModel>? = null
+    private var summaryImageVideoModelArrayList: java.util.ArrayList<ImageModel>? = null
     val mySummaryImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -57,7 +56,9 @@ class DetailPortfolioFragment : Fragment() {
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text
     )
-    private var progressImageModelArrayList: java.util.ArrayList<ImageModel>? = null
+    private var summaryImageVideoArrayList: java.util.ArrayList<ImageVideo>? = null
+
+    private var progressImageVideoModelArrayList: java.util.ArrayList<ImageModel>? = null
     val myProgressImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -104,6 +105,12 @@ class DetailPortfolioFragment : Fragment() {
             binding.btnEdit.visibility = View.INVISIBLE
         }
 
+        binding.btnEdit.setOnClickListener {
+            val myIntent = Intent(activity, EditProjectActivity::class.java)
+            myIntent.putExtra("Project", portfolios[position])
+            activity!!.startActivity(myIntent)
+        }
+
         binding.summaryText.text = portfolios[position].summary
 
         binding.progressText.text = portfolios[position].progresses[0].summary
@@ -116,19 +123,23 @@ class DetailPortfolioFragment : Fragment() {
                 .error(R.drawable.workshop_tutor_logo_text)
                 .into(binding.image)
 
-        summaryImageModelArrayList = ArrayList()
-        summaryImageModelArrayList = populateList(mySummaryImageList)
-        progressImageModelArrayList = ArrayList()
-        progressImageModelArrayList = populateList(myProgressImageList)
+        summaryImageVideoModelArrayList = ArrayList()
+        summaryImageVideoModelArrayList = populateList(mySummaryImageList)
+        progressImageVideoModelArrayList = ArrayList()
+        progressImageVideoModelArrayList = populateList(myProgressImageList)
 
-        binding.summaryImagePager.adapter = SlidingImageAdapter(
+        summaryImageVideoArrayList = ArrayList()
+        summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos)
+
+        binding.summaryImagePager.adapter = SlidingImageVideoAdapter(
                 context!!,
-                this.summaryImageModelArrayList!!
+                this.summaryImageVideoArrayList!!,
+                this
         )
 
         binding.progressImagePager.adapter = SlidingImageAdapter(
                 context!!,
-                this.progressImageModelArrayList!!
+                this.progressImageVideoModelArrayList!!
         )
 
         binding.summaryImageIndicator.setViewPager(binding.summaryImagePager)
@@ -153,6 +164,26 @@ class DetailPortfolioFragment : Fragment() {
 
             }
         })
+
+        /*
+        http://developine.com/develop-android-image-gallery-app-kotlin-with-source-code/
+        https://www.nplix.com/create-animated-video-thumbnail-android/
+        Glide.with(context)
+                    .load(urlofVideo)
+                    .centerCrop()
+                    .placeholder(anybackgroundColor)
+                    .crossFade()
+                    .into(ImagViewtoload);
+
+        private void setScaleAnimation(View view) {
+            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            anim.setDuration(FADE_DURATION);
+            view.startAnimation(anim);
+        }
+        private final static int FADE_DURATION = 1000;
+        setScaleAnimation(((VideoViewHolder) holder).vImage);
+        setScaleAnimation(imageView);
+        */
 
         Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs.size.toString())
         var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs)
@@ -229,7 +260,7 @@ class DetailPortfolioFragment : Fragment() {
     // download video or pdf file from firebase and create a tempfile from it
     // display it in another activity
     // dataType = pdfs or videos
-    private fun createTempFile(dataType: String, fileId: String){
+    fun createTempFile(dataType: String, fileId: String){
         showLoadingDialog("Loading file")
 
         val ref = firebaseStorage.reference.child("/$dataType/$fileId")
@@ -296,5 +327,16 @@ class DetailPortfolioFragment : Fragment() {
         myListView.layoutParams = params
         // print height of adapter on log
         Log.i("height of listItem:", totalHeight.toString())
+    }
+
+    private fun makeList(images: ArrayList<Image>, videos: ArrayList<Video>): java.util.ArrayList<ImageVideo>{
+        var list: ArrayList<ImageVideo> = java.util.ArrayList()
+        for (i in 1 until images.size){
+            list.add(ImageVideo(images[i].imageUrl, false))
+        }
+        for (i in 0 until videos.size){
+            list.add(ImageVideo(videos[i].videoUrl, true))
+        }
+        return list
     }
 }
