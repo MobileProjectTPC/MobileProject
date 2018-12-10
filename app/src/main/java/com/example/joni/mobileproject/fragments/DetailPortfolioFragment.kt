@@ -106,7 +106,7 @@ class DetailPortfolioFragment : Fragment() {
 
         binding.summaryText.text = portfolios[position].summary
 
-        binding.progressText.text = portfolios[position].progresses[0].summary
+        binding.progressText.text = portfolios[position].progresses!![0].summary
 
 
         imageUri = Uri.parse(myList[position].imageUrl)
@@ -154,8 +154,8 @@ class DetailPortfolioFragment : Fragment() {
             }
         })
 
-        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs.size.toString())
-        var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs)
+        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
+        var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
         binding.listViewDocuments?.adapter = adapter
         getListViewSize(binding.listViewDocuments)
 

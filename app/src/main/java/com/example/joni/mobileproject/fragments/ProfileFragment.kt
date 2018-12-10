@@ -116,6 +116,7 @@ class ProfileFragment: Fragment() {
 
         if (requestCode == imageRequestCode && resultCode == Activity.RESULT_OK && data != null) {
             //selectedPhotoUri = data.data
+            Log.d("TAG", "File location: ${data.data}")
             uploadFileToFirebase(data.data, "images", "ImageTitle")
         } else if (requestCode == PDFRequestCode && resultCode == Activity.RESULT_OK && data != null) {
             //selectedPDFUri = data.data
@@ -127,7 +128,7 @@ class ProfileFragment: Fragment() {
 
     }
 
-    private fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
+    fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
         val filename = UUID.randomUUID().toString()
         val ref = firebaseStorage.getReference("/$fileType/$filename")
         showUploadDialog("Uploading file")
