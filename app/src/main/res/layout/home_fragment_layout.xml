@@ -1,90 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:paddingTop="32dp"
-android:orientation="vertical"
-tools:context=".MainActivity">
-
-<Button
-    android:id="@+id/button_scan_qr"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="24dp"
-    android:background="@drawable/button"
-    android:textColor="@color/colorWhite"
-    android:text="Scan QR code" />
+    android:orientation="vertical"
+    android:paddingTop="32dp"
+    tools:context=".MainActivity">
 
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="100dp"
-    android:layout_marginBottom="24dp">
+    <Button
+        android:id="@+id/button_scan_qr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/button"
+        android:text="Scan QR code"
+        android:textColor="@color/colorWhite" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="40dp"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp">
 
-    <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/indicator"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="40dp" />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="bottom"
+            android:padding="10dip"
+            app:centered="true"
+            app:fillColor="@color/backgroundEnd"
+            app:pageColor="@color/backgroundStart"
+            app:snap="false"
+            app:strokeColor="@color/backgroundStart" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/portfolioPager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="40dp" />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/portfolioIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="bottom"
+            android:padding="10dip"
+            app:centered="true"
+            app:fillColor="@color/backgroundEnd"
+            app:pageColor="@color/backgroundStart"
+            app:snap="false"
+            app:strokeColor="@color/backgroundStart" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Scan NFC here or open camera to scan QR code below. Remember to enable it first."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/imgView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="bottom"
-        android:padding="10dip"
-        app:centered="true"
-        app:strokeColor="@color/backgroundStart"
-        app:fillColor="@color/backgroundEnd"
-        app:pageColor="@color/backgroundStart"
-        app:snap="false" />
-</RelativeLayout>
-
-<TextView
-    android:id="@+id/text_info"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:textColor="@color/colorWhite"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text="Scan NFC here or open camera to scan QR code below. Remember to enable it first." />
-
-<ImageView
-    android:id="@+id/imgView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-<Button
-    android:id="@+id/btnDownloadPdf"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="DownloadPdf"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"/>
+    <Button
+        android:id="@+id/btnDownloadPdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DownloadPdf"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
-<Button
-    android:id="@+id/btnDownloadVideo"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="DownloadVideo"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"/>
+    <Button
+        android:id="@+id/btnPortfolio"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="Portfolio"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tools"/>
+        android:text="Tools"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnDownloadVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DownloadVideo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </LinearLayout>

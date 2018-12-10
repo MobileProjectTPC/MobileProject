@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.joni.mobileproject.objects.NFCUtil
 
@@ -113,6 +114,8 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
+                    Log.d("ToolsActivity it:", it.toString())
+                    Log.d("ToolsActivity it:.getValue()", it.getValue(Image::class.java).toString())
                     newList.add(it.getValue(Image::class.java)!!)
                 }
                 listRetrieved = true

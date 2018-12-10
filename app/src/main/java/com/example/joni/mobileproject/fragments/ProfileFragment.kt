@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.joni.mobileproject.ProjectCreateActivity
+import com.example.joni.mobileproject.PortfolioActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.PDF
@@ -94,9 +95,15 @@ class ProfileFragment: Fragment() {
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, UpdateUserDataFragment()).commit()
         }
 
+
         btnCreateProject.setOnClickListener {
             val projectIntent = Intent(context!!, ProjectCreateActivity::class.java)
             startActivity(projectIntent)
+        }
+        btnMyPortfolio.setOnClickListener {
+            val intent = Intent(context, PortfolioActivity::class.java)
+            intent.putExtra("origin",1)
+            startActivity(intent)
         }
 
         super.onViewCreated(view, savedInstanceState)

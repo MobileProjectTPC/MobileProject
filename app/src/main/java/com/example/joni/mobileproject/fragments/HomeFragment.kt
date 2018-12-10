@@ -56,11 +56,22 @@ class HomeFragment: Fragment() {
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text
     )
+    private var portfolioImageModelArrayList: java.util.ArrayList<ImageModel>? = null
+    val myPortfolioImageList = intArrayOf(
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text,
+            R.drawable.workshop_tutor_logo_text
+    )
     private lateinit var mPager: ViewPager
     private lateinit var indicator: CirclePageIndicator
+    private lateinit var mPortfolioPager: ViewPager
+    private lateinit var portfolioIndicator: CirclePageIndicator
     private lateinit var scanButton: Button
-
     private lateinit var toolsButton: Button
+    private lateinit var portfolioButton: Button
 
     val mutableList : MutableList<Image> = ArrayList()
 
@@ -94,7 +105,9 @@ class HomeFragment: Fragment() {
         val rootView = inflater.inflate(R.layout.home_fragment_layout, container, false)
 
         imageModelArrayList = ArrayList()
-        imageModelArrayList = populateList()
+        imageModelArrayList = populateList(myImageList)
+        portfolioImageModelArrayList = ArrayList()
+        portfolioImageModelArrayList = populateList(myPortfolioImageList)
 
 
         mPager = rootView.findViewById(R.id.pager)
@@ -119,10 +132,23 @@ class HomeFragment: Fragment() {
 
         indicator = rootView.findViewById(R.id.indicator)
 
+
+        mPortfolioPager = rootView.findViewById(R.id.portfolioPager)
+        mPortfolioPager.adapter = SlidingImageAdapter(
+                context!!,
+                this.portfolioImageModelArrayList!!
+        )
+
+        portfolioIndicator = rootView.findViewById(R.id.portfolioIndicator)
+
+        //tvResult = rootView.findViewById(R.id.tvresult)
+
+        //6098530220cc996d7d8bc83c72e0b5bcae6195fa?
+
         scanButton = rootView.findViewById(R.id.button_scan_qr)
 
 
-        setupPermissions()
+        //setupPermissions()
 
         init()
 
@@ -132,7 +158,13 @@ class HomeFragment: Fragment() {
             startActivity(intent)
         }
 
-
+        portfolioButton = rootView.findViewById(R.id.btnPortfolio)
+        portfolioButton.setOnClickListener {
+            val intent = Intent(context, PortfolioActivity::class.java)
+            intent.putExtra("origin", 0)
+            intent.putExtra("workspace", workspace)
+            startActivity(intent)
+        }
 
         return rootView
     }
@@ -289,13 +321,13 @@ class HomeFragment: Fragment() {
         }
     }
 
-    private fun populateList(): java.util.ArrayList<ImageModel> {
+    private fun populateList(imagelist: IntArray): java.util.ArrayList<ImageModel> {
 
         val list = java.util.ArrayList<ImageModel>()
 
         for (i in 0..5) {
             val imageModel = ImageModel()
-            imageModel.setImageDrawables(myImageList[i])
+            imageModel.setImageDrawables(imagelist[i])
             list.add(imageModel)
         }
 
@@ -341,8 +373,33 @@ class HomeFragment: Fragment() {
 
         })
 
+
+        portfolioIndicator.setViewPager(mPortfolioPager)
+
+        //Set circle indicator radius
+        portfolioIndicator.radius = 5 * density
+
+        // Pager listener over indicator
+        portfolioIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            override fun onPageSelected(position: Int) {
+                currentPage = position
+            }
+
+            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
+
+            }
+
+            override fun onPageScrollStateChanged(pos: Int) {
+
+            }
+
+
+        })
+
     }
 
+    /*
     private fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(context!!,
                 Manifest.permission.CAMERA)
@@ -350,8 +407,9 @@ class HomeFragment: Fragment() {
             makeRequestCamera()
         }
     }
-
+    */
     private fun makeRequestCamera() {
+        Log.d("MainActivity", "makeRCamera")
         ActivityCompat.requestPermissions(activity!!,
                 arrayOf(Manifest.permission.CAMERA),
                 RECORD_REQUEST_CODE
@@ -363,4 +421,3 @@ class HomeFragment: Fragment() {
 
 
 }
-
