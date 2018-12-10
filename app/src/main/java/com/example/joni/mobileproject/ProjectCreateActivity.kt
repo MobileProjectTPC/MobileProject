@@ -2,6 +2,7 @@ package com.example.joni.mobileproject
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -15,8 +16,9 @@ class ProjectCreateActivity : AppCompatActivity() {
     private val addProjectFragment = AddProjectFragment()
     private val addPictureFragment = AddPictureFragment()
     private val addVideoFragment = AddVideoFragment()
-    //private val addPdfFragment = AddPdfFragment()
+    private val addPdfFragment = AddPdfFragment()
 
+    private var dialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +53,7 @@ class ProjectCreateActivity : AppCompatActivity() {
                     setupFragment(addVideoFragment)
                 }
                 R.id.choose_pdf -> {
-                    //setupFragment(addPdfFragment)
+                    setupFragment(addPdfFragment)
                 }
             }
             true
@@ -64,4 +66,5 @@ class ProjectCreateActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container_add_file, fragment).commit()
     }
+
 }

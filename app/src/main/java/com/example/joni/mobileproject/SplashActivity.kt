@@ -48,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         //mDelayHandler = Handler()
         //mDelayHandler.postDelayed(mRunnable, delay)
-        getStuffFromFirebaseDB("3Dprinting", "3Dprinter", "images")
+        getStuffFromFirebaseDB("3Dprinting")
     }
 
     public override fun onDestroy() {
@@ -71,7 +71,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
 
-    private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String) {
+    private fun getStuffFromFirebaseDB(workspace: String) {
         val ref = firebaseDatabase.getReference("hacklab/$workspace/tools/")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 

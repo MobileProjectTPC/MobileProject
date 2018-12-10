@@ -113,7 +113,7 @@ class DetailPortfolioFragment : Fragment() {
 
         binding.summaryText.text = portfolios[position].summary
 
-        binding.progressText.text = portfolios[position].progresses[0].summary
+        binding.progressText.text = portfolios[position].progresses!![0].summary
 
 
         imageUri = Uri.parse(myList[position].imageUrl)
@@ -165,6 +165,7 @@ class DetailPortfolioFragment : Fragment() {
             }
         })
 
+<<<<<<< HEAD
         /*
         http://developine.com/develop-android-image-gallery-app-kotlin-with-source-code/
         https://www.nplix.com/create-animated-video-thumbnail-android/
@@ -187,6 +188,10 @@ class DetailPortfolioFragment : Fragment() {
 
         Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs.size.toString())
         var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs)
+=======
+        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
+        var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
+>>>>>>> a73cdd525a7712ceddc0dfc886a585c58b2ac9b0
         binding.listViewDocuments?.adapter = adapter
         getListViewSize(binding.listViewDocuments)
 

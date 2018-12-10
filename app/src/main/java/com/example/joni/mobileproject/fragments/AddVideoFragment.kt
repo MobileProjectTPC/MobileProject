@@ -6,20 +6,29 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatImageView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.example.joni.mobileproject.ProjectCreateActivity
 import com.example.joni.mobileproject.R
+import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Video
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_project_create.*
 import kotlinx.android.synthetic.main.add_video.*
 import java.io.File
+import java.util.*
 
 class AddVideoFragment: Fragment() {
 
@@ -30,6 +39,12 @@ class AddVideoFragment: Fragment() {
     lateinit var videoButton: AppCompatImageView
     lateinit var addVideoButton: Button
     lateinit var projectName: TextView
+
+    private val firebaseStorage = FirebaseStorage.getInstance()
+    private val firebaseDatabase = FirebaseDatabase.getInstance()
+
+    private var dialog: AlertDialog? = null
+    private val viewGroup: ViewGroup? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_video, container, false)
@@ -63,9 +78,37 @@ class AddVideoFragment: Fragment() {
                     text_video_description.text.isNotEmpty()) {
 
                 //PUT FILE TO THE DATABASE HERE!!
+                val project = projectName.text.toString()
+
+                val title = text_video_title.text.toString()
+                val description = text_video_description.text.toString()
+
+                val filename = UUID.randomUUID().toString()
+                val ref = firebaseStorage.getReference("/portfolio/$project/$filename")
+
+                val file = File(mCurrentVideoPath!!)
+                val videoUri = Uri.fromFile(file)
+                ref.putFile(videoUri)
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Successfully uploaded file: ${it.metadata?.path}")
+
+                            ref.downloadUrl.addOnSuccessListener {
+                                Log.d("TAG", "File location: $it")
+                                saveFileToDatabase(filename, it.toString(), title, description, project)
+                                Handler().post { dialog!!.dismiss() }
+                            }
+
+                        }
+                        .addOnFailureListener {
+                            Handler().post { dialog!!.dismiss() }
+                            Log.d("TAG", "Something went wrong when loading the file")
+                        }
+
+
 
                 activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
-                Toast.makeText(context!!, "Project picture added to the project ${projectName.text.toString()}", Toast.LENGTH_SHORT).show()
+                showUploadDialog("Uploading file")
+                //Toast.makeText(context!!, "Video added to the project ${projectName.text.toString()}", Toast.LENGTH_SHORT).show()
 
             }
             else {
@@ -87,6 +130,35 @@ class AddVideoFragment: Fragment() {
 
         }
 
+    }
+
+
+    private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, description: String, project: String) {
+        val ref = firebaseDatabase.getReference("/portfolio/$project/videos/$fileId")
+
+        val filename = UUID.randomUUID().toString()
+        val video = Video(filename, fileUrl, title)
+        //val arrayList = ArrayList<Image>()
+        //arrayList.add(image)
+
+        ref.setValue(video)
+                .addOnSuccessListener {
+                    Log.d("TAG", "Image to tool database")
+                }
+                .addOnFailureListener {
+                    Log.d("TAG", "Something went wrong with the database")
+                }
+    }
+
+    private fun showUploadDialog(message: String) {
+        val builder = AlertDialog.Builder(context!!)
+        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
+        val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
+        dialogTxtView.text = message
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        dialog = builder.create()
+        dialog!!.show()
     }
 
 }
