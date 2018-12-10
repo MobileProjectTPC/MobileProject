@@ -1,5 +1,7 @@
 package com.example.joni.mobileproject.models
 
-class PDF(val PDFId: String, val PDFUrl: String, val title: String){
+import java.io.Serializable
+
+class PDF(val PDFId: String, val PDFUrl: String, val title: String): Serializable{
     constructor(): this("", "", "")
 }
