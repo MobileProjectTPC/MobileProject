@@ -3,6 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.2.61'
     repositories {
+        maven { url 'https://dl.bintray.com/android/android-tools' }
         google()
         jcenter()
     }
