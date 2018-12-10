@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import android.app.ActivityOptions
 import android.nfc.NfcAdapter
 import android.os.CountDownTimer
+import android.util.Log
 import com.example.joni.mobileproject.fragments.ToolFragment
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Tool
 import com.example.joni.mobileproject.objects.NFCUtil
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
     private val wait: Long = 3000
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
-    val toolList = java.util.ArrayList<Image>()
+    val toolList = java.util.ArrayList<Tool>()
 
     private val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
@@ -46,7 +48,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         //mDelayHandler = Handler()
         //mDelayHandler.postDelayed(mRunnable, delay)
-        getStuffFromFirebaseDB("workspace", "tool1", "images")
+        getStuffFromFirebaseDB("3Dprinting", "3Dprinter", "images")
     }
 
     public override fun onDestroy() {
@@ -70,14 +72,16 @@ class SplashActivity : AppCompatActivity() {
 
 
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String) {
-        val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
+        val ref = firebaseDatabase.getReference("hacklab/$workspace/tools/")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
-                    toolList.add(it.getValue(Image::class.java)!!)
+                    Log.d("SplashTAG", "$it")
+                    toolList.add(it.getValue(Tool::class.java)!!)
                 }
+
 
                 val mainIntent = Intent(this@SplashActivity, MainActivity::class.java)
                 val serializableToolList = toolList as Serializable
