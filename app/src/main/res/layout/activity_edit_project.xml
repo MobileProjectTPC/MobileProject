@@ -101,7 +101,8 @@
                 android:text="Name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image" />
+                app:layout_constraintTop_toBottomOf="@+id/image"
+                android:hint="Title of Project"/>
 
             <EditText
                 android:id="@+id/summaryText"
@@ -114,14 +115,14 @@
                 android:text="Summary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/summary" />
+                app:layout_constraintTop_toBottomOf="@+id/summary"
+                android:hint="Summary of Project" />
 
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:text="Save Changes"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/listViewDocuments" />
@@ -147,7 +148,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/colorWhite"></FrameLayout>
+                android:background="@color/colorWhite"
+                android:foregroundGravity="center"></FrameLayout>
 
             <Button
                 android:id="@+id/btnAddVideo"

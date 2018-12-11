@@ -33,15 +33,15 @@ import android.media.MediaMetadataRetriever.OPTION_CLOSEST_SYNC
 import android.graphics.Bitmap
 import android.os.Build
 import android.media.MediaMetadataRetriever
+import android.widget.Toast
+import com.example.joni.mobileproject.models.Portfolio
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
-
-
-
-
-
-
-class SlidingImageVideoAdapter(context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment) : PagerAdapter() {
+class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, var userCreated: Boolean,  var project: Portfolio) : PagerAdapter() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -58,6 +58,11 @@ class SlidingImageVideoAdapter(context: Context, private val imageVideoArrayList
 
         val image = imageLayout.findViewById(R.id.image) as ImageView
         val play = imageLayout.findViewById(R.id.play) as ImageView
+        val delete = imageLayout.findViewById(R.id.btnDelete) as ImageView
+
+        if (userCreated == false){
+            delete.visibility = View.INVISIBLE
+        }
 
         if (imageVideoArrayList[position].video == false) {
             play.visibility = View.INVISIBLE
@@ -84,6 +89,8 @@ class SlidingImageVideoAdapter(context: Context, private val imageVideoArrayList
                 this.fragment = fragment
                 fragment.createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
             }
+
+
             /*
             val intent = Intent(inflater.context, ToolDetailActivity::class.java)
             // create the transition animation - the images in the layouts
@@ -107,6 +114,45 @@ class SlidingImageVideoAdapter(context: Context, private val imageVideoArrayList
                     .commitAllowingStateLoss() // or commit()
             */
 
+        }
+
+        delete.setOnClickListener {
+            val builder: AlertDialog.Builder
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
+            } else {
+                builder = AlertDialog.Builder(context)
+            }
+            builder.setTitle("Delete entry")
+                    .setMessage("Are you sure you want to delete this entry? \nThis cannot be undone!")
+                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                        // continue with delete
+                        var firebaseData = FirebaseDatabase.getInstance().reference
+                        var query = firebaseData.child("portfolio").child("images")
+                        query.addListenerForSingleValueEvent(object: ValueEventListener {
+                            override fun onDataChange(p0: DataSnapshot) {
+                                var numberOfImages: Long = p0.childrenCount
+                                if (position < numberOfImages){
+                                    firebaseData.child("portfolio").child(project.uid).child("images").child(imageVideoArrayList[position].id).removeValue()
+                                    Toast.makeText(context, "The image has been deleted", Toast.LENGTH_LONG).show()
+                                }
+                                else {
+                                    firebaseData.child("portfolio").child(project.uid).child("videos").child(imageVideoArrayList[position].id).removeValue()
+                                    Toast.makeText(context, "The video has been deleted", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            override fun onCancelled(p0: DatabaseError) {
+                            }
+                        })
+
+                        imageVideoArrayList.removeAt(position)
+                        this.notifyDataSetChanged()
+                    }
+                    .setNegativeButton(android.R.string.no) { dialog, which ->
+                        // do nothing
+                    }
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show()
         }
 
         view.addView(imageLayout, 0)

@@ -73,10 +73,36 @@ class EditProjectActivity : AppCompatActivity() {
         val title: EditText = findViewById(R.id.title)
         Log.d("EditProjectActivity_Test", "Set Text?")
         //title.setText(project.name)
-        title.setText(project.name)
+        if (project.name != null) {
+            title.setText(project.name)
+        }
 
         val summaryText: EditText = findViewById(R.id.summaryText)
-        summaryText.setText(project.summary)
+        if (project.summary != null) {
+            summaryText.setText(project.summary)
+        }
+
+        val btnAddImage = findViewById(R.id.btnAddImage) as Button
+        btnAddImage.setOnClickListener {
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
+            arguments.putSerializable("Project", project)
+
+            addPictureFragment.arguments = arguments
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.placeholder, addPictureFragment).commit()
+        }
+
+        val btnAddVideo = findViewById(R.id.btnAddVideo) as Button
+        btnAddVideo.setOnClickListener {
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new videos from existing project
+            arguments.putSerializable("Project", project)
+
+            addVideoFragment.arguments = arguments
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.placeholder, addVideoFragment).commit()
+        }
 
         if (project.images != null || project.videos != null) {
             mSummaryPager = findViewById(R.id.summaryImagePager)
@@ -114,6 +140,19 @@ class EditProjectActivity : AppCompatActivity() {
         else{
             mSummaryPager.visibility = View.INVISIBLE
             summaryIndicator.visibility = View.INVISIBLE
+        }
+
+        val btnAddPDF = findViewById(R.id.btnAddPDF) as Button
+        btnAddPDF.setOnClickListener {
+            /*
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new PDFs from existing project
+            arguments.putSerializable("Project", project)
+
+            addPdfFragment.arguments = arguments
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.placeholder, addPdfFragment).commit()
+             */
         }
 
         if (project.pdfs != null) {
@@ -183,10 +222,10 @@ class EditProjectActivity : AppCompatActivity() {
     private fun makeList(images: ArrayList<Image>, videos: ArrayList<Video>): java.util.ArrayList<ImageVideo>{
         var list: ArrayList<ImageVideo> = java.util.ArrayList()
         for (i in 1 until images.size){
-            list.add(ImageVideo(images[i].imageUrl, false))
+            list.add(ImageVideo(images[i].imageUrl, images[i].imageId,false))
         }
         for (i in 0 until videos.size){
-            list.add(ImageVideo(videos[i].videoUrl, true))
+            list.add(ImageVideo(videos[i].videoUrl, videos[i].videoId, true))
         }
         return list
     }

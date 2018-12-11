@@ -22,6 +22,7 @@ import android.widget.Toast
 import com.example.joni.mobileproject.ProjectCreateActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Portfolio
 import com.example.joni.mobileproject.models.Video
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -49,6 +50,12 @@ class AddVideoFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_video, container, false)
 
+        var mode: Int = arguments!!.getInt("Mode")
+        var myproject: Portfolio? = null
+        if (mode == 1){
+            myproject = arguments!!.getSerializable("Project") as Portfolio
+        }
+
         videoButton = rootView.findViewById(R.id.video_image)
         videoButton.setOnClickListener {
             val vdPath = activity!!.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
@@ -69,7 +76,9 @@ class AddVideoFragment: Fragment() {
             }
         }
 
-        projectName = activity!!.findViewById(R.id.final_project_name)
+        if (mode == 0){
+            projectName = activity!!.findViewById(R.id.final_project_name)
+        }
 
         addVideoButton = rootView.findViewById(R.id.add_video)
         addVideoButton.setOnClickListener {
@@ -78,7 +87,15 @@ class AddVideoFragment: Fragment() {
                     text_video_description.text.isNotEmpty()) {
 
                 //PUT FILE TO THE DATABASE HERE!!
-                val project = projectName.text.toString()
+                var project: String? = null
+                if (mode == 0){
+                    project = projectName.text.toString()
+                }
+                else{
+                    if (myproject != null) {
+                        project = myproject.uid
+                    }
+                }
 
                 val title = text_video_title.text.toString()
                 val description = text_video_description.text.toString()
@@ -94,7 +111,7 @@ class AddVideoFragment: Fragment() {
 
                             ref.downloadUrl.addOnSuccessListener {
                                 Log.d("TAG", "File location: $it")
-                                saveFileToDatabase(filename, it.toString(), title, description, project)
+                                saveFileToDatabase(filename, it.toString(), title, description, project!!)
                                 Handler().post { dialog!!.dismiss() }
                             }
 
@@ -136,8 +153,9 @@ class AddVideoFragment: Fragment() {
     private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, description: String, project: String) {
         val ref = firebaseDatabase.getReference("/portfolio/$project/videos/$fileId")
 
-        val filename = UUID.randomUUID().toString()
-        val video = Video(filename, fileUrl, title)
+        //val filename = UUID.randomUUID().toString()
+        //val video = Video(filename, fileUrl, title)
+        val video = Video(fileId, fileUrl, title)
         //val arrayList = ArrayList<Image>()
         //arrayList.add(image)
 
@@ -160,5 +178,4 @@ class AddVideoFragment: Fragment() {
         dialog = builder.create()
         dialog!!.show()
     }
-
 }

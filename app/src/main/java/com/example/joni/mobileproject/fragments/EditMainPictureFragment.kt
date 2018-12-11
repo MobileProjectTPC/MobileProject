@@ -87,7 +87,7 @@ class EditMainPictureFragment: Fragment() {
                     text_picture_description.text.isNotEmpty()) {
 
                 //PUT FILE TO THE DATABASE HERE!!
-                var project: String = myproject.name.toString()
+                var project: String = myproject.uid
 
 
                 val title = text_picture_title.text.toString()

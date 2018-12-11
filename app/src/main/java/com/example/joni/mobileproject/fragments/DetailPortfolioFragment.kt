@@ -1,10 +1,12 @@
 package com.example.joni.mobileproject.fragments
 
 import android.app.AlertDialog
+import android.app.FragmentManager
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.DataBindingUtil.setContentView
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -13,14 +15,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.TextView
-import com.example.joni.mobileproject.EditProjectActivity
-import com.example.joni.mobileproject.PdfActivity
-import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.VideoActivity
+import android.widget.*
+import com.example.joni.mobileproject.*
 import com.example.joni.mobileproject.adapters.DocumentsAdapter
 import com.example.joni.mobileproject.adapters.DocumentsEditAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
@@ -32,6 +28,10 @@ import com.viewpagerindicator.CirclePageIndicator
 import java.io.Serializable
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 
@@ -47,6 +47,8 @@ class DetailPortfolioFragment : Fragment() {
     private var nfcTrue = false
     private var dialog: AlertDialog? = null
     private val firebaseStorage = FirebaseStorage.getInstance()
+    private val firebaseDatabase = FirebaseDatabase.getInstance()
+    private var userCreated: Boolean = false
 
     private var summaryImageVideoModelArrayList: java.util.ArrayList<ImageModel>? = null
     val mySummaryImageList = intArrayOf(
@@ -58,6 +60,11 @@ class DetailPortfolioFragment : Fragment() {
             R.drawable.workshop_tutor_logo_text
     )
     private var summaryImageVideoArrayList: java.util.ArrayList<ImageVideo>? = null
+
+    private val editMainPictureFragment = EditMainPictureFragment()
+    private val addPictureFragment = AddPictureFragment()
+    private val addVideoFragment = AddVideoFragment()
+    //private val addPdfFragment = AddPdfFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,21 +91,64 @@ class DetailPortfolioFragment : Fragment() {
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
         binding.text.text = myList[position].title
 
+        var firebaseData = FirebaseDatabase.getInstance().reference
+
         if (portfolios[position].user == user) {
-            binding.btnEdit.visibility = View.VISIBLE
+            binding.editMainImage.visibility = View.VISIBLE
+            binding.btnAddImage.visibility = View.VISIBLE
+            binding.btnAddVideo.visibility = View.VISIBLE
+            binding.btnAddPDF.visibility = View.VISIBLE
+            binding.btnDelete.visibility = View.VISIBLE
+            userCreated = true
         }
         else{
-            binding.btnEdit.visibility = View.INVISIBLE
+            binding.editMainImage.visibility = View.INVISIBLE
+            binding.btnAddImage.visibility = View.INVISIBLE
+            binding.btnAddVideo.visibility = View.INVISIBLE
+            binding.btnAddPDF.visibility = View.INVISIBLE
+            binding.btnDelete.visibility = View.INVISIBLE
+
         }
 
-        binding.btnEdit.setOnClickListener {
-            val myIntent = Intent(activity, EditProjectActivity::class.java)
-            myIntent.putExtra("Project", portfolios[position])
-            activity!!.startActivity(myIntent)
+
+        binding.editMainImage.setOnClickListener {
+
+            var arguments: Bundle = Bundle()
+            arguments.putSerializable("Project", portfolios[position])
+
+            editMainPictureFragment.arguments = arguments
+            fragmentManager!!.beginTransaction()
+                    .replace(R.id.placeholder, editMainPictureFragment).commit()
+
         }
 
-        binding.summaryText.text = portfolios[position].summary
+        if (portfolios[position].summary != null || portfolios[position].summary.toString() != "null") {
+            binding.summaryText.text = portfolios[position].summary
+        }
+        else{
+            binding.summary.visibility = View.INVISIBLE
+            binding.summaryText.visibility = View.INVISIBLE
+        }
 
+        binding.btnAddImage.setOnClickListener {
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
+            arguments.putSerializable("Project", portfolios[position])
+
+            addPictureFragment.arguments = arguments
+            fragmentManager!!.beginTransaction()
+                    .replace(R.id.placeholder, addPictureFragment).commit()
+        }
+
+        binding.btnAddVideo.setOnClickListener {
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
+            arguments.putSerializable("Project", portfolios[position])
+
+            addPictureFragment.arguments = arguments
+            fragmentManager!!.beginTransaction()
+                    .replace(R.id.placeholder, addVideoFragment).commit()
+        }
 
 
         imageUri = Uri.parse(myList[position].imageUrl)
@@ -118,7 +168,9 @@ class DetailPortfolioFragment : Fragment() {
             binding.summaryImagePager.adapter = SlidingImageVideoAdapter(
                     context!!,
                     this.summaryImageVideoArrayList!!,
-                    this
+                    this,
+                    userCreated,
+                    portfolios[position]
             )
 
             binding.summaryImageIndicator.setViewPager(binding.summaryImagePager)
@@ -167,9 +219,22 @@ class DetailPortfolioFragment : Fragment() {
         setScaleAnimation(((VideoViewHolder) holder).vImage);
         setScaleAnimation(imageView);
         */
+        binding.btnAddPDF.setOnClickListener {
+            /*
+            var arguments: Bundle = Bundle()
+            arguments.putInt("Mode", 1) // Mode: 1 = Add new PDFs from existing project
+            arguments.putSerializable("Project", portfolios[position])
+
+            addPdfFragment.arguments = arguments
+            fragmentManager.beginTransaction()
+                    .replace(R.id.placeholder, addPdfFragment).commit()
+             */
+        }
+
+
         if (portfolios[position].pdfs != null) {
             Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
-            var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
+            var adapter = DocumentsAdapter(context!!, portfolios[position].pdfs!!, userCreated, portfolios[position])
 
             binding.listViewDocuments?.adapter = adapter
             getListViewSize(binding.listViewDocuments)
@@ -181,6 +246,28 @@ class DetailPortfolioFragment : Fragment() {
                 createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
             }
         }
+
+        binding.btnDelete.setOnClickListener{
+            val builder: AlertDialog.Builder
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
+            } else {
+                builder = AlertDialog.Builder(context)
+            }
+            builder.setTitle("Delete Project")
+                    .setMessage("Are you sure you want to delete this project? \nThis cannot be undone!")
+                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                        // continue with delete
+                        firebaseData.child("portfolio").child(portfolios[position].uid!!).removeValue()
+                        Toast.makeText(context, "The project has been deleted", Toast.LENGTH_LONG).show()
+                    }
+                    .setNegativeButton(android.R.string.no) { dialog, which ->
+                        // do nothing
+                    }
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show()
+        }
+
 
         return binding.root
     }
@@ -296,11 +383,34 @@ class DetailPortfolioFragment : Fragment() {
     private fun makeList(images: ArrayList<Image>, videos: ArrayList<Video>): java.util.ArrayList<ImageVideo>{
         var list: ArrayList<ImageVideo> = java.util.ArrayList()
         for (i in 1 until images.size){
-            list.add(ImageVideo(images[i].imageUrl, false))
+            list.add(ImageVideo(images[i].imageUrl, images[i].imageId, false))
         }
         for (i in 0 until videos.size){
-            list.add(ImageVideo(videos[i].videoUrl, true))
+            list.add(ImageVideo(videos[i].videoUrl, videos[i].videoId, true))
         }
         return list
+    }
+
+    /*
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == 2) {
+            activity!!.fragmentManager.beginTransaction().remove(this).commit()
+        }
+    }
+    */
+
+    fun refresh(position: Int){
+        var query = firebaseDatabase.getReference("portfolio").child(portfolios[position].uid)
+        var updatePortfolio: Portfolio
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                updatePortfolio = (activity as PortfolioActivity).makePortfolio(p0)
+                portfolios[position] = updatePortfolio
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
     }
 }
