@@ -235,7 +235,7 @@ class HomeFragment: Fragment() {
         }
     }
     */
-    
+
     private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
