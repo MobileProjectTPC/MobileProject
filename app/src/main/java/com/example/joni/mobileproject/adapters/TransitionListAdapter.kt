@@ -20,6 +20,7 @@ import com.example.joni.mobileproject.ToolsActivity
 import com.example.joni.mobileproject.databinding.ListItemBinding
 import com.example.joni.mobileproject.fragments.HomeFragment
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Tool
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -42,7 +43,7 @@ class TransitionListAdapter(
 
     private val navigationRef = WeakReference(navigation)
 
-    val newlist = myList as ArrayList<Image>
+    val newlist = myList as ArrayList<Tool>
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -64,9 +65,11 @@ class TransitionListAdapter(
         holder.binding.text.transitionName = "${context.getString(R.string.transition_text)}_${page}_$position"
         holder.binding.image.transitionName = "${context.getString(R.string.transition_image)}_${page}_$position"
 
-        holder.binding.text.text = newlist[position].title
+        //holder.binding.text.text = newlist[position].title
+        holder.binding.text.text = newlist[position].name
 
-        val imageUri = Uri.parse(newlist[position].imageUrl)
+        //val imageUri = Uri.parse(newlist[position].imageUrl)
+        val imageUri = Uri.parse(newlist[position].image)
 
         Picasso.get()
                 .load(imageUri)

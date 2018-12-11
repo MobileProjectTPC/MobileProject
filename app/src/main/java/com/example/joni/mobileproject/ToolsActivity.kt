@@ -21,12 +21,13 @@ import com.google.firebase.database.ValueEventListener
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.joni.mobileproject.models.Tool
 import com.example.joni.mobileproject.objects.NFCUtil
 
 class ToolsActivity : AppCompatActivity(), TransitionNavigation {
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
-    val newList = java.util.ArrayList<Image>()
+    val newList = java.util.ArrayList<Tool>()
     lateinit var detailFragment: DetailFragment
     private lateinit var vibrator: Vibrator
     private var toolName: String? = null
@@ -41,7 +42,8 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tools)
 
-        getStuffFromFirebaseDB("workspace", "tool1", "images")
+        //getStuffFromFirebaseDB("workspace", "tool1", "images")
+        getStuffFromFirebaseDB("3Dprinting", "3Dprinter", "images")
 
         toolName = if (savedInstanceState == null) {
             val extras = intent.extras
@@ -56,31 +58,69 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
     }
 
     fun goToDetailFromNFC(tool: String, nfcTrue: Boolean) {
-        var position = 0
-        var page = 0
+        val position = 0
+        val page = 0
+        var specificTool = ""
+        var workSpace = ""
 
         when (tool) {
             MainActivity.listOfTools[0] -> {
-                position = 0
-                page = 0
+                specificTool = "3Dprinter"
+                workSpace = "3Dprinting"
             }
             MainActivity.listOfTools[1] -> {
-                position = 1
-                page = 1
+                specificTool = "3Dprinter2"
+                workSpace = "3Dprinting"
             }
-            else -> {
-                position = 2
-                page = 2
+            MainActivity.listOfTools[2] -> {
+                specificTool = "3Dprinter3"
+                workSpace = "3Dprinting"
+            }
+            MainActivity.listOfTools[3] -> {
+                specificTool = "Drill"
+                workSpace = "Metalworking"
+            }
+            MainActivity.listOfTools[4] -> {
+                specificTool = "Drill"
+                workSpace = "Metalworking"
+            }
+            MainActivity.listOfTools[5] -> {
+                specificTool = "Drill"
+                workSpace = "Metalworking"
+            }
+            MainActivity.listOfTools[6] -> {
+                specificTool = "Sandingmachine"
+                workSpace = "Woodworking"
+            }
+            MainActivity.listOfTools[7] -> {
+                specificTool = "Sandingmachine"
+                workSpace = "Woodworking"
+            }
+            MainActivity.listOfTools[8] -> {
+                specificTool = "Sandingmachine"
+                workSpace = "Woodworking"
             }
         }
+        val specificToolList = java.util.ArrayList<Tool>()
+        val ref = firebaseDatabase.getReference("hacklab/$workSpace/tools/$specificTool")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
-        val transaction = supportFragmentManager.beginTransaction()
+            override fun onDataChange(p0: DataSnapshot) {
+                specificToolList.add(p0.getValue(Tool::class.java)!!)
 
-        detailFragment = DetailFragment.newInstance(position, page, newList, nfcTrue)
+                val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.replace(R.id.root, detailFragment, DETAIL_FRAGMENT_TAG)
-        transaction.addToBackStack(null)
-        transaction.commit()
+                detailFragment = DetailFragment.newInstance(position, page, specificToolList, nfcTrue)
+
+                transaction.replace(R.id.root, detailFragment, DETAIL_FRAGMENT_TAG)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
+
+
     }
 
     override fun goToDetail(transitionItems: List<View>, position: Int, page: Int) {
@@ -108,15 +148,16 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
     }
 
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String) {
-        val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
+        //val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
+        val ref = firebaseDatabase.getReference("hacklab/$workspace/tools/")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
 
                 p0.children.forEach {
                     Log.d("ToolsActivity it:", it.toString())
-                    Log.d("ToolsActivity it:.getValue()", it.getValue(Image::class.java).toString())
-                    newList.add(it.getValue(Image::class.java)!!)
+                    Log.d("ToolsActivity it:.getValue()", it.getValue(Tool::class.java).toString())
+                    newList.add(it.getValue(Tool::class.java)!!)
                 }
                 listRetrieved = true
 

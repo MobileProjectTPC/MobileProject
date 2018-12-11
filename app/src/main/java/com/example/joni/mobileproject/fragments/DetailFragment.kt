@@ -12,6 +12,7 @@ import com.example.joni.mobileproject.databinding.FragmentDetailBinding
 import com.squareup.picasso.Picasso
 import java.io.Serializable
 import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.Tool
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 
@@ -20,7 +21,7 @@ class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
     private var position: Int = 0
     private var page: Int = 0
-    private var myList = java.util.ArrayList<Image>()
+    private var myList = java.util.ArrayList<Tool>()
     private lateinit var imageUri: Uri
     private var nfcTrue = false
 
@@ -29,7 +30,7 @@ class DetailFragment : Fragment() {
         arguments?.let {
             position = it.getInt(EXTRA_POSITION)
             page = it.getInt(EXTRA_PAGE)
-            myList = it.getSerializable(MY_LIST) as java.util.ArrayList<Image>
+            myList = it.getSerializable(MY_LIST) as java.util.ArrayList<Tool>
             nfcTrue = it.getBoolean(NFC_TRUE)
         }
     }
@@ -43,11 +44,15 @@ class DetailFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
         binding.image.transitionName = "${getString(R.string.transition_image)}_${page}_$position"
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
-        binding.text.text = myList[position].title
+
+        //binding.text.text = myList[position].title
+        binding.text.text = myList[position].name
 
         binding.description.text = "put descriptions here"
 
-        imageUri = Uri.parse(myList[position].imageUrl)
+        //imageUri = Uri.parse(myList[position].imageUrl)
+        imageUri = Uri.parse(myList[position].image)
+
         Picasso.get()
                 .load(imageUri)
                 .placeholder(R.drawable.progress_animation)

@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         const val VIBRATION_TIME: Long = 100
         const val TOOL = "Tool"
         val listOfTools = arrayListOf(
-                "tool1", "tool2", "tool3"
+                "tool1", "tool2", "tool3", "tool4", "tool5", "tool6", "tool7", "tool8", "tool9"
         )
     }
 
