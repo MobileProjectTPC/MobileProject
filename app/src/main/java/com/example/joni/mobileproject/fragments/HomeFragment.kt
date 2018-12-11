@@ -184,6 +184,7 @@ class HomeFragment: Fragment() {
         }
     }
 
+    /* TODO NEVER USED, BUT LEAVE IT HERE IF NEEDED, ERASE LATER
     // modify this to get wanted stuff, testing with one image
     // get all data to list and add item selector
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
@@ -202,23 +203,13 @@ class HomeFragment: Fragment() {
                     }
 
                 }
-
-                // test with one image
-                /*
-                try {
-                    val image = p0.children.first().getValue(Image::class.java)
-                    val myURL = URL(image?.imageUrl)
-                    GetCont().execute(myURL)
-                } catch (e:Exception){
-                    Log.e("URL", "URL creation",e)
-                }
-                */
             }
 
             override fun onCancelled(p0: DatabaseError) {
             }
         })
     }
+    */
 
     private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
@@ -229,28 +220,6 @@ class HomeFragment: Fragment() {
         builder.setCancelable(false)
         dialog = builder.create()
         dialog!!.show()
-    }
-
-    // AsyncTask for loading and displaying selected image
-    inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
-
-        override fun doInBackground(vararg url: URL?): Bitmap {
-            lateinit var bm: Bitmap
-            try {
-                val myConn = url[0]!!.openConnection() as HttpURLConnection
-                val istream: InputStream = myConn.inputStream
-                bm = BitmapFactory.decodeStream(istream)
-                myConn.disconnect()
-            } catch (e:Exception) {
-                Log.e("Connection", "Reading error", e)
-            }
-            return bm
-        }
-
-        override fun onPostExecute(result: Bitmap) {
-            imgView.setImageBitmap(result)
-            Handler().post { dialog?.dismiss() }
-        }
     }
 
     // download video or pdf file from firebase and create a tempfile from it

@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.nfc.NfcAdapter
 import android.os.*
 import android.support.design.widget.BottomNavigationView
@@ -27,6 +29,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,11 +59,13 @@ class MainActivity : AppCompatActivity() {
             if (workspace == null){
                 workspace = inputMessage.obj.toString()
                 getTools(inputMessage.obj.toString())
+                getWorkspace(inputMessage.obj.toString())
             }
             if (workspace!! != inputMessage.obj){
                 if(inputMessage.what == 0){
                     workspace = inputMessage.obj.toString()
                     getTools(inputMessage.obj.toString())
+                    getWorkspace(inputMessage.obj.toString())
                 }
             }
         }
@@ -250,5 +257,48 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {
             }
         })
+    }
+
+    private fun getWorkspace(workspace: String) {
+        val ref = firebaseDatabase.getReference("hacklab/$workspace")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(p0: DataSnapshot) {
+                Log.d("MAindsdfaf", "${p0.child("image").value}")
+
+                try {
+                    val myURL = URL(p0.child("image").value.toString())
+                    GetCont().execute(myURL)
+                } catch (e:Exception){
+                    Log.e("URL", "URL creation",e)
+                }
+
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
+    }
+
+    // AsyncTask for loading and displaying selected image
+    inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
+
+        override fun doInBackground(vararg url: URL?): Bitmap {
+            lateinit var bm: Bitmap
+            try {
+                val myConn = url[0]!!.openConnection() as HttpURLConnection
+                val istream: InputStream = myConn.inputStream
+                bm = BitmapFactory.decodeStream(istream)
+                myConn.disconnect()
+            } catch (e:Exception) {
+                Log.e("Connection", "Reading error", e)
+            }
+            return bm
+        }
+
+        override fun onPostExecute(result: Bitmap) {
+            expandedImage.setImageBitmap(result)
+            //Handler().post { dialog?.dismiss() }
+        }
     }
 }
