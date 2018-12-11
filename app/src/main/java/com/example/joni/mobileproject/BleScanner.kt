@@ -44,7 +44,7 @@ class BleScan(mHand: Handler, private val bluetoothAdapter: BluetoothAdapter): R
 
         filters.add(filter)
 
-        //mBluetoothLeScanner!!.startScan(filters, settings, mScanCallback)
+        mBluetoothLeScanner!!.startScan(filters, settings, mScanCallback)
     }
 
     // If scanner find a beacon, add it to the results
@@ -88,7 +88,7 @@ class BleScan(mHand: Handler, private val bluetoothAdapter: BluetoothAdapter): R
         if (max!!.key == "DD:7D:F4:46:F2:B3" && max.value >= -75){
             val msg = myHandler.obtainMessage()
             msg.what = 0
-            msg.obj = "Workspace1"
+            msg.obj = "3Dprinting"
             myHandler.sendMessage(msg)
         }
         else if (max.key == "CA:8B:EE:10:E2:6F" && max.value >= -75){

@@ -21,11 +21,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.joni.mobileproject.*
-import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.example.joni.mobileproject.adapters.SlidingImage_Adapter
-import com.google.firebase.database.*
+import com.example.joni.mobileproject.models.Image
+import com.example.joni.mobileproject.models.ImageModel
+import com.example.joni.mobileproject.models.Tool
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
 import kotlinx.android.synthetic.main.home_fragment_layout.*
@@ -33,9 +37,6 @@ import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.models.Tool
-import java.io.Serializable
 
 class HomeFragment: Fragment() {
 
@@ -49,7 +50,7 @@ class HomeFragment: Fragment() {
     private val firebaseStorage = FirebaseStorage.getInstance()
 
     private var imageModelArrayList: java.util.ArrayList<ImageModel>? = null
-    val myImageList = intArrayOf(
+    private val myImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -58,7 +59,7 @@ class HomeFragment: Fragment() {
             R.drawable.workshop_tutor_logo_text
     )
     private var portfolioImageModelArrayList: java.util.ArrayList<ImageModel>? = null
-    val myPortfolioImageList = intArrayOf(
+    private val myPortfolioImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -82,22 +83,13 @@ class HomeFragment: Fragment() {
 
         const val TOOL_LIST = "TOOL_LIST"
 
+        /*
         fun newInstance(myList: Serializable): DetailFragment {
             return DetailFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(TOOL_LIST, myList)
                 }
             }
-        }
-    }
-
-    //private var toolList = java.util.ArrayList<Image>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        /*
-        arguments?.let {
-            toolList = it.getSerializable(TOOL_LIST) as java.util.ArrayList<Image>
         }
         */
     }
@@ -110,21 +102,11 @@ class HomeFragment: Fragment() {
         portfolioImageModelArrayList = ArrayList()
         portfolioImageModelArrayList = populateList(myPortfolioImageList)
 
-
         mPager = rootView.findViewById(R.id.pager)
-        /*
-
-        mPager.adapter = SlidingImageAdapter(
-                context!!,
-                this.imageModelArrayList!!
-        )
-        */
 
         val toolList = arguments!!.getSerializable(TOOL_LIST) as java.util.ArrayList<Tool>
-        Log.d("HomeFragment", "Some ${toolList[0].image}")
         val arrayList = ArrayList<String>()
         toolList.forEach {
-            Log.d("HomeFragment", "${it.image}")
             arrayList.add(it.image)
         }
         val urls: Array<String> = arrayList.toArray(arrayOfNulls<String>(arrayList.size))
@@ -200,11 +182,6 @@ class HomeFragment: Fragment() {
         btnDownloadVideo.setOnClickListener {
             createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
         }
-
-
-        //getStuffFromFirebaseDB("workspace", "tool1", "images")
-
-
     }
 
     // modify this to get wanted stuff, testing with one image
@@ -213,8 +190,6 @@ class HomeFragment: Fragment() {
     private fun getStuffFromFirebaseDB(workspace: String, tool: String, dataType: String){
         val ref = firebaseDatabase.getReference("/$workspace/tools/$tool/$dataType")
         //showLoadingDialog("Loading image")
-
-
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -244,10 +219,6 @@ class HomeFragment: Fragment() {
             }
         })
     }
-
-
-
-
 
     private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
@@ -292,7 +263,7 @@ class HomeFragment: Fragment() {
         val localFile = File.createTempFile("file", "")
         localFile.deleteOnExit()
 
-        if (dataType.equals("videos")){
+        if (dataType == "videos"){
             Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
             ref.getFile(localFile).addOnSuccessListener {
@@ -307,7 +278,7 @@ class HomeFragment: Fragment() {
                 Handler().post { dialog?.dismiss() }
             }
         }
-        else if (dataType.equals("pdfs")){
+        else if (dataType == "pdfs"){
             Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
             ref.getFile(localFile).addOnSuccessListener {
