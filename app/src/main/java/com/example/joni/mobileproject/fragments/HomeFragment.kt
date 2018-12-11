@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
@@ -209,8 +210,32 @@ class HomeFragment: Fragment() {
             }
         })
     }
-    */
 
+
+
+    // AsyncTask for loading and displaying selected image
+    inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
+
+        override fun doInBackground(vararg url: URL?): Bitmap {
+            lateinit var bm: Bitmap
+            try {
+                val myConn = url[0]!!.openConnection() as HttpURLConnection
+                val istream: InputStream = myConn.inputStream
+                bm = BitmapFactory.decodeStream(istream)
+                myConn.disconnect()
+            } catch (e:Exception) {
+                Log.e("Connection", "Reading error", e)
+            }
+            return bm
+        }
+
+        override fun onPostExecute(result: Bitmap) {
+            expandedImage.setImageBitmap(result)
+            //Handler().post { dialog?.dismiss() }
+        }
+    }
+    */
+    
     private fun showLoadingDialog(message: String) {
         val builder = AlertDialog.Builder(context)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
