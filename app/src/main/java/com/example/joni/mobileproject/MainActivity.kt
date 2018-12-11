@@ -253,7 +253,10 @@ class MainActivity : AppCompatActivity() {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
                 homeFragment.arguments = b
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+
+                if (supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG) != null && supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG).isVisible){
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {
