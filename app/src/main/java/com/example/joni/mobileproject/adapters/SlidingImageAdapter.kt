@@ -59,11 +59,6 @@ class SlidingImageAdapter(context: Context, private val imageModelArrayList: Arr
                     .commitAllowingStateLoss() // or commit()
             */
 
-
-
-
-
-
         }
 
         view.addView(imageLayout, 0)

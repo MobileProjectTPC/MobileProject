@@ -20,11 +20,13 @@ import com.example.joni.mobileproject.fragments.HomeFragment
 import com.example.joni.mobileproject.fragments.HomeFragment.Companion.TOOL_LIST
 import com.example.joni.mobileproject.fragments.NotificationsFragment
 import com.example.joni.mobileproject.fragments.RegisterFragment
-import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.Tool
 import com.example.joni.mobileproject.objects.NFCUtil
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,15 +39,27 @@ class MainActivity : AppCompatActivity() {
     private val registerFragment = RegisterFragment()
     private val notificationsFragment = NotificationsFragment()
 
+    private val firebaseDatabase = FirebaseDatabase.getInstance()
+
     var toolList = java.util.ArrayList<Tool>()
 
     private var mBluetoothAdapter: BluetoothAdapter? = null
 
+    private var workspace: String? = null
+
     private val mHandler: Handler = object:
             Handler(Looper.getMainLooper()){
         override fun handleMessage(inputMessage: Message) {
-            if(inputMessage.what == 0){
-                Log.d("MainActivity", "You are in this workspace: ${inputMessage.obj}")
+            Log.d("MainActivityHandle","input: ${inputMessage.obj} workspace: $workspace")
+            if (workspace == null){
+                workspace = inputMessage.obj.toString()
+                getTools(inputMessage.obj.toString())
+            }
+            if (workspace!! != inputMessage.obj){
+                if(inputMessage.what == 0){
+                    workspace = inputMessage.obj.toString()
+                    getTools(inputMessage.obj.toString())
+                }
             }
         }
     }
@@ -92,13 +106,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toolList = if (savedInstanceState == null) {
-            val extras = intent.extras
-            extras?.getSerializable("toolList") as java.util.ArrayList<Tool>
-        } else {
-            //savedInstanceState.getSerializable("Tool") as String
-            savedInstanceState.getSerializable("toolList") as java.util.ArrayList<Tool>
-        }
         Log.d("MainActivity", "MainActivity started")
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
@@ -217,5 +224,31 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Turn on the bluetooth")
             }
         }
+    }
+
+    // get the tools that are in the workspace you are in
+    // put them in a list and send that list to homefragment
+    private fun getTools(workspace: String) {
+        val ref = firebaseDatabase.getReference("hacklab/$workspace/tools/")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                toolList.clear()
+
+                p0.children.forEach {
+                    Log.d("MainTAG", "$it")
+                    toolList.add(it.getValue(Tool::class.java)!!)
+                }
+                val homeFragment = HomeFragment()
+                val b = Bundle()
+                b.putSerializable(TOOL_LIST, toolList)
+                homeFragment.arguments = b
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
     }
 }
