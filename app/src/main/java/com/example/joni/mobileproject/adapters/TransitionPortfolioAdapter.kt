@@ -35,7 +35,7 @@ import java.net.URL
 import java.net.URLStreamHandler
 import java.util.ArrayList
 
-class TransitionListAdapter(
+class TransitionPortfolioAdapter(
         navigation: TransitionNavigation,
         val page: Int,
         myList: Serializable
@@ -43,7 +43,7 @@ class TransitionListAdapter(
 
     private val navigationRef = WeakReference(navigation)
 
-    val newlist = myList as ArrayList<Tool>
+    val newlist = myList as ArrayList<Image>
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,11 +65,11 @@ class TransitionListAdapter(
         holder.binding.text.transitionName = "${context.getString(R.string.transition_text)}_${page}_$position"
         holder.binding.image.transitionName = "${context.getString(R.string.transition_image)}_${page}_$position"
 
-        //holder.binding.text.text = newlist[position].title
-        holder.binding.text.text = newlist[position].name
+        holder.binding.text.text = newlist[position].title
+        //.binding.text.text = newlist[position].name
 
-        //val imageUri = Uri.parse(newlist[position].imageUrl)
-        val imageUri = Uri.parse(newlist[position].image)
+        val imageUri = Uri.parse(newlist[position].imageUrl)
+        //val imageUri = Uri.parse(newlist[position].image)
 
         Picasso.get()
                 .load(imageUri)

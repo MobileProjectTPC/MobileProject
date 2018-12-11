@@ -63,8 +63,11 @@ class ProjectCreateActivity : AppCompatActivity() {
     }
 
     private fun setupFragment(fragment: Fragment) {
+        var arguments: Bundle = Bundle()
+        arguments.putInt("Mode", 0) // Mode: 0 = Add new files from new project
+        fragment.arguments = arguments
+
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container_add_file, fragment).commit()
     }
-
 }

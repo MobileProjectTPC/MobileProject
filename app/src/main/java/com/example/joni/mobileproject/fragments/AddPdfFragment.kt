@@ -59,6 +59,7 @@ class AddPdfFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_pdf, container, false)
 
+
         pdfButton = rootView.findViewById(R.id.add_pdf)
         pdfButton.setOnClickListener {
 
@@ -121,8 +122,9 @@ class AddPdfFragment: Fragment() {
     private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
         val ref = firebaseDatabase.getReference("/portfolio/$project/pdfs/$fileId")
 
-        val filename = UUID.randomUUID().toString()
-        val pdf = PDF(filename, fileUrl, title)
+        //val filename = UUID.randomUUID().toString()
+        //val pdf = PDF(filename, fileUrl, title)
+        val pdf = PDF(fileId, fileUrl, title)
         //val arrayList = ArrayList<Image>()
         //arrayList.add(image)
 
