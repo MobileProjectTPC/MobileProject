@@ -116,7 +116,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                     p0.children.forEach {
                         makePortfolio(it)
                         Log.d("PortfolioActivity_test it: ", it.child("images").toString())
-                        Log.d("PortfolioActivity it:.getValue()", it.child("images").getValue(Image::class.java).toString())
+                        //Log.d("PortfolioActivity it:.getValue()", it.child("images").getValue(Image::class.java).toString())
 
                         newList.add(portfolios.last().images[0])
                     }
@@ -152,20 +152,22 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         var images: ArrayList<Image> = java.util.ArrayList()
         var numberImages:Long = dS.child("images").childrenCount
         Log.d("makePortfolio_dS", numberImages.toString())
-        images.add(Image("", dS.child("images").child("mainImage").value.toString(), name))
-        for (i in 1 until numberImages){
-            images.add(Image("", dS.child("images").child("image$i").value.toString(), ""))
+        images.add(Image(dS.child("images").child("0").child("imageId").value.toString(), dS.child("images").child("0").child("imageUrl").value.toString(), dS.child("images").child("0").child("title").value.toString()))
+        dS.child("images").children.forEach{
+            if (it.key != "0"){
+                images.add(Image(it.child("imageId").value.toString(), it.child("imageUrl").value.toString(), it.child("title").value.toString()))
+            }
         }
 
         var pdfs: ArrayList<PDF> = java.util.ArrayList()
         var numberPDF: Long = dS.child("pdfs").childrenCount
         Log.d("numberPDF", numberPDF.toString())
-        for (i in 1 until numberPDF + 1){
-            Log.d("numberPDF", i.toString())
-            pdfs.add(PDF("This is hardcode", dS.child("pdfs").child("pdf$i").value.toString(), "This is hardcode"))
+        dS.child("pdfs").children.forEach{
+            pdfs.add(PDF(it.child("pdfId").value.toString(), it.child("pdfUrl").value.toString(), it.child("title").value.toString()))
         }
 
         var progresses: ArrayList<Progress> = java.util.ArrayList()
+        /*
         var numberProgress: Long = dS.child("progresses").childrenCount
         Log.d("PortfolioActivity_test", "Number of Progress is: " + numberProgress.toString())
         for (i in 1 until numberProgress + 1){
@@ -188,6 +190,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
             Log.d("PortfolioActivity_test", "progress added")
             progresses.add(Progress(date, progressImages, summary, progressVideos))
         }
+        */
 
         var summary: String = dS.child("summary").value.toString()
         var tool: String = dS.child("tool").value.toString()
@@ -196,8 +199,8 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
 
         var videos: ArrayList<Video> = java.util.ArrayList()
         var numberVideos:Long = dS.child("videos").childrenCount
-        for (i in 1 until numberVideos + 1){
-            videos.add(Video("", dS.child("videos").child("video$i").value.toString(), ""))
+        dS.child("videos").children.forEach {
+            videos.add(Video(it.child("videoId").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
         }
 
         var workspace: String = dS.child("workspace").value.toString()

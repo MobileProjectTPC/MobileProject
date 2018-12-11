@@ -1,8 +1,10 @@
 package com.example.joni.mobileproject
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.provider.MediaStore
@@ -30,6 +32,7 @@ import com.viewpagerindicator.CirclePageIndicator
 class EditProjectActivity : AppCompatActivity() {
 
     private val editMainPictureFragment = EditMainPictureFragment()
+    private val addPictureFragment = AddPictureFragment()
     private val addVideoFragment = AddVideoFragment()
     //private val addPdfFragment = AddPdfFragment()
 
@@ -45,6 +48,8 @@ class EditProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_project)
+
+        var firebaseData = FirebaseDatabase.getInstance().reference
 
         Log.d("EditProjectActivity_Test", "Set Text?")
 
@@ -73,46 +78,86 @@ class EditProjectActivity : AppCompatActivity() {
         val summaryText: EditText = findViewById(R.id.summaryText)
         summaryText.setText(project.summary)
 
-        mSummaryPager = findViewById(R.id.summaryImagePager)
-        summaryIndicator = findViewById(R.id.summaryImageIndicator)
+        if (project.images != null || project.videos != null) {
+            mSummaryPager = findViewById(R.id.summaryImagePager)
+            summaryIndicator = findViewById(R.id.summaryImageIndicator)
 
-        summaryImageVideoArrayList = makeList(project.images, project.videos!!)
+            summaryImageVideoArrayList = makeList(project.images, project.videos!!)
 
-        mSummaryPager.adapter = SlidingImageVideoEditAdapter(
-                this, summaryImageVideoArrayList!!
-        )
+            mSummaryPager.adapter = SlidingImageVideoEditAdapter(
+                    this, summaryImageVideoArrayList!!
+            )
 
-        summaryIndicator.setViewPager(mSummaryPager)
+            summaryIndicator.setViewPager(mSummaryPager)
 
-        val density = resources.displayMetrics.density
+            val density = resources.displayMetrics.density
 
-        //Set circle indicator radius
-        summaryIndicator.radius = 5 * density
+            //Set circle indicator radius
+            summaryIndicator.radius = 5 * density
 
-        // Pager listener over indicator
-        summaryIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            // Pager listener over indicator
+            summaryIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-            override fun onPageSelected(position: Int) {
-                //HomeFragment.currentPage = position
+                override fun onPageSelected(position: Int) {
+                    //HomeFragment.currentPage = position
+                }
+
+                override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
+
+                }
+
+                override fun onPageScrollStateChanged(pos: Int) {
+
+                }
+            })
+        }
+        else{
+            mSummaryPager.visibility = View.INVISIBLE
+            summaryIndicator.visibility = View.INVISIBLE
+        }
+
+        if (project.pdfs != null) {
+            var adapter = DocumentsEditAdapter(this, project.pdfs!!)
+
+            listViewDocuments = findViewById(R.id.listViewDocuments)
+
+            listViewDocuments.adapter = adapter
+            getListViewSize(listViewDocuments)
+        }
+        else{
+            listViewDocuments.visibility = View.INVISIBLE
+        }
+
+        val btnSave = findViewById(R.id.btnSave) as Button
+        btnSave.setOnClickListener {
+            // Do something
+            // Save changes to summary and project name
+
+            finish()
+        }
+
+        val btnDeleteProject = findViewById(R.id.btnDelete) as Button
+        btnDeleteProject.setOnClickListener{
+            val builder: AlertDialog.Builder
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            } else {
+                builder = AlertDialog.Builder(this)
             }
-
-            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
-
-            }
-
-            override fun onPageScrollStateChanged(pos: Int) {
-
-            }
-        })
-
-
-
-        var adapter = DocumentsEditAdapter(this, project.pdfs!!)
-
-        listViewDocuments = findViewById(R.id.listViewDocuments)
-
-        listViewDocuments.adapter = adapter
-        getListViewSize(listViewDocuments)
+            builder.setTitle("Delete Project")
+                    .setMessage("Are you sure you want to delete this project? \nThis cannot be undone!")
+                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                        // continue with delete
+                        firebaseData.child("portfolio").child(project.uid!!).removeValue()
+                        Toast.makeText(applicationContext, "The project has been deleted", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    .setNegativeButton(android.R.string.no) { dialog, which ->
+                        // do nothing
+                    }
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show()
+        }
 
     }
 

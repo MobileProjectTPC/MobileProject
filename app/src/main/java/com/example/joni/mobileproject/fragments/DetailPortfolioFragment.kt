@@ -59,16 +59,6 @@ class DetailPortfolioFragment : Fragment() {
     )
     private var summaryImageVideoArrayList: java.util.ArrayList<ImageVideo>? = null
 
-    private var progressImageVideoModelArrayList: java.util.ArrayList<ImageModel>? = null
-    val myProgressImageList = intArrayOf(
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("DetailPortfolioFragment_test", "onCreate()")
@@ -109,7 +99,6 @@ class DetailPortfolioFragment : Fragment() {
 
         binding.summaryText.text = portfolios[position].summary
 
-        binding.progressText.text = portfolios[position].progresses!![0].summary
 
 
         imageUri = Uri.parse(myList[position].imageUrl)
@@ -121,46 +110,44 @@ class DetailPortfolioFragment : Fragment() {
 
         summaryImageVideoModelArrayList = ArrayList()
         summaryImageVideoModelArrayList = populateList(mySummaryImageList)
-        progressImageVideoModelArrayList = ArrayList()
-        progressImageVideoModelArrayList = populateList(myProgressImageList)
 
-        summaryImageVideoArrayList = ArrayList()
-        summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
+        if (portfolios[position].images != null || portfolios[position].videos != null) {
+            summaryImageVideoArrayList = ArrayList()
+            summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
 
-        binding.summaryImagePager.adapter = SlidingImageVideoAdapter(
-                context!!,
-                this.summaryImageVideoArrayList!!,
-                this
-        )
+            binding.summaryImagePager.adapter = SlidingImageVideoAdapter(
+                    context!!,
+                    this.summaryImageVideoArrayList!!,
+                    this
+            )
 
-        binding.progressImagePager.adapter = SlidingImageAdapter(
-                context!!,
-                this.progressImageVideoModelArrayList!!
-        )
+            binding.summaryImageIndicator.setViewPager(binding.summaryImagePager)
 
-        binding.summaryImageIndicator.setViewPager(binding.summaryImagePager)
+            val density = resources.displayMetrics.density
 
-        val density = resources.displayMetrics.density
+            //Set circle indicator radius
+            binding.summaryImageIndicator.radius = 5 * density
 
-        //Set circle indicator radius
-        binding.summaryImageIndicator.radius = 5 * density
+            // Pager listener over indicator
+            binding.summaryImageIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
-        // Pager listener over indicator
-        binding.summaryImageIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageSelected(position: Int) {
+                    //HomeFragment.currentPage = position
+                }
 
-            override fun onPageSelected(position: Int) {
-                //HomeFragment.currentPage = position
-            }
+                override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
 
-            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
+                }
 
-            }
+                override fun onPageScrollStateChanged(pos: Int) {
 
-            override fun onPageScrollStateChanged(pos: Int) {
-
-            }
-        })
-
+                }
+            })
+        }
+        else{
+            binding.summaryImagePager.visibility = View.VISIBLE
+            binding.summaryImageIndicator.visibility = View.INVISIBLE
+        }
         /*
         http://developine.com/develop-android-image-gallery-app-kotlin-with-source-code/
         https://www.nplix.com/create-animated-video-thumbnail-android/
@@ -180,40 +167,20 @@ class DetailPortfolioFragment : Fragment() {
         setScaleAnimation(((VideoViewHolder) holder).vImage);
         setScaleAnimation(imageView);
         */
+        if (portfolios[position].pdfs != null) {
+            Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
+            var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
 
-        Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
-        var adapter = DocumentsAdapter(activity!!.applicationContext, portfolios[position].pdfs!!)
+            binding.listViewDocuments?.adapter = adapter
+            getListViewSize(binding.listViewDocuments)
 
-        binding.listViewDocuments?.adapter = adapter
-        getListViewSize(binding.listViewDocuments)
+            binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                // value of item that is clicked
+                //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
 
-        binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            // value of item that is clicked
-            //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
-
-            createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
+                createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
+            }
         }
-
-        binding.progressImageIndicator.setViewPager(binding.progressImagePager)
-
-        //Set circle indicator radius
-        binding.progressImageIndicator.radius = 5 * density
-
-        // Pager listener over indicator
-        binding.progressImageIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            override fun onPageSelected(position: Int) {
-                //HomeFragment.currentPage = position
-            }
-
-            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
-
-            }
-
-            override fun onPageScrollStateChanged(pos: Int) {
-
-            }
-        })
 
         return binding.root
     }
