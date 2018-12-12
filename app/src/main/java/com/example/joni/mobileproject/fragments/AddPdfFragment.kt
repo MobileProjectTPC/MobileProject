@@ -42,7 +42,10 @@ class AddPdfFragment: Fragment() {
         if (mode == 1){
             myproject = arguments!!.getSerializable("Project") as Portfolio
         }
-        projectName = activity!!.findViewById(R.id.final_project_name)
+        else if (mode == 0){
+            projectName = activity!!.findViewById(R.id.final_project_name)
+        }
+
 
         pdfButton = rootView.findViewById(R.id.add_pdf)
         pdfButton.setOnClickListener {

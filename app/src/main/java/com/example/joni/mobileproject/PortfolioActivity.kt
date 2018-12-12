@@ -65,10 +65,10 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         }
 
         if(user == null){
-            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, "", true)
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, "", false)
         }
         else {
-            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, user!!.uid, true)
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, user!!.uid, false)
         }
 
         val transitionSet = TransitionSet().apply {
@@ -105,7 +105,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d("PortfolioActivity_Test", p0.toString())
-                if (p0?.value == null) {
+                if (p0.value == null) {
                     if (mode == 1) {
                         Toast.makeText(applicationContext, "You have not created any portfolio yet", Toast.LENGTH_LONG).show()
                     }

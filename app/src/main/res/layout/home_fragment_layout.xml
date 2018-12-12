@@ -8,6 +8,15 @@
     android:paddingTop="32dp"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/text_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Scan NFC here or open camera to scan QR code below. Remember to enable it first."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorWhite" />
+
     <Button
         android:id="@+id/button_scan_qr"
         android:layout_width="match_parent"
@@ -44,14 +53,7 @@
             app:strokeColor="@color/backgroundStart" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/text_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Scan NFC here or open camera to scan QR code below. Remember to enable it first."
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorWhite" />
+
 
     <ImageView
         android:id="@+id/imgView"

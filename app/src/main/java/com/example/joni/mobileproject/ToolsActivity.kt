@@ -166,6 +166,58 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
                     Log.d("ToolsActivity it:.getValue()", it.getValue(Tool::class.java).toString())
                     newList.add(it.getValue(Tool::class.java)!!)
                 }
+
+                val workspace2 = "Metalworking"
+                val ref2 = firebaseDatabase.getReference("hacklab/$workspace2/tools/")
+                ref2.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                    override fun onDataChange(p0: DataSnapshot) {
+
+                        p0.children.forEach {
+                            Log.d("ToolsActivity it:", it.toString())
+                            Log.d("ToolsActivity it:.getValue()", it.getValue(Tool::class.java).toString())
+                            newList.add(it.getValue(Tool::class.java)!!)
+                        }
+                        val workspace3 = "Woodworking"
+                        val ref3 = firebaseDatabase.getReference("hacklab/$workspace3/tools/")
+                        ref3.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                            override fun onDataChange(p0: DataSnapshot) {
+
+                                p0.children.forEach {
+                                    Log.d("ToolsActivity it:", it.toString())
+                                    Log.d("ToolsActivity it:.getValue()", it.getValue(Tool::class.java).toString())
+                                    newList.add(it.getValue(Tool::class.java)!!)
+                                }
+                                listRetrieved = true
+
+                                if (toolName != null) {
+                                    goToDetailFromNFC(toolName!!, true)
+                                }
+                                else {
+                                    val mfc = ToolFragment()
+                                    val b = Bundle()
+                                    b.putSerializable("Parcel", newList)
+                                    mfc.arguments = b
+
+                                    supportFragmentManager.beginTransaction()
+                                            .add(R.id.root, mfc)
+                                            .commitAllowingStateLoss()
+                                }
+                            }
+
+                            override fun onCancelled(p0: DatabaseError) {
+                            }
+                        })
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) {
+                    }
+                })
+
+
+
+                /*
                 listRetrieved = true
 
                 if (toolName != null) {
@@ -181,6 +233,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
                             .add(R.id.root, mfc)
                             .commitAllowingStateLoss()
                 }
+                */
             }
 
             override fun onCancelled(p0: DatabaseError) {

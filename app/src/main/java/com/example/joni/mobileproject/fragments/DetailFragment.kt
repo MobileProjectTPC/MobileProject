@@ -43,7 +43,7 @@ class DetailFragment : Fragment() {
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
 
         binding.text.text = myList[position].name
-        binding.description.text = "" //pur description here
+        binding.description.text = myList[position].description
 
         imageUri = Uri.parse(myList[position].image)
 

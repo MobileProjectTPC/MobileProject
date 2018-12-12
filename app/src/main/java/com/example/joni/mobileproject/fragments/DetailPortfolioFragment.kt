@@ -74,11 +74,6 @@ class DetailPortfolioFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (nfcTrue) { activity!!.finish()}
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_portfolio_detail, container, false)
         binding.image.transitionName = "${getString(R.string.transition_image)}_${page}_$position"
