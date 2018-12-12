@@ -135,7 +135,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                         })
 
                         imageVideoArrayList.removeAt(position)
-                        this.notifyDataSetChanged()
                     }
                     .setNegativeButton(android.R.string.no) { dialog, which ->
                         // do nothing

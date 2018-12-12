@@ -400,12 +400,15 @@ class DetailPortfolioFragment : Fragment() {
     }
     */
 
-    fun refresh(position: Int){
-        var query = firebaseDatabase.getReference("portfolio").child(portfolios[position].uid)
+    fun refresh(project: String){
+        var query = firebaseDatabase.getReference("portfolio").child(project)
         var updatePortfolio: Portfolio
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                updatePortfolio = (activity as PortfolioActivity).makePortfolio(p0)
+                updatePortfolio = makePortfolio(p0)
+
+                fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, DetailPortfolioFragment(), MainActivity.HOME_FRAGMENT_TAG).commit()
+                /*
                 portfolios[position] = updatePortfolio
 
                 imageUri = Uri.parse(portfolios[position].images[0].imageUrl)
@@ -418,13 +421,82 @@ class DetailPortfolioFragment : Fragment() {
                 binding.summaryText.text = portfolios[position].summary
                 binding.summaryImagePager.adapter!!.notifyDataSetChanged()
                 binding.summaryImageIndicator.notifyDataSetChanged()
-                //binding.listViewDocuments.adapter!!.notifyDataSetChanged()
+                ((BaseAdapter)(binding.listViewDocuments.adapter!!)).notifyDataSetChanged()
+                */
             }
 
             override fun onCancelled(p0: DatabaseError) {
 
             }
         })
+
+        //Log.d("refresh()_test", "refresh()")
+        //activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
+    fun makePortfolio(dS: DataSnapshot): Portfolio{
+        Log.d("makePortfolio_dS", dS.toString())
+        Log.d("makePortfolio_dS", dS.child("images").value.toString())
+        var date: String = dS.child("date").value.toString()
+
+        var name: String = dS.child("name").value.toString()
+
+        var images: ArrayList<Image> = java.util.ArrayList()
+        var numberImages:Long = dS.child("images").childrenCount
+        Log.d("makePortfolio_dS", numberImages.toString())
+        images.add(Image(dS.child("images").child("0").child("imageId").value.toString(), dS.child("images").child("0").child("imageUrl").value.toString(), dS.child("images").child("0").child("title").value.toString()))
+        dS.child("images").children.forEach{
+            if (it.key != "0"){
+                images.add(Image(it.child("imageId").value.toString(), it.child("imageUrl").value.toString(), it.child("title").value.toString()))
+            }
+        }
+
+        var pdfs: ArrayList<PDF> = java.util.ArrayList()
+        var numberPDF: Long = dS.child("pdfs").childrenCount
+        Log.d("numberPDF", numberPDF.toString())
+        dS.child("pdfs").children.forEach{
+            pdfs.add(PDF(it.child("pdfid").value.toString(), it.child("pdfurl").value.toString(), it.child("title").value.toString()))
+        }
+
+        var progresses: ArrayList<Progress> = java.util.ArrayList()
+        /*
+        var numberProgress: Long = dS.child("progresses").childrenCount
+        Log.d("PortfolioActivity_test", "Number of Progress is: " + numberProgress.toString())
+        for (i in 1 until numberProgress + 1){
+            Log.d("PortfolioActivity_test", "Run loop?")
+            var date: String = dS.child("progresses").child("progress$i").child("date").value.toString()
+
+            var progressImages: ArrayList<Image> = java.util.ArrayList()
+            var numberImages:Long = dS.child("processes").child("process$i").child("images").childrenCount
+            for (i in 1 until numberImages + 1){
+                progressImages.add(Image("", dS.child("progresses").child("progress$i").child("images").child("image$i").value.toString(), name))
+            }
+
+            var summary: String = dS.child("progresses").child("progress$i").child("summary").value.toString()
+
+            var progressVideos: ArrayList<Video> = java.util.ArrayList()
+            var numberVideos:Long = dS.child("processes").child("process$i").child("videos").childrenCount
+            for (i in 1 until numberVideos + 1){
+                progressVideos.add(Video("", dS.child("progresses").child("progress$i").child("videos").child("video$i").value.toString(), ""))
+            }
+            Log.d("PortfolioActivity_test", "progress added")
+            progresses.add(Progress(date, progressImages, summary, progressVideos))
+        }
+        */
+
+        var summary: String = dS.child("summary").value.toString()
+        var tool: String = dS.child("tool").value.toString()
+        var uid: String = dS.child("uid").value.toString()
+        var user: String = dS.child("user").value.toString()
+
+        var videos: ArrayList<Video> = java.util.ArrayList()
+        var numberVideos:Long = dS.child("videos").childrenCount
+        dS.child("videos").children.forEach {
+            videos.add(Video(it.child("videoid").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
+        }
+
+        var workspace: String = dS.child("workspace").value.toString()
+
+        return Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace)
+    }
 }
