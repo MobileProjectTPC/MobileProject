@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.nfc.NfcAdapter
 import android.os.*
 import android.support.design.widget.BottomNavigationView
@@ -28,6 +29,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         const val NOTIFICTIONS_FRAGMENT_TAG = "NotificationFragment"
         const val VIBRATION_TIME: Long = 100
         const val TOOL = "Tool"
+        const val WORKSPACE = "Workspace"
         val listOfTools = arrayListOf(
                 "tool1", "tool2", "tool3", "tool4", "tool5", "tool6", "tool7", "tool8", "tool9"
         )
@@ -88,6 +91,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_home -> {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
+                b.putString(WORKSPACE, workspace) ///////////////////////????
                 homeFragment.arguments = b
                 setupFragment(homeFragment, HOME_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
@@ -134,6 +138,7 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()
         val b = Bundle()
         b.putSerializable(TOOL_LIST, toolList)
+        //b.putString(WORKSPACE, workspace) ///////////////////////????
         homeFragment.arguments = b
 
         supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
@@ -251,7 +256,10 @@ class MainActivity : AppCompatActivity() {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
                 homeFragment.arguments = b
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+
+                if (supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG) != null && supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG).isVisible){
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -266,39 +274,22 @@ class MainActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d("MAindsdfaf", "${p0.child("image").value}")
 
-                try {
-                    val myURL = URL(p0.child("image").value.toString())
-                    GetCont().execute(myURL)
-                } catch (e:Exception){
-                    Log.e("URL", "URL creation",e)
+                if (p0.child("image").value != null){
+                    try {
+                        val myURL = p0.child("image").value.toString()
+                        //GetCont().execute(myURL)
+                        Picasso.get().load(myURL).into(expandedImage)
+                    } catch (e:Exception){
+                        Log.e("URL", "URL creation",e)
+                    }
                 }
-
+                else {
+                    expandedImage.setImageResource(R.drawable.workshop_tutor_icon)
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {
             }
         })
-    }
-
-    // AsyncTask for loading and displaying selected image
-    inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
-
-        override fun doInBackground(vararg url: URL?): Bitmap {
-            lateinit var bm: Bitmap
-            try {
-                val myConn = url[0]!!.openConnection() as HttpURLConnection
-                val istream: InputStream = myConn.inputStream
-                bm = BitmapFactory.decodeStream(istream)
-                myConn.disconnect()
-            } catch (e:Exception) {
-                Log.e("Connection", "Reading error", e)
-            }
-            return bm
-        }
-
-        override fun onPostExecute(result: Bitmap) {
-            expandedImage.setImageBitmap(result)
-            //Handler().post { dialog?.dismiss() }
-        }
     }
 }

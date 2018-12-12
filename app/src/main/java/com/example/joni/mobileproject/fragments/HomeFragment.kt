@@ -21,8 +21,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.joni.mobileproject.*
+import com.example.joni.mobileproject.MainActivity.Companion.WORKSPACE
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
-import com.example.joni.mobileproject.adapters.SlidingImage_Adapter
+import com.example.joni.mobileproject.adapters.SlidingImagesAdapter
 import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.models.Tool
@@ -32,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
@@ -110,7 +112,7 @@ class HomeFragment: Fragment() {
             arrayList.add(it.image)
         }
         val urls: Array<String> = arrayList.toArray(arrayOfNulls<String>(arrayList.size))
-        mPager.adapter = SlidingImage_Adapter(
+        mPager.adapter = SlidingImagesAdapter(
                 context!!,
                 urls
         )
@@ -137,9 +139,11 @@ class HomeFragment: Fragment() {
 
         init()
 
+        //val workSpace = arguments!!.getString(TOOL_LIST) ///////?????????
         toolsButton = rootView.findViewById(R.id.btn_tools)
         toolsButton.setOnClickListener {
             val intent = Intent(context, ToolsActivity::class.java)
+            //intent.putExtra(WORKSPACE, workSpace)  ///////?????????
             startActivity(intent)
         }
 
@@ -208,6 +212,30 @@ class HomeFragment: Fragment() {
             override fun onCancelled(p0: DatabaseError) {
             }
         })
+    }
+
+
+
+    // AsyncTask for loading and displaying selected image
+    inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
+
+        override fun doInBackground(vararg url: URL?): Bitmap {
+            lateinit var bm: Bitmap
+            try {
+                val myConn = url[0]!!.openConnection() as HttpURLConnection
+                val istream: InputStream = myConn.inputStream
+                bm = BitmapFactory.decodeStream(istream)
+                myConn.disconnect()
+            } catch (e:Exception) {
+                Log.e("Connection", "Reading error", e)
+            }
+            return bm
+        }
+
+        override fun onPostExecute(result: Bitmap) {
+            expandedImage.setImageBitmap(result)
+            //Handler().post { dialog?.dismiss() }
+        }
     }
     */
 

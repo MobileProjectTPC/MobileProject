@@ -11,10 +11,7 @@ import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.databinding.FragmentDetailBinding
 import com.squareup.picasso.Picasso
 import java.io.Serializable
-import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.Tool
-import kotlinx.android.synthetic.main.fragment_detail.*
-
 
 class DetailFragment : Fragment() {
 
@@ -45,12 +42,9 @@ class DetailFragment : Fragment() {
         binding.image.transitionName = "${getString(R.string.transition_image)}_${page}_$position"
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
 
-        //binding.text.text = myList[position].title
         binding.text.text = myList[position].name
+        binding.description.text = "" //pur description here
 
-        binding.description.text = "put descriptions here"
-
-        //imageUri = Uri.parse(myList[position].imageUrl)
         imageUri = Uri.parse(myList[position].image)
 
         Picasso.get()
@@ -64,9 +58,9 @@ class DetailFragment : Fragment() {
 
     companion object {
 
-        private const val EXTRA_POSITION = "com.example.joni.mobileproject#POSITION"
-        private const val EXTRA_PAGE = "com.example.joni.mobileproject#PAGE"
-        private const val MY_LIST = "mylist"
+        private const val EXTRA_POSITION = "POSITION"
+        private const val EXTRA_PAGE = "PAGE"
+        private const val MY_LIST = "myList"
         private const val NFC_TRUE = "nfc"
 
         fun newInstance(position: Int, page: Int, myList: Serializable, nfcTrue: Boolean): DetailFragment {

@@ -33,6 +33,7 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
     private var toolName: String? = null
     private var mNfcAdapter: NfcAdapter? = null
     private var listRetrieved = false
+    private lateinit var workspace: String
 
     companion object {
         const val DETAIL_FRAGMENT_TAG = "DetailFragment"
@@ -42,8 +43,20 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tools)
 
+
+
+        //workspace = intent.extras.getString(MainActivity.WORKSPACE) ////////////////////////??????????????
+
+        workspace = if (savedInstanceState == null) {
+            val extras = intent.extras
+            extras.getString(MainActivity.WORKSPACE)
+        } else {
+            savedInstanceState.getString(MainActivity.WORKSPACE)
+        }
+        workspace = "3Dprinting"  ////////////////////////??????????????
+
         //getStuffFromFirebaseDB("workspace", "tool1", "images")
-        getStuffFromFirebaseDB("3Dprinting", "3Dprinter", "images")
+        getStuffFromFirebaseDB(workspace, "3Dprinter", "images")
 
         toolName = if (savedInstanceState == null) {
             val extras = intent.extras

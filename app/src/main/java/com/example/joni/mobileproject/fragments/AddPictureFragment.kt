@@ -90,7 +90,7 @@ class AddPictureFragment: Fragment() {
 
 
         addPictureButton = rootView.findViewById(R.id.add_picture)
-        addPictureButton.setOnClickListener {
+        addPictureButton.setOnClickListener { _ ->
             if (picture.drawable != null &&
                     text_picture_title.text.isNotEmpty() &&
                     text_picture_description.text.isNotEmpty()) {
@@ -116,7 +116,7 @@ class AddPictureFragment: Fragment() {
                 val file = File(mCurrentPhotoPath!!)
                 val imageUri = Uri.fromFile(file)
                 ref.putFile(imageUri)
-                        .addOnSuccessListener {
+                        .addOnSuccessListener { it ->
                             Log.d("TAG", "Successfully uploaded file: ${it.metadata?.path}")
 
                             ref.downloadUrl.addOnSuccessListener {
@@ -124,7 +124,6 @@ class AddPictureFragment: Fragment() {
                                 saveFileToDatabase(filename, it.toString(), title, description, project!!)
                                 Handler().post { dialog!!.dismiss() }
                             }
-
                         }
                         .addOnFailureListener {
                             Handler().post { dialog!!.dismiss() }
@@ -180,7 +179,7 @@ class AddPictureFragment: Fragment() {
 
     private fun showUploadDialog(message: String) {
         val builder = AlertDialog.Builder(context!!)
-        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
+        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, viewGroup)
         val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
         dialogTxtView.text = message
         builder.setView(dialogView)
