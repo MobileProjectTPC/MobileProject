@@ -16,6 +16,7 @@ import java.util.ArrayList
 import android.graphics.Bitmap
 import android.os.Build
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import android.widget.Toast
 import com.example.joni.mobileproject.models.Portfolio
 import com.google.firebase.database.DataSnapshot
