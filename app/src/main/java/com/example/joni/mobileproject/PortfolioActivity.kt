@@ -200,7 +200,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         var videos: ArrayList<Video> = java.util.ArrayList()
         var numberVideos:Long = dS.child("videos").childrenCount
         dS.child("videos").children.forEach {
-            videos.add(Video(it.child("videoid").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
+            videos.add(Video(it.child("videoId").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
         }
 
         var workspace: String = dS.child("workspace").value.toString()

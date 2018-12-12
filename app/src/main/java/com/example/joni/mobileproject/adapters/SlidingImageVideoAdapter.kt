@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Parcelable
 import android.support.v4.view.PagerAdapter
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         val delete = imageLayout.findViewById(R.id.btnDelete) as ImageView
 
         realPosition = position
+        Log.d("createtempFile_test", "Videoids: " + imageVideoArrayList[position].id)
 
         if (!userCreated){
             delete.visibility = View.INVISIBLE
@@ -59,7 +61,8 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
 
         imageLayout.setOnClickListener {
             if (imageVideoArrayList[position].video) {
-                fragment.createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
+                Log.d("createtempFile_test", imageVideoArrayList[position].id)
+                fragment.createTempFile("videos", imageVideoArrayList[position].id)
             }
         }
 

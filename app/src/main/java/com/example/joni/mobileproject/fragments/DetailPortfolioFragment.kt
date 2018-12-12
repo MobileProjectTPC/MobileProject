@@ -205,11 +205,14 @@ class DetailPortfolioFragment : Fragment() {
             binding.listViewDocuments.adapter = adapter
             getListViewSize(binding.listViewDocuments)
 
-            binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
+            binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { _, _, listViewPosition, _ ->
                 // value of item that is clicked
                 //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
+                Log.d("listViewDocuments.onClicklistener_test", "")
+                Log.d("createtempFile_test", portfolios[position].pdfs!![listViewPosition].PDFUrl)
+                Log.d("createtempFile_test", portfolios[position].pdfs!![listViewPosition].PDFId + ".pdf")
 
-                createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
+                createTempFile("pdfs", portfolios[position].pdfs!![listViewPosition].PDFId)
             }
         }
 

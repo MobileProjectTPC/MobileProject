@@ -101,7 +101,7 @@ class AddVideoFragment: Fragment() {
                 val description = text_video_description.text.toString()
 
                 val filename = UUID.randomUUID().toString()
-                val ref = firebaseStorage.getReference("/portfolio/$project/$filename")
+                val ref = firebaseStorage.getReference("/videos/$filename")
 
                 val file = File(mCurrentVideoPath!!)
                 val videoUri = Uri.fromFile(file)
