@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import okhttp3.internal.Internal.instance
 import java.io.File
 
 class DetailPortfolioFragment : Fragment() {
@@ -107,6 +108,7 @@ class DetailPortfolioFragment : Fragment() {
 
             val arguments = Bundle()
             arguments.putSerializable("Project", portfolios[position])
+            arguments.putInt("Position", position)
 
             editMainPictureFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
@@ -367,8 +369,18 @@ class DetailPortfolioFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 updatePortfolio = (activity as PortfolioActivity).makePortfolio(p0)
                 portfolios[position] = updatePortfolio
-                binding.summaryText.text = portfolios[position].summary
 
+                imageUri = Uri.parse(portfolios[position].images[0].imageUrl)
+                Picasso.get()
+                        .load(imageUri)
+                        .placeholder(R.drawable.progress_animation)
+                        .error(R.drawable.workshop_tutor_logo_text)
+                        .into(binding.image)
+
+                binding.summaryText.text = portfolios[position].summary
+                binding.summaryImagePager.adapter!!.notifyDataSetChanged()
+                binding.summaryImageIndicator.notifyDataSetChanged()
+                //binding.listViewDocuments.adapter!!.notifyDataSetChanged()
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -376,4 +388,5 @@ class DetailPortfolioFragment : Fragment() {
             }
         })
     }
+
 }

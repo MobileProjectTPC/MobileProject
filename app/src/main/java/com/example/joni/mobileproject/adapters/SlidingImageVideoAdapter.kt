@@ -48,10 +48,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
 
         realPosition = position
 
-        Log.d("SlidingImageVideoAdapter_test", "imageVideoArrayList: " + imageVideoArrayList.toString())
-        Log.d("SlidingImageVideoAdapter_test","Position: " + position)
-
-
         if (userCreated == false){
             delete.visibility = View.INVISIBLE
         }
@@ -77,7 +73,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         }
 
         imageLayout.setOnClickListener {
-            Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
             if (imageVideoArrayList[position].video == true) {
                 this.fragment = fragment
                 fragment.createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
@@ -110,7 +105,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         }
 
         delete.setOnClickListener {
-            Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
             val builder: AlertDialog.Builder
             idOfImage = imageVideoArrayList[position].id
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -127,12 +121,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                         query.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                                 var numberOfImages: Long = p0.childrenCount
-                                Log.d("SlidingImageVideoAdapter_test","idOfImage: " + idOfImage)
-                                Log.d("SlidingImageVideoAdapter_test","realPosition: " + realPosition)
-                                Log.d("SlidingImageVideoAdapter_test","numberOfImages: " + numberOfImages)
-                                //Log.d("SlidingImageVideoAdapter_test","project.uid: " + project.uid)
-                                //Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
-                                //Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList[position].uid: " + imageVideoArrayList[position].id)
 
                                 if (realPosition < numberOfImages){
                                     firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()
@@ -212,4 +200,5 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         }
         return bitmap
     }
+
 }
