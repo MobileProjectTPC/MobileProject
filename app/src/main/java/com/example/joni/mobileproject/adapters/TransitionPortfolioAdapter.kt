@@ -2,38 +2,18 @@ package com.example.joni.mobileproject.adapters
 
 
 import android.databinding.DataBindingUtil
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.AsyncTask
-import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
-import android.text.style.URLSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.ToolsActivity
 import com.example.joni.mobileproject.databinding.ListItemBinding
-import com.example.joni.mobileproject.fragments.HomeFragment
 import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.models.Tool
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
-import junit.framework.Assert.assertEquals
-import java.io.InputStream
 import java.io.Serializable
 import java.lang.ref.WeakReference
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLStreamHandler
-import java.util.ArrayList
+import java.util.*
 
 class TransitionPortfolioAdapter(
         navigation: TransitionNavigation,

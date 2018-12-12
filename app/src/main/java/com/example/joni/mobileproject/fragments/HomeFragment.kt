@@ -1,13 +1,9 @@
 package com.example.joni.mobileproject.fragments
 
-
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
@@ -21,24 +17,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.joni.mobileproject.*
-import com.example.joni.mobileproject.MainActivity.Companion.WORKSPACE
-import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.example.joni.mobileproject.adapters.SlidingImagesAdapter
-import com.example.joni.mobileproject.models.Image
-import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.models.Tool
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 class HomeFragment: Fragment() {
 
@@ -48,27 +32,8 @@ class HomeFragment: Fragment() {
 
     private var dialog: AlertDialog? = null
 
-    private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val firebaseStorage = FirebaseStorage.getInstance()
 
-    private var imageModelArrayList: java.util.ArrayList<ImageModel>? = null
-    private val myImageList = intArrayOf(
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text
-    )
-    private var portfolioImageModelArrayList: java.util.ArrayList<ImageModel>? = null
-    private val myPortfolioImageList = intArrayOf(
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text,
-            R.drawable.workshop_tutor_logo_text
-    )
     private lateinit var mPager: ViewPager
     private lateinit var indicator: CirclePageIndicator
     private lateinit var mPortfolioPager: ViewPager
@@ -77,32 +42,15 @@ class HomeFragment: Fragment() {
     private lateinit var toolsButton: Button
     private lateinit var portfolioButton: Button
 
-    val mutableList : MutableList<Image> = ArrayList()
-
     companion object {
         private var currentPage = 0
         const val RECORD_REQUEST_CODE = 1
 
         const val TOOL_LIST = "TOOL_LIST"
-
-        /*
-        fun newInstance(myList: Serializable): DetailFragment {
-            return DetailFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(TOOL_LIST, myList)
-                }
-            }
-        }
-        */
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.home_fragment_layout, container, false)
-
-        imageModelArrayList = ArrayList()
-        imageModelArrayList = populateList(myImageList)
-        portfolioImageModelArrayList = ArrayList()
-        portfolioImageModelArrayList = populateList(myPortfolioImageList)
 
         mPager = rootView.findViewById(R.id.pager)
 
@@ -119,31 +67,13 @@ class HomeFragment: Fragment() {
 
         indicator = rootView.findViewById(R.id.indicator)
 
-
-        mPortfolioPager = rootView.findViewById(R.id.portfolioPager)
-        mPortfolioPager.adapter = SlidingImageAdapter(
-                context!!,
-                this.portfolioImageModelArrayList!!
-        )
-
-        portfolioIndicator = rootView.findViewById(R.id.portfolioIndicator)
-
-        //tvResult = rootView.findViewById(R.id.tvresult)
-
-        //6098530220cc996d7d8bc83c72e0b5bcae6195fa?
-
         scanButton = rootView.findViewById(R.id.button_scan_qr)
-
-
-        //setupPermissions()
 
         init()
 
-        //val workSpace = arguments!!.getString(TOOL_LIST) ///////?????????
         toolsButton = rootView.findViewById(R.id.btn_tools)
         toolsButton.setOnClickListener {
             val intent = Intent(context, ToolsActivity::class.java)
-            //intent.putExtra(WORKSPACE, workSpace)  ///////?????????
             startActivity(intent)
         }
 
@@ -173,8 +103,6 @@ class HomeFragment: Fragment() {
 
         Log.d("HomeFragment", "HomeFragment created")
 
-        // replace the download button with NFC scanner
-        //
         btnDownloadPdf.setOnClickListener {
             /*
             if (workspace != null && tool != null && dataType != null ){
@@ -292,19 +220,6 @@ class HomeFragment: Fragment() {
         }
     }
 
-    private fun populateList(imagelist: IntArray): java.util.ArrayList<ImageModel> {
-
-        val list = java.util.ArrayList<ImageModel>()
-
-        for (i in 0..5) {
-            val imageModel = ImageModel()
-            imageModel.setImageDrawables(imagelist[i])
-            list.add(imageModel)
-        }
-
-        return list
-    }
-
     private fun init() {
 
         scanButton.setOnClickListener {
@@ -343,31 +258,6 @@ class HomeFragment: Fragment() {
 
 
         })
-
-
-        portfolioIndicator.setViewPager(mPortfolioPager)
-
-        //Set circle indicator radius
-        portfolioIndicator.radius = 5 * density
-
-        // Pager listener over indicator
-        portfolioIndicator.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            override fun onPageSelected(position: Int) {
-                currentPage = position
-            }
-
-            override fun onPageScrolled(pos: Int, arg1: Float, arg2: Int) {
-
-            }
-
-            override fun onPageScrollStateChanged(pos: Int) {
-
-            }
-
-
-        })
-
     }
 
     /*

@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.PDF
+import com.example.joni.mobileproject.models.Portfolio
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.add_pdf.*
@@ -30,10 +31,17 @@ class AddPdfFragment: Fragment() {
     private val fireBaseDatabase = FirebaseDatabase.getInstance()
     private var dialog: AlertDialog? = null
     private val viewGroup: ViewGroup? = null
+    private var mode: Int = -1
+    private var myproject: Portfolio? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_pdf, container, false)
 
+        mode = arguments!!.getInt("Mode")
+
+        if (mode == 1){
+            myproject = arguments!!.getSerializable("Project") as Portfolio
+        }
         projectName = activity!!.findViewById(R.id.final_project_name)
 
         pdfButton = rootView.findViewById(R.id.add_pdf)
@@ -47,6 +55,12 @@ class AddPdfFragment: Fragment() {
                 Toast.makeText(context!!, "Give a title first", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+        if(mode == 0) {
+            projectName = activity!!.findViewById(R.id.final_project_name)
+        }
+
         return rootView
     }
 
@@ -60,7 +74,15 @@ class AddPdfFragment: Fragment() {
     }
 
     private fun uploadFileToFireBase(uri: Uri, title: String) {
-        val project = projectName.text.toString()
+
+        //val project = projectName.text.toString()
+
+        val project: String = if (mode == 0) {
+            projectName.text.toString()
+        } else {
+            myproject!!.uid
+        }
+
         val filename = UUID.randomUUID().toString()
         val ref = fireBaseStorage.getReference("/portfolio/$project/$filename")
 
@@ -109,5 +131,4 @@ class AddPdfFragment: Fragment() {
         dialog = builder.create()
         dialog!!.show()
     }
-
 }
