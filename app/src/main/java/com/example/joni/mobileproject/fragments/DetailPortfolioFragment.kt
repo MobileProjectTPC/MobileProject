@@ -362,7 +362,7 @@ class DetailPortfolioFragment : Fragment() {
         return list
     }
 
-<<<<<<< HEAD
+
     /*
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == 2) {
@@ -371,19 +371,19 @@ class DetailPortfolioFragment : Fragment() {
     }
     */
 
-    fun refresh(project: String){
+    fun refresh(project: String) {
         var query = firebaseDatabase.getReference("portfolio").child(project)
-=======
-    fun refresh(position: Int){
-        val query = firebaseDatabase.getReference("portfolio").child(portfolios[position].uid)
->>>>>>> d574dacffeb5f0df87f40607ce04f14257b2d10d
-        var updatePortfolio: Portfolio
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                updatePortfolio = makePortfolio(p0)
 
-                fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, DetailPortfolioFragment(), MainActivity.HOME_FRAGMENT_TAG).commit()
-                /*
+        fun refresh(position: Int) {
+            val query = firebaseDatabase.getReference("portfolio").child(portfolios[position].uid)
+
+            var updatePortfolio: Portfolio
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(p0: DataSnapshot) {
+                    updatePortfolio = makePortfolio(p0)
+
+                    fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, DetailPortfolioFragment(), MainActivity.HOME_FRAGMENT_TAG).commit()
+                    /*
                 portfolios[position] = updatePortfolio
 
                 imageUri = Uri.parse(portfolios[position].images[0].imageUrl)
@@ -398,17 +398,17 @@ class DetailPortfolioFragment : Fragment() {
                 binding.summaryImageIndicator.notifyDataSetChanged()
                 ((BaseAdapter)(binding.listViewDocuments.adapter!!)).notifyDataSetChanged()
                 */
-            }
+                }
 
-            override fun onCancelled(p0: DatabaseError) {
+                override fun onCancelled(p0: DatabaseError) {
 
-            }
-        })
+                }
+            })
 
-        //Log.d("refresh()_test", "refresh()")
-        //activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+            //Log.d("refresh()_test", "refresh()")
+            //activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        }
     }
-
     fun makePortfolio(dS: DataSnapshot): Portfolio{
         Log.d("makePortfolio_dS", dS.toString())
         Log.d("makePortfolio_dS", dS.child("images").value.toString())
