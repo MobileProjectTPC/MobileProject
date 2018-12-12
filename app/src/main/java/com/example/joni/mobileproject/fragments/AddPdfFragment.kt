@@ -68,7 +68,7 @@ class AddPdfFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == pdfRequest && resultCode == Activity.RESULT_OK && data != null) {
             val pdf = text_pdf_title.text.toString()
-            uploadFileToFireBase(data.data, pdf)
+            uploadFileToFirebase(data.data, pdf)
         }
 
     }
