@@ -10,7 +10,6 @@ import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.adapters.TransitionPageAdapter
 import com.example.joni.mobileproject.databinding.FragmentToolBinding
 
-
 class ToolFragment : Fragment() {
 
     private lateinit var binding: FragmentToolBinding
@@ -21,5 +20,4 @@ class ToolFragment : Fragment() {
         binding.pager.adapter = TransitionPageAdapter(childFragmentManager, myList)
         return binding.root
     }
-
 }

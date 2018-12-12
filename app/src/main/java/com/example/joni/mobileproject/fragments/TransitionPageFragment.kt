@@ -35,8 +35,8 @@ class TransitionPageFragment : Fragment() {
 
     companion object {
 
-        private const val EXTRA_PAGE = "com.example.joni.mobileproject#PAGE"
-        private const val MY_LIST = "mylist"
+        private const val EXTRA_PAGE = "PAGE"
+        private const val MY_LIST = "myList"
 
         fun newInstance(page: Int, myList: Serializable): TransitionPageFragment {
             return TransitionPageFragment().apply {

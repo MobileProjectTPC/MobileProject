@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         const val NOTIFICTIONS_FRAGMENT_TAG = "NotificationFragment"
         const val VIBRATION_TIME: Long = 100
         const val TOOL = "Tool"
+        const val WORKSPACE = "Workspace"
         val listOfTools = arrayListOf(
                 "tool1", "tool2", "tool3", "tool4", "tool5", "tool6", "tool7", "tool8", "tool9"
         )
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_home -> {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
+                b.putString(WORKSPACE, workspace) ///////////////////////????
                 homeFragment.arguments = b
                 setupFragment(homeFragment, HOME_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
@@ -127,6 +129,7 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()
         val b = Bundle()
         b.putSerializable(TOOL_LIST, toolList)
+        //b.putString(WORKSPACE, workspace) ///////////////////////????
         homeFragment.arguments = b
 
         supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()

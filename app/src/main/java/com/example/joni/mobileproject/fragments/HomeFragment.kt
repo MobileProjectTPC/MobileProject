@@ -21,8 +21,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.joni.mobileproject.*
+import com.example.joni.mobileproject.MainActivity.Companion.WORKSPACE
 import com.example.joni.mobileproject.adapters.SlidingImageAdapter
-import com.example.joni.mobileproject.adapters.SlidingImage_Adapter
+import com.example.joni.mobileproject.adapters.SlidingImagesAdapter
 import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.ImageModel
 import com.example.joni.mobileproject.models.Tool
@@ -110,7 +111,7 @@ class HomeFragment: Fragment() {
             arrayList.add(it.image)
         }
         val urls: Array<String> = arrayList.toArray(arrayOfNulls<String>(arrayList.size))
-        mPager.adapter = SlidingImage_Adapter(
+        mPager.adapter = SlidingImagesAdapter(
                 context!!,
                 urls
         )
@@ -137,9 +138,11 @@ class HomeFragment: Fragment() {
 
         init()
 
+        //val workSpace = arguments!!.getString(TOOL_LIST) ///////?????????
         toolsButton = rootView.findViewById(R.id.btn_tools)
         toolsButton.setOnClickListener {
             val intent = Intent(context, ToolsActivity::class.java)
+            //intent.putExtra(WORKSPACE, workSpace)  ///////?????????
             startActivity(intent)
         }
 

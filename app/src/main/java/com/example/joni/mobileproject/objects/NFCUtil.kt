@@ -13,13 +13,13 @@ import android.nfc.tech.NdefFormatable
 object NFCUtil {
 
     fun retrieveNFCMessage(intent: Intent?): String {
-        intent?.let {
+        intent?.let { _ ->
             if (NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
                 val nDefMessages = getNDefMessages(intent)
-                nDefMessages[0].records?.let {
-                    it.forEach {
-                        it?.payload.let {
-                            it?.let {
+                nDefMessages[0].records?.let { it ->
+                    it.forEach { rec ->
+                        rec?.payload.let { byteArray ->
+                            byteArray?.let {it ->
                                 return String(it)
 
                             }
@@ -36,13 +36,13 @@ object NFCUtil {
 
     private fun getNDefMessages(intent: Intent): Array<NdefMessage> {
 
-        val rawMessage = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-        rawMessage?.let {
+        val rawMessage =
+                intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+        rawMessage?.let { _ ->
             return rawMessage.map {
                 it as NdefMessage
             }.toTypedArray()
         }
-        // Unknown tag type
         val empty = byteArrayOf()
         val record = NdefRecord(NdefRecord.TNF_UNKNOWN, empty, empty, empty)
         val msg = NdefMessage(arrayOf(record))
@@ -59,8 +59,9 @@ object NFCUtil {
         val nfcIntentFilter = IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED)
         val filters = arrayOf(nfcIntentFilter)
 
-        val TechLists = arrayOf(arrayOf(Ndef::class.java.name), arrayOf(NdefFormatable::class.java.name))
+        val techLists = arrayOf(arrayOf(Ndef::class.java.name),
+                arrayOf(NdefFormatable::class.java.name))
 
-        nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, TechLists)
+        nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techLists)
     }
 }
