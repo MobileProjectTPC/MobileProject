@@ -120,8 +120,9 @@ class EditMainPictureFragment: Fragment() {
 
                 activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                 showUploadDialog("Uploading file")
+                Log.d("DetailPortfolioFragment_test", "position: " + position)
                 //Toast.makeText(context!!, "Picture added to the project ${projectName.text}", Toast.LENGTH_SHORT).show()
-                //DetailPortfolioFragment.getInstance().refresh(position)
+                DetailPortfolioFragment().refresh(project)
             }
             else {
                 Toast.makeText(context!!, "null", Toast.LENGTH_SHORT).show()
