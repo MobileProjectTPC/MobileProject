@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.PDF
+import com.example.joni.mobileproject.models.Portfolio
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.add_pdf.*
@@ -36,15 +37,12 @@ class AddPdfFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_pdf, container, false)
 
-<<<<<<< HEAD
         mode = arguments!!.getInt("Mode")
 
         if (mode == 1){
             myproject = arguments!!.getSerializable("Project") as Portfolio
         }
-=======
         projectName = activity!!.findViewById(R.id.final_project_name)
->>>>>>> 4634d23fb6ef29d6276fd436643badd8a2d63a15
 
         pdfButton = rootView.findViewById(R.id.add_pdf)
         pdfButton.setOnClickListener {
@@ -57,14 +55,12 @@ class AddPdfFragment: Fragment() {
                 Toast.makeText(context!!, "Give a title first", Toast.LENGTH_SHORT).show()
             }
         }
-<<<<<<< HEAD
+
 
         if(mode == 0) {
             projectName = activity!!.findViewById(R.id.final_project_name)
         }
 
-=======
->>>>>>> 4634d23fb6ef29d6276fd436643badd8a2d63a15
         return rootView
     }
 
@@ -77,20 +73,15 @@ class AddPdfFragment: Fragment() {
 
     }
 
-<<<<<<< HEAD
-    fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
+    fun uploadFileToFireBase(uri: Uri, title: String) {
+
         var project: String
         if (mode == 0) {
             project = projectName.text.toString()
-        }
-        else{
+        } else {
             project = myproject!!.uid
         }
 
-=======
-    private fun uploadFileToFireBase(uri: Uri, title: String) {
-        val project = projectName.text.toString()
->>>>>>> 4634d23fb6ef29d6276fd436643badd8a2d63a15
         val filename = UUID.randomUUID().toString()
         val ref = fireBaseStorage.getReference("/portfolio/$project/$filename")
 
@@ -115,7 +106,7 @@ class AddPdfFragment: Fragment() {
     }
 
 
-    private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
+    fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
         val ref = fireBaseDatabase.getReference("/portfolio/$project/pdfs/$fileId")
 
         val pdf = PDF(fileId, fileUrl, title)
@@ -129,7 +120,7 @@ class AddPdfFragment: Fragment() {
                 }
     }
 
-    private fun showUploadDialog(message: String) {
+    fun showUploadDialog(message: String) {
         val builder = AlertDialog.Builder(context!!)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, viewGroup)
         val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
@@ -139,5 +130,4 @@ class AddPdfFragment: Fragment() {
         dialog = builder.create()
         dialog!!.show()
     }
-
 }
