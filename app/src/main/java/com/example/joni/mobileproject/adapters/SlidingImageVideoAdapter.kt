@@ -2,34 +2,31 @@ package com.example.joni.mobileproject.adapters
 
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Parcelable
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.fragments.DetailPortfolioFragment
 import com.example.joni.mobileproject.models.ImageVideo
-import com.squareup.picasso.Picasso
-import java.util.ArrayList
-import android.graphics.Bitmap
-import android.os.Build
-import android.media.MediaMetadataRetriever
-import android.util.Log
-import android.widget.Toast
 import com.example.joni.mobileproject.models.Portfolio
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
+import java.util.*
 
 
-class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, var userCreated: Boolean, var project: Portfolio) : PagerAdapter() {
+class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, private var userCreated: Boolean, var project: Portfolio) : PagerAdapter() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    final lateinit var idOfImage:String
-    final var realPosition: Int = -1
+    lateinit var idOfImage:String
+    var realPosition: Int = -1
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         container.removeView(obj as View)
@@ -48,79 +45,40 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
 
         realPosition = position
 
-        if (userCreated == false){
+        if (!userCreated){
             delete.visibility = View.INVISIBLE
         }
 
-        if (imageVideoArrayList[position].video == false) {
+        if (!imageVideoArrayList[position].video) {
             play.visibility = View.INVISIBLE
             Picasso.get().load(imageVideoArrayList[position].url).into(image)
-            //image.setImageResource(imageVideoArrayList[position].url.getImageDrawables())
-            //image.setImageUri()
         }
         else{
             play.visibility = View.VISIBLE
-            /*
-            val thumbnail = ThumbnailUtils.createVideoThumbnail(imageVideoArrayList[position].url!!, MediaStore.Video.Thumbnails.MINI_KIND)
-            if (thumbnail == null) {
-                Log.d("SlidingImageVideoAdapter_bitmap", "NULL")
-            }
-            image.setImageBitmap(thumbnail)
-            //image.background = null
-            */
-            //val thumbnail = retriveVideoFrameFromVideo(imageVideoArrayList[position].url)
-            //image.setImageBitmap(thumbnail)
         }
 
         imageLayout.setOnClickListener {
-            if (imageVideoArrayList[position].video == true) {
-                this.fragment = fragment
+            if (imageVideoArrayList[position].video) {
                 fragment.createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
             }
-
-
-            /*
-            val intent = Intent(inflater.context, ToolDetailActivity::class.java)
-            // create the transition animation - the images in the layouts
-            // of both activities are defined with android:transitionName="robot"
-
-            //intent.putExtra("app", apps.get(getAdapterPosition()))
-
-            val options = ActivityOptions
-                    .makeSceneTransitionAnimation(inflater.context as Activity,
-                            imageView,
-                            "shared_char_mainpage")
-            // start the new activity
-            startActivity(inflater.context, intent, options.toBundle())
-            */
-
-            /*
-            val activity = inflater.context as MainActivity
-            activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, ToolDetailFragment())
-                    .addSharedElement(imageView, imageView.transitionName)
-                    .commitAllowingStateLoss() // or commit()
-            */
-
         }
 
         delete.setOnClickListener {
-            val builder: AlertDialog.Builder
-            idOfImage = imageVideoArrayList[position].id
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
+            val builder: AlertDialog.Builder = if (Build.VERSION.SDK_INT >= 26) {
+                AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
             } else {
-                builder = AlertDialog.Builder(context)
+                AlertDialog.Builder(context)
             }
+            idOfImage = imageVideoArrayList[position].id
             builder.setTitle("Delete entry")
                     .setMessage("Are you sure you want to delete this entry? \nThis cannot be undone!")
-                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
                         // continue with delete
-                        var firebaseData = FirebaseDatabase.getInstance().reference
-                        var query = firebaseData.child("portfolio").child(project.uid).child("images")
+                        val firebaseData = FirebaseDatabase.getInstance().reference
+                        val query = firebaseData.child("portfolio").child(project.uid).child("images")
                         query.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
-                                var numberOfImages: Long = p0.childrenCount
+                                val numberOfImages: Long = p0.childrenCount
 
                                 if (realPosition < numberOfImages){
                                     firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()
@@ -138,7 +96,7 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                         imageVideoArrayList.removeAt(position)
                         this.notifyDataSetChanged()
                     }
-                    .setNegativeButton(android.R.string.no) { dialog, which ->
+                    .setNegativeButton(android.R.string.no) { _, _ ->
                         // do nothing
                     }
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -151,24 +109,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         return imageLayout
     }
 
-
-/*
-    fun goToDetails(url: String, imageView: View) {
-        val activity = inflater.context as MainActivity
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                activity, imageView, imageView.transitionName).toBundle()
-        startActivity(inflater.context, Intent(inflater.context, ToolDetailActivity::class.java)
-    .putExtra(IMAGE_URL_KEY, url), options)
-    }
-
-    */
-
-
-
-
-
-
-
     override fun isViewFromObject(view: View, obj: Any): Boolean {
         return view == obj
     }
@@ -178,27 +118,4 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
     override fun saveState(): Parcelable? {
         return null
     }
-
-    @Throws(Throwable::class)
-    fun retriveVideoFrameFromVideo(videoPath: String): Bitmap? {
-        var bitmap: Bitmap? = null
-        var mediaMetadataRetriever: MediaMetadataRetriever? = null
-        try {
-            mediaMetadataRetriever = MediaMetadataRetriever()
-            if (Build.VERSION.SDK_INT >= 14)
-                mediaMetadataRetriever.setDataSource(videoPath, HashMap())
-            else
-                mediaMetadataRetriever.setDataSource(videoPath)
-            //   mediaMetadataRetriever.setDataSource(videoPath);
-            bitmap = mediaMetadataRetriever.frameAtTime
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.message)
-
-        } finally {
-            mediaMetadataRetriever?.release()
-        }
-        return bitmap
-    }
-
 }
