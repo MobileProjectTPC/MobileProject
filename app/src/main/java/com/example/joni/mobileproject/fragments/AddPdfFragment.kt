@@ -68,22 +68,19 @@ class AddPdfFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == pdfRequest && resultCode == Activity.RESULT_OK && data != null) {
             val pdf = text_pdf_title.text.toString()
-            uploadFileToFirebase(data.data, pdf)
+            uploadFileToFireBase(data.data, pdf)
         }
 
     }
 
-    fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
+    fun uploadFileToFireBase(uri: Uri, title: String) {
+
         var project: String
         if (mode == 0) {
             project = projectName.text.toString()
         } else {
             project = myproject!!.uid
         }
-    }
-
-    fun uploadFileToFireBase(uri: Uri, title: String) {
-        val project = projectName.text.toString()
 
         val filename = UUID.randomUUID().toString()
         val ref = fireBaseStorage.getReference("/portfolio/$project/$filename")
