@@ -19,6 +19,7 @@ import android.widget.Button
 import android.widget.MediaController
 import android.widget.TextView
 import android.widget.Toast
+import com.example.joni.mobileproject.PortfolioActivity
 import com.example.joni.mobileproject.ProjectCreateActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.Image
@@ -54,11 +55,13 @@ class EditMainPictureFragment: Fragment() {
     private var dialog: AlertDialog? = null
     private val viewGroup: ViewGroup? = null
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
 
 
         var myproject = arguments!!.getSerializable("Project") as Portfolio
+        val position = arguments!!.getInt("position")
 
 
         pictureButton = rootView.findViewById(R.id.picture)
@@ -118,6 +121,7 @@ class EditMainPictureFragment: Fragment() {
                 activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                 showUploadDialog("Uploading file")
                 //Toast.makeText(context!!, "Picture added to the project ${projectName.text}", Toast.LENGTH_SHORT).show()
+                //DetailPortfolioFragment.getInstance().refresh(position)
             }
             else {
                 Toast.makeText(context!!, "null", Toast.LENGTH_SHORT).show()
