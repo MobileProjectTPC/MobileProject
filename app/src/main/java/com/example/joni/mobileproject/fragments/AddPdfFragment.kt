@@ -55,10 +55,17 @@ class AddPdfFragment: Fragment() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private var dialog: AlertDialog? = null
     private val viewGroup: ViewGroup? = null
+    private var mode: Int = -1
+    private var myproject: Portfolio? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_pdf, container, false)
 
+        mode = arguments!!.getInt("Mode")
+
+        if (mode == 1){
+            myproject = arguments!!.getSerializable("Project") as Portfolio
+        }
 
         pdfButton = rootView.findViewById(R.id.add_pdf)
         pdfButton.setOnClickListener {
@@ -74,8 +81,9 @@ class AddPdfFragment: Fragment() {
 
         }
 
-        projectName = activity!!.findViewById(R.id.final_project_name)
-
+        if(mode == 0) {
+            projectName = activity!!.findViewById(R.id.final_project_name)
+        }
 
         return rootView
 
@@ -94,7 +102,14 @@ class AddPdfFragment: Fragment() {
     }
 
     fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
-        val project = projectName.text.toString()
+        var project: String
+        if (mode == 0) {
+            project = projectName.text.toString()
+        }
+        else{
+            project = myproject!!.uid
+        }
+
         val filename = UUID.randomUUID().toString()
         val ref = firebaseStorage.getReference("/portfolio/$project/$filename")
 

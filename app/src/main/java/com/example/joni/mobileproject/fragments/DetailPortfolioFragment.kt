@@ -64,7 +64,7 @@ class DetailPortfolioFragment : Fragment() {
     private val editMainPictureFragment = EditMainPictureFragment()
     private val addPictureFragment = AddPictureFragment()
     private val addVideoFragment = AddVideoFragment()
-    //private val addPdfFragment = AddPdfFragment()
+    private val addPdfFragment = AddPdfFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,7 +145,7 @@ class DetailPortfolioFragment : Fragment() {
             arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
             arguments.putSerializable("Project", portfolios[position])
 
-            addPictureFragment.arguments = arguments
+            addVideoFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
                     .replace(R.id.placeholder, addVideoFragment).commit()
         }
@@ -220,15 +220,13 @@ class DetailPortfolioFragment : Fragment() {
         setScaleAnimation(imageView);
         */
         binding.btnAddPDF.setOnClickListener {
-            /*
             var arguments: Bundle = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new PDFs from existing project
             arguments.putSerializable("Project", portfolios[position])
 
             addPdfFragment.arguments = arguments
-            fragmentManager.beginTransaction()
+            fragmentManager!!.beginTransaction()
                     .replace(R.id.placeholder, addPdfFragment).commit()
-             */
         }
 
 
@@ -260,6 +258,7 @@ class DetailPortfolioFragment : Fragment() {
                         // continue with delete
                         firebaseData.child("portfolio").child(portfolios[position].uid!!).removeValue()
                         Toast.makeText(context, "The project has been deleted", Toast.LENGTH_LONG).show()
+                        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                     }
                     .setNegativeButton(android.R.string.no) { dialog, which ->
                         // do nothing
@@ -406,6 +405,8 @@ class DetailPortfolioFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 updatePortfolio = (activity as PortfolioActivity).makePortfolio(p0)
                 portfolios[position] = updatePortfolio
+                binding.summaryText.text = portfolios[position].summary
+
             }
 
             override fun onCancelled(p0: DatabaseError) {

@@ -41,9 +41,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, var userCreated: Boolean,  var project: Portfolio) : PagerAdapter() {
+class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, var userCreated: Boolean, var project: Portfolio) : PagerAdapter() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
+    final lateinit var idOfImage:String
+    final var realPosition: Int = -1
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         container.removeView(obj as View)
@@ -59,6 +61,12 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         val image = imageLayout.findViewById(R.id.image) as ImageView
         val play = imageLayout.findViewById(R.id.play) as ImageView
         val delete = imageLayout.findViewById(R.id.btnDelete) as ImageView
+
+        realPosition = position
+
+        Log.d("SlidingImageVideoAdapter_test", "imageVideoArrayList: " + imageVideoArrayList.toString())
+        Log.d("SlidingImageVideoAdapter_test","Position: " + position)
+
 
         if (userCreated == false){
             delete.visibility = View.INVISIBLE
@@ -82,9 +90,10 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
             */
             //val thumbnail = retriveVideoFrameFromVideo(imageVideoArrayList[position].url)
             //image.setImageBitmap(thumbnail)
-    }
+        }
 
         imageLayout.setOnClickListener {
+            Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
             if (imageVideoArrayList[position].video == true) {
                 this.fragment = fragment
                 fragment.createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
@@ -117,7 +126,9 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         }
 
         delete.setOnClickListener {
+            Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
             val builder: AlertDialog.Builder
+            idOfImage = imageVideoArrayList[position].id
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
             } else {
@@ -128,16 +139,23 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                     .setPositiveButton(android.R.string.yes) { dialog, which ->
                         // continue with delete
                         var firebaseData = FirebaseDatabase.getInstance().reference
-                        var query = firebaseData.child("portfolio").child("images")
+                        var query = firebaseData.child("portfolio").child(project.uid).child("images")
                         query.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                                 var numberOfImages: Long = p0.childrenCount
-                                if (position < numberOfImages){
-                                    firebaseData.child("portfolio").child(project.uid).child("images").child(imageVideoArrayList[position].id).removeValue()
+                                Log.d("SlidingImageVideoAdapter_test","idOfImage: " + idOfImage)
+                                Log.d("SlidingImageVideoAdapter_test","realPosition: " + realPosition)
+                                Log.d("SlidingImageVideoAdapter_test","numberOfImages: " + numberOfImages)
+                                //Log.d("SlidingImageVideoAdapter_test","project.uid: " + project.uid)
+                                //Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList.toString(): " + imageVideoArrayList.toString())
+                                //Log.d("SlidingImageVideoAdapter_test","imageVideoArrayList[position].uid: " + imageVideoArrayList[position].id)
+
+                                if (realPosition < numberOfImages){
+                                    firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()
                                     Toast.makeText(context, "The image has been deleted", Toast.LENGTH_LONG).show()
                                 }
                                 else {
-                                    firebaseData.child("portfolio").child(project.uid).child("videos").child(imageVideoArrayList[position].id).removeValue()
+                                    firebaseData.child("portfolio").child(project.uid).child("videos").child(idOfImage).removeValue()
                                     Toast.makeText(context, "The video has been deleted", Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -153,7 +171,8 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                     }
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show()
-        }
+            }
+
 
         view.addView(imageLayout, 0)
 
