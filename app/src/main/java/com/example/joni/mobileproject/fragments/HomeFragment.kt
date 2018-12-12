@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.viewpagerindicator.CirclePageIndicator
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_fragment_layout.*
 import java.io.File
 import java.io.InputStream
@@ -187,6 +188,7 @@ class HomeFragment: Fragment() {
         }
     }
 
+    /* TODO NEVER USED, BUT LEAVE IT HERE IF NEEDED, ERASE LATER
     // modify this to get wanted stuff, testing with one image
     // get all data to list and add item selector
     // can also get only the tools for the workspace, just pass empty string for the tool and dataType
@@ -205,17 +207,6 @@ class HomeFragment: Fragment() {
                     }
 
                 }
-
-                // test with one image
-                /*
-                try {
-                    val image = p0.children.first().getValue(Image::class.java)
-                    val myURL = URL(image?.imageUrl)
-                    GetCont().execute(myURL)
-                } catch (e:Exception){
-                    Log.e("URL", "URL creation",e)
-                }
-                */
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -223,16 +214,7 @@ class HomeFragment: Fragment() {
         })
     }
 
-    private fun showLoadingDialog(message: String) {
-        val builder = AlertDialog.Builder(context)
-        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
-        val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
-        dialogTxtView.text = message
-        builder.setView(dialogView)
-        builder.setCancelable(false)
-        dialog = builder.create()
-        dialog!!.show()
-    }
+
 
     // AsyncTask for loading and displaying selected image
     inner class GetCont: AsyncTask<URL, Unit, Bitmap>() {
@@ -251,9 +233,21 @@ class HomeFragment: Fragment() {
         }
 
         override fun onPostExecute(result: Bitmap) {
-            imgView.setImageBitmap(result)
-            Handler().post { dialog?.dismiss() }
+            expandedImage.setImageBitmap(result)
+            //Handler().post { dialog?.dismiss() }
         }
+    }
+    */
+
+    private fun showLoadingDialog(message: String) {
+        val builder = AlertDialog.Builder(context)
+        val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, null)
+        val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)
+        dialogTxtView.text = message
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        dialog = builder.create()
+        dialog!!.show()
     }
 
     // download video or pdf file from firebase and create a tempfile from it

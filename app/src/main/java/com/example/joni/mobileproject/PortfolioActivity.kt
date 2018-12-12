@@ -114,7 +114,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                     }
                 } else
                     p0.children.forEach {
-                        makePortfolio(it)
+                        portfolios.add(makePortfolio(it))
                         Log.d("PortfolioActivity_test it: ", it.child("images").toString())
                         //Log.d("PortfolioActivity it:.getValue()", it.child("images").getValue(Image::class.java).toString())
 
@@ -142,7 +142,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         })
     }
 
-    private fun makePortfolio(dS: DataSnapshot){
+    fun makePortfolio(dS: DataSnapshot): Portfolio{
         Log.d("makePortfolio_dS", dS.toString())
         Log.d("makePortfolio_dS", dS.child("images").value.toString())
         var date: String = dS.child("date").value.toString()
@@ -163,7 +163,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         var numberPDF: Long = dS.child("pdfs").childrenCount
         Log.d("numberPDF", numberPDF.toString())
         dS.child("pdfs").children.forEach{
-            pdfs.add(PDF(it.child("pdfId").value.toString(), it.child("pdfUrl").value.toString(), it.child("title").value.toString()))
+            pdfs.add(PDF(it.child("pdfid").value.toString(), it.child("pdfurl").value.toString(), it.child("title").value.toString()))
         }
 
         var progresses: ArrayList<Progress> = java.util.ArrayList()
@@ -200,12 +200,11 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         var videos: ArrayList<Video> = java.util.ArrayList()
         var numberVideos:Long = dS.child("videos").childrenCount
         dS.child("videos").children.forEach {
-            videos.add(Video(it.child("videoId").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
+            videos.add(Video(it.child("videoid").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
         }
 
         var workspace: String = dS.child("workspace").value.toString()
 
-        portfolios.add(Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace))
-
+        return Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace)
     }
 }

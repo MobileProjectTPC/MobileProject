@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.nfc.NfcAdapter
 import android.os.*
 import android.support.design.widget.BottomNavigationView
@@ -26,7 +29,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,11 +61,13 @@ class MainActivity : AppCompatActivity() {
             if (workspace == null){
                 workspace = inputMessage.obj.toString()
                 getTools(inputMessage.obj.toString())
+                getWorkspace(inputMessage.obj.toString())
             }
             if (workspace!! != inputMessage.obj){
                 if(inputMessage.what == 0){
                     workspace = inputMessage.obj.toString()
                     getTools(inputMessage.obj.toString())
+                    getWorkspace(inputMessage.obj.toString())
                 }
             }
         }
@@ -247,7 +256,36 @@ class MainActivity : AppCompatActivity() {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
                 homeFragment.arguments = b
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+
+                if (supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG) != null && supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG).isVisible){
+                    supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+            }
+        })
+    }
+
+    private fun getWorkspace(workspace: String) {
+        val ref = firebaseDatabase.getReference("hacklab/$workspace")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+            override fun onDataChange(p0: DataSnapshot) {
+                Log.d("MAindsdfaf", "${p0.child("image").value}")
+
+                if (p0.child("image").value != null){
+                    try {
+                        val myURL = p0.child("image").value.toString()
+                        //GetCont().execute(myURL)
+                        Picasso.get().load(myURL).into(expandedImage)
+                    } catch (e:Exception){
+                        Log.e("URL", "URL creation",e)
+                    }
+                }
+                else {
+                    expandedImage.setImageResource(R.drawable.workshop_tutor_icon)
+                }
             }
 
             override fun onCancelled(p0: DatabaseError) {

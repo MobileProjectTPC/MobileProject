@@ -88,8 +88,7 @@ class AddPdfFragment: Fragment() {
     private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
         val ref = fireBaseDatabase.getReference("/portfolio/$project/pdfs/$fileId")
 
-        val filename = UUID.randomUUID().toString()
-        val pdf = PDF(filename, fileUrl, title)
+        val pdf = PDF(fileId, fileUrl, title)
 
         ref.setValue(pdf)
                 .addOnSuccessListener {

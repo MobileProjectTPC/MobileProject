@@ -16,6 +16,14 @@
         tools:ignore="ContentDescription" />
 
     <ImageView
+        android:id="@+id/btnDelete"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="60dp"
+        app:srcCompat="@drawable/delete" />
+
+    <ImageView
         android:id="@+id/play"
         android:layout_width="78dp"
         android:layout_height="77dp"

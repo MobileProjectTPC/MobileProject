@@ -15,7 +15,7 @@ import com.example.joni.mobileproject.adapters.TransitionPortfolioAdapter
 import com.example.joni.mobileproject.databinding.FragmentPageTransitionBinding
 import java.io.Serializable
 
-class TransitionPageFragment : Fragment() {
+class TransitionPortfolioFragment : Fragment() {
 
     private lateinit var binding: FragmentPageTransitionBinding
     private lateinit var navigation: TransitionNavigation
@@ -36,11 +36,11 @@ class TransitionPageFragment : Fragment() {
 
     companion object {
 
-        private const val EXTRA_PAGE = "PAGE"
-        private const val MY_LIST = "myList"
+        private const val EXTRA_PAGE = "com.example.joni.mobileproject#PAGE"
+        private const val MY_LIST = "mylist"
 
-        fun newInstance(page: Int, myList: Serializable): TransitionPageFragment {
-            return TransitionPageFragment().apply {
+        fun newInstance(page: Int, myList: Serializable): TransitionPortfolioFragment {
+            return TransitionPortfolioFragment().apply {
                 arguments = Bundle().apply {
                     putInt(EXTRA_PAGE, page)
                     putSerializable(MY_LIST, myList)

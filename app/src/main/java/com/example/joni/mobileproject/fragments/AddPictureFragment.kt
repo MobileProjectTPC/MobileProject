@@ -56,13 +56,15 @@ class AddPictureFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
-        /*
+
+
         var mode: Int = arguments!!.getInt("Mode")
         var myproject: Portfolio? = null
         if (mode == 1){
             myproject = arguments!!.getSerializable("Project") as Portfolio
         }
-        */
+
+
 
         pictureButton = rootView.findViewById(R.id.picture)
         pictureButton.setOnClickListener {
@@ -82,9 +84,9 @@ class AddPictureFragment: Fragment() {
                 startActivityForResult(myIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
-        //if (mode != 1) {
+            if (mode == 0) {
             projectName = activity!!.findViewById(R.id.final_project_name)
-        //}
+            }
 
 
         addPictureButton = rootView.findViewById(R.id.add_picture)
@@ -95,15 +97,14 @@ class AddPictureFragment: Fragment() {
 
                 //PUT FILE TO THE DATABASE HERE!!
                 var project: String? = null
-                //if (mode != 1){
+                if (mode == 0){
                     project = projectName.text.toString()
-                //}
-                /*
+                }
                 else{
                     if (myproject != null) {
-                        project = myproject.name.toString()
+                        project = myproject.uid
                     }
-                }*/
+                }
 
 
                 val title = text_picture_title.text.toString()
@@ -160,8 +161,9 @@ class AddPictureFragment: Fragment() {
     private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, description: String, project: String) {
         val ref = firebaseDatabase.getReference("/portfolio/$project/images/$fileId")
 
-        val filename = UUID.randomUUID().toString()
-        val image = Image(filename, fileUrl, title)
+        //val filename = UUID.randomUUID().toString()
+        //val image = Image(filename, fileUrl, title)
+        val image = Image(fileId, fileUrl, title)
         //val arrayList = ArrayList<Image>()
         //arrayList.add(image)
 
