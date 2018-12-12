@@ -83,7 +83,9 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                             override fun onDataChange(p0: DataSnapshot) {
                                 val numberOfImages: Long = p0.childrenCount
 
-                                if (realPosition < numberOfImages){
+                                Log.d("SlidingImageVideoAdapter_test", "Images child count: " + numberOfImages)
+
+                                if (realPosition < numberOfImages - 1){
                                     firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()
                                     Toast.makeText(context, "The image has been deleted", Toast.LENGTH_LONG).show()
                                 }
