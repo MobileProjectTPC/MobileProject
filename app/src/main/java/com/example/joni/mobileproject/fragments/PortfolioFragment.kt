@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.adapters.TransitionPageAdapter
+import com.example.joni.mobileproject.adapters.TransitionPortfolioPageAdapter
 import com.example.joni.mobileproject.databinding.FragmentToolBinding
 
 
@@ -17,7 +18,7 @@ class PortfolioFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val myList = arguments!!.getSerializable("Parcel")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tool, container, false)
-        binding.pager.adapter = TransitionPageAdapter(childFragmentManager, myList)
+        binding.pager.adapter = TransitionPortfolioPageAdapter(childFragmentManager, myList)
         return binding.root
     }
 }

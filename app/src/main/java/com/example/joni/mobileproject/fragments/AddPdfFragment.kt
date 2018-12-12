@@ -73,13 +73,14 @@ class AddPdfFragment: Fragment() {
 
     }
 
-    fun uploadFileToFireBase(uri: Uri, title: String) {
+    private fun uploadFileToFireBase(uri: Uri, title: String) {
 
-        var project: String
-        if (mode == 0) {
-            project = projectName.text.toString()
+        //val project = projectName.text.toString()
+
+        val project: String = if (mode == 0) {
+            projectName.text.toString()
         } else {
-            project = myproject!!.uid
+            myproject!!.uid
         }
 
         val filename = UUID.randomUUID().toString()
@@ -106,7 +107,7 @@ class AddPdfFragment: Fragment() {
     }
 
 
-    fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
+    private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, project: String) {
         val ref = fireBaseDatabase.getReference("/portfolio/$project/pdfs/$fileId")
 
         val pdf = PDF(fileId, fileUrl, title)
@@ -120,7 +121,7 @@ class AddPdfFragment: Fragment() {
                 }
     }
 
-    fun showUploadDialog(message: String) {
+    private fun showUploadDialog(message: String) {
         val builder = AlertDialog.Builder(context!!)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, viewGroup)
         val dialogTxtView = dialogView.findViewById<TextView>(R.id.txtUploadProgress)

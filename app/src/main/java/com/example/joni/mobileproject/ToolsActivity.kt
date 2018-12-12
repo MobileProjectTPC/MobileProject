@@ -45,17 +45,11 @@ class ToolsActivity : AppCompatActivity(), TransitionNavigation {
 
 
 
-        //workspace = intent.extras.getString(MainActivity.WORKSPACE) ////////////////////////??????????????
-
-        workspace = if (savedInstanceState == null) {
-            val extras = intent.extras
-            extras.getString(MainActivity.WORKSPACE)
-        } else {
-            savedInstanceState.getString(MainActivity.WORKSPACE)
-        }
         workspace = "3Dprinting"  ////////////////////////??????????????
 
-        //getStuffFromFirebaseDB("workspace", "tool1", "images")
+
+
+
         getStuffFromFirebaseDB(workspace, "3Dprinter", "images")
 
         toolName = if (savedInstanceState == null) {

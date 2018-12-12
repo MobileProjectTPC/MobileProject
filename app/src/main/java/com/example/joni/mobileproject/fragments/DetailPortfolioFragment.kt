@@ -1,10 +1,8 @@
 package com.example.joni.mobileproject.fragments
 
 import android.app.AlertDialog
-import android.app.FragmentManager
 import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.databinding.DataBindingUtil.setContentView
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,16 +16,11 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.joni.mobileproject.*
 import com.example.joni.mobileproject.adapters.DocumentsAdapter
-import com.example.joni.mobileproject.adapters.DocumentsEditAdapter
-import com.example.joni.mobileproject.adapters.SlidingImageAdapter
 import com.example.joni.mobileproject.adapters.SlidingImageVideoAdapter
 import com.example.joni.mobileproject.databinding.FragmentPortfolioDetailBinding
 import com.example.joni.mobileproject.models.*
 import com.squareup.picasso.Picasso
-import com.viewpagerindicator.CirclePageIndicator
 import java.io.Serializable
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -52,7 +45,7 @@ class DetailPortfolioFragment : Fragment() {
     private var userCreated: Boolean = false
 
     private var summaryImageVideoModelArrayList: java.util.ArrayList<ImageModel>? = null
-    val mySummaryImageList = intArrayOf(
+    private val mySummaryImageList = intArrayOf(
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
             R.drawable.workshop_tutor_logo_text,
@@ -92,7 +85,7 @@ class DetailPortfolioFragment : Fragment() {
         binding.text.transitionName = "${getString(R.string.transition_text)}_${page}_$position"
         binding.text.text = myList[position].title
 
-        var firebaseData = FirebaseDatabase.getInstance().reference
+        val firebaseData = FirebaseDatabase.getInstance().reference
 
         if (portfolios[position].user == user) {
             binding.editMainImage.visibility = View.VISIBLE
@@ -111,17 +104,15 @@ class DetailPortfolioFragment : Fragment() {
 
         }
 
-
         binding.editMainImage.setOnClickListener {
 
-            var arguments: Bundle = Bundle()
+            val arguments = Bundle()
             arguments.putSerializable("Project", portfolios[position])
             arguments.putInt("Position", position)
 
             editMainPictureFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
                     .replace(R.id.placeholder, editMainPictureFragment).commit()
-
         }
 
         if (portfolios[position].summary != null || portfolios[position].summary.toString() != "null") {
@@ -133,7 +124,7 @@ class DetailPortfolioFragment : Fragment() {
         }
 
         binding.btnAddImage.setOnClickListener {
-            var arguments: Bundle = Bundle()
+            val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
             arguments.putSerializable("Project", portfolios[position])
 
@@ -143,7 +134,7 @@ class DetailPortfolioFragment : Fragment() {
         }
 
         binding.btnAddVideo.setOnClickListener {
-            var arguments: Bundle = Bundle()
+            val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
             arguments.putSerializable("Project", portfolios[position])
 
@@ -151,7 +142,6 @@ class DetailPortfolioFragment : Fragment() {
             fragmentManager!!.beginTransaction()
                     .replace(R.id.placeholder, addVideoFragment).commit()
         }
-
 
         imageUri = Uri.parse(myList[position].imageUrl)
         Picasso.get()
@@ -202,27 +192,9 @@ class DetailPortfolioFragment : Fragment() {
             binding.summaryImagePager.visibility = View.VISIBLE
             binding.summaryImageIndicator.visibility = View.INVISIBLE
         }
-        /*
-        http://developine.com/develop-android-image-gallery-app-kotlin-with-source-code/
-        https://www.nplix.com/create-animated-video-thumbnail-android/
-        Glide.with(context)
-                    .load(urlofVideo)
-                    .centerCrop()
-                    .placeholder(anybackgroundColor)
-                    .crossFade()
-                    .into(ImagViewtoload);
 
-        private void setScaleAnimation(View view) {
-            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            anim.setDuration(FADE_DURATION);
-            view.startAnimation(anim);
-        }
-        private final static int FADE_DURATION = 1000;
-        setScaleAnimation(((VideoViewHolder) holder).vImage);
-        setScaleAnimation(imageView);
-        */
         binding.btnAddPDF.setOnClickListener {
-            var arguments: Bundle = Bundle()
+            val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new PDFs from existing project
             arguments.putSerializable("Project", portfolios[position])
 
@@ -231,15 +203,14 @@ class DetailPortfolioFragment : Fragment() {
                     .replace(R.id.placeholder, addPdfFragment).commit()
         }
 
-
         if (portfolios[position].pdfs != null) {
             Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
-            var adapter = DocumentsAdapter(context!!, portfolios[position].pdfs!!, userCreated, portfolios[position])
+            val adapter = DocumentsAdapter(context!!, portfolios[position].pdfs!!, userCreated, portfolios[position])
 
-            binding.listViewDocuments?.adapter = adapter
+            binding.listViewDocuments.adapter = adapter
             getListViewSize(binding.listViewDocuments)
 
-            binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
                 // value of item that is clicked
                 //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
 
@@ -248,21 +219,20 @@ class DetailPortfolioFragment : Fragment() {
         }
 
         binding.btnDelete.setOnClickListener{
-            val builder: AlertDialog.Builder
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
+            val builder: AlertDialog.Builder = if (Build.VERSION.SDK_INT >= 26) {
+                AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
             } else {
-                builder = AlertDialog.Builder(context)
+                AlertDialog.Builder(context)
             }
             builder.setTitle("Delete Project")
                     .setMessage("Are you sure you want to delete this project? \nThis cannot be undone!")
-                    .setPositiveButton(android.R.string.yes) { dialog, which ->
+                    .setPositiveButton(android.R.string.yes) { _, _ ->
                         // continue with delete
-                        firebaseData.child("portfolio").child(portfolios[position].uid!!).removeValue()
+                        firebaseData.child("portfolio").child(portfolios[position].uid).removeValue()
                         Toast.makeText(context, "The project has been deleted", Toast.LENGTH_LONG).show()
                         activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                     }
-                    .setNegativeButton(android.R.string.no) { dialog, which ->
+                    .setNegativeButton(android.R.string.no) { _, _ ->
                         // do nothing
                     }
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -319,7 +289,7 @@ class DetailPortfolioFragment : Fragment() {
         val localFile = File.createTempFile("file", "")
         localFile.deleteOnExit()
 
-        if (dataType.equals("videos")){
+        if (dataType == "videos"){
             Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
             ref.getFile(localFile).addOnSuccessListener {
@@ -334,7 +304,7 @@ class DetailPortfolioFragment : Fragment() {
                 Handler().post { dialog?.dismiss() }
             }
         }
-        else if (dataType.equals("pdfs")){
+        else if (dataType == "pdfs"){
             Log.d("TAG", "Here should be the loaded file: ${localFile.absolutePath}")
 
             ref.getFile(localFile).addOnSuccessListener {
@@ -362,7 +332,7 @@ class DetailPortfolioFragment : Fragment() {
         dialog!!.show()
     }
 
-    fun getListViewSize(myListView: ListView) {
+    private fun getListViewSize(myListView: ListView) {
         val myListAdapter = myListView.adapter
                 ?: //do nothing return null
                 return
@@ -382,7 +352,7 @@ class DetailPortfolioFragment : Fragment() {
     }
 
     private fun makeList(images: ArrayList<Image>, videos: ArrayList<Video>): java.util.ArrayList<ImageVideo>{
-        var list: ArrayList<ImageVideo> = java.util.ArrayList()
+        val list: ArrayList<ImageVideo> = java.util.ArrayList()
         for (i in 1 until images.size){
             list.add(ImageVideo(images[i].imageUrl, images[i].imageId, false))
         }
@@ -392,6 +362,7 @@ class DetailPortfolioFragment : Fragment() {
         return list
     }
 
+<<<<<<< HEAD
     /*
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == 2) {
@@ -402,6 +373,10 @@ class DetailPortfolioFragment : Fragment() {
 
     fun refresh(project: String){
         var query = firebaseDatabase.getReference("portfolio").child(project)
+=======
+    fun refresh(position: Int){
+        val query = firebaseDatabase.getReference("portfolio").child(portfolios[position].uid)
+>>>>>>> d574dacffeb5f0df87f40607ce04f14257b2d10d
         var updatePortfolio: Portfolio
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {

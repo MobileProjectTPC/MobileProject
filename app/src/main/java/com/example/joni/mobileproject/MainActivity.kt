@@ -91,7 +91,6 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_home -> {
                 val b = Bundle()
                 b.putSerializable(TOOL_LIST, toolList)
-                b.putString(WORKSPACE, workspace) ///////////////////////????
                 homeFragment.arguments = b
                 setupFragment(homeFragment, HOME_FRAGMENT_TAG)
                 return@OnNavigationItemSelectedListener true
@@ -138,7 +137,6 @@ class MainActivity : AppCompatActivity() {
         val homeFragment = HomeFragment()
         val b = Bundle()
         b.putSerializable(TOOL_LIST, toolList)
-        //b.putString(WORKSPACE, workspace) ///////////////////////????
         homeFragment.arguments = b
 
         supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
@@ -163,13 +161,17 @@ class MainActivity : AppCompatActivity() {
         mNfcAdapter?.let {
             NFCUtil.enableNFCInForeground(it, this, javaClass)
         }
+        onPause = false
     }
+
+    var onPause = false
 
     override fun onPause() {
         super.onPause()
         mNfcAdapter?.let {
             NFCUtil.disableNFCInForeground(it, this)
         }
+        onPause = true
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -257,7 +259,9 @@ class MainActivity : AppCompatActivity() {
                 b.putSerializable(TOOL_LIST, toolList)
                 homeFragment.arguments = b
 
-                if (supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG) != null && supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG).isVisible){
+                if (supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG) != null
+                        && supportFragmentManager.findFragmentByTag(HOME_FRAGMENT_TAG).isVisible
+                        && !onPause){
                     supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, homeFragment, HOME_FRAGMENT_TAG).commit()
                 }
             }
@@ -266,6 +270,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
 
     private fun getWorkspace(workspace: String) {
         val ref = firebaseDatabase.getReference("hacklab/$workspace")
