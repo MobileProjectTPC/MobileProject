@@ -45,7 +45,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
         val delete = imageLayout.findViewById(R.id.btnDelete) as ImageView
 
         realPosition = position
-        Log.d("createtempFile_test", "Videoids: " + imageVideoArrayList[position].id)
 
         if (!userCreated){
             delete.visibility = View.INVISIBLE
@@ -61,7 +60,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
 
         imageLayout.setOnClickListener {
             if (imageVideoArrayList[position].video) {
-                Log.d("createtempFile_test", imageVideoArrayList[position].id)
                 fragment.createTempFile("videos", imageVideoArrayList[position].id)
             }
         }
@@ -82,8 +80,6 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                         query.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                                 val numberOfImages: Long = p0.childrenCount
-
-                                Log.d("SlidingImageVideoAdapter_test", "Images child count: " + numberOfImages)
 
                                 if (realPosition < numberOfImages - 1){
                                     firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()

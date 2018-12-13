@@ -110,6 +110,8 @@ class DetailPortfolioFragment : Fragment() {
                     .replace(R.id.placeholder, editMainPictureFragment).commit()
         }
 
+        /*
+        Log.d("DetailPortfolioFragment_test", "portfolios[position].summary: " + portfolios[position].summary)
         if (portfolios[position].summary != null || portfolios[position].summary.toString() != "null") {
             binding.summaryText.text = portfolios[position].summary
         }
@@ -117,6 +119,8 @@ class DetailPortfolioFragment : Fragment() {
             binding.summary.visibility = View.INVISIBLE
             binding.summaryText.visibility = View.INVISIBLE
         }
+        */
+
 
         binding.btnAddImage.setOnClickListener {
             val arguments = Bundle()
@@ -206,12 +210,6 @@ class DetailPortfolioFragment : Fragment() {
             getListViewSize(binding.listViewDocuments)
 
             binding.listViewDocuments.onItemClickListener = AdapterView.OnItemClickListener { _, _, listViewPosition, _ ->
-                // value of item that is clicked
-                //val itemValue = binding.listViewDocuments.getItemAtPosition(position) as String
-                Log.d("listViewDocuments.onClicklistener_test", "")
-                Log.d("createtempFile_test", portfolios[position].pdfs!![listViewPosition].PDFUrl)
-                Log.d("createtempFile_test", portfolios[position].pdfs!![listViewPosition].PDFId + ".pdf")
-
                 createTempFile("pdfs", portfolios[position].pdfs!![listViewPosition].PDFId)
             }
         }
@@ -360,15 +358,6 @@ class DetailPortfolioFragment : Fragment() {
         return list
     }
 
-
-    /*
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == 2) {
-            activity!!.fragmentManager.beginTransaction().remove(this).commit()
-        }
-    }
-    */
-
     fun refresh(project: String) {
         var query = firebaseDatabase.getReference("portfolio").child(project)
 
@@ -381,21 +370,6 @@ class DetailPortfolioFragment : Fragment() {
                     updatePortfolio = makePortfolio(p0)
 
                     fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, DetailPortfolioFragment(), MainActivity.HOME_FRAGMENT_TAG).commit()
-                    /*
-                portfolios[position] = updatePortfolio
-
-                imageUri = Uri.parse(portfolios[position].images[0].imageUrl)
-                Picasso.get()
-                        .load(imageUri)
-                        .placeholder(R.drawable.progress_animation)
-                        .error(R.drawable.workshop_tutor_logo_text)
-                        .into(binding.image)
-
-                binding.summaryText.text = portfolios[position].summary
-                binding.summaryImagePager.adapter!!.notifyDataSetChanged()
-                binding.summaryImageIndicator.notifyDataSetChanged()
-                ((BaseAdapter)(binding.listViewDocuments.adapter!!)).notifyDataSetChanged()
-                */
                 }
 
                 override fun onCancelled(p0: DatabaseError) {
@@ -408,15 +382,11 @@ class DetailPortfolioFragment : Fragment() {
         }
     }
     fun makePortfolio(dS: DataSnapshot): Portfolio{
-        Log.d("makePortfolio_dS", dS.toString())
-        Log.d("makePortfolio_dS", dS.child("images").value.toString())
-        var date: String = dS.child("date").value.toString()
+        val date: String = dS.child("date").value.toString()
 
-        var name: String = dS.child("name").value.toString()
+        val name: String = dS.child("name").value.toString()
 
-        var images: ArrayList<Image> = java.util.ArrayList()
-        var numberImages:Long = dS.child("images").childrenCount
-        Log.d("makePortfolio_dS", numberImages.toString())
+        val images: ArrayList<Image> = java.util.ArrayList()
         images.add(Image(dS.child("images").child("0").child("imageId").value.toString(), dS.child("images").child("0").child("imageUrl").value.toString(), dS.child("images").child("0").child("title").value.toString()))
         dS.child("images").children.forEach{
             if (it.key != "0"){
@@ -424,51 +394,24 @@ class DetailPortfolioFragment : Fragment() {
             }
         }
 
-        var pdfs: ArrayList<PDF> = java.util.ArrayList()
-        var numberPDF: Long = dS.child("pdfs").childrenCount
-        Log.d("numberPDF", numberPDF.toString())
+        val pdfs: ArrayList<PDF> = java.util.ArrayList()
         dS.child("pdfs").children.forEach{
             pdfs.add(PDF(it.child("pdfid").value.toString(), it.child("pdfurl").value.toString(), it.child("title").value.toString()))
         }
 
-        var progresses: ArrayList<Progress> = java.util.ArrayList()
-        /*
-        var numberProgress: Long = dS.child("progresses").childrenCount
-        Log.d("PortfolioActivity_test", "Number of Progress is: " + numberProgress.toString())
-        for (i in 1 until numberProgress + 1){
-            Log.d("PortfolioActivity_test", "Run loop?")
-            var date: String = dS.child("progresses").child("progress$i").child("date").value.toString()
+        val progresses: ArrayList<Progress> = java.util.ArrayList()
 
-            var progressImages: ArrayList<Image> = java.util.ArrayList()
-            var numberImages:Long = dS.child("processes").child("process$i").child("images").childrenCount
-            for (i in 1 until numberImages + 1){
-                progressImages.add(Image("", dS.child("progresses").child("progress$i").child("images").child("image$i").value.toString(), name))
-            }
+        val summary: String = dS.child("summary").value.toString()
+        val tool: String = dS.child("tool").value.toString()
+        val uid: String = dS.child("uid").value.toString()
+        val user: String = dS.child("user").value.toString()
 
-            var summary: String = dS.child("progresses").child("progress$i").child("summary").value.toString()
-
-            var progressVideos: ArrayList<Video> = java.util.ArrayList()
-            var numberVideos:Long = dS.child("processes").child("process$i").child("videos").childrenCount
-            for (i in 1 until numberVideos + 1){
-                progressVideos.add(Video("", dS.child("progresses").child("progress$i").child("videos").child("video$i").value.toString(), ""))
-            }
-            Log.d("PortfolioActivity_test", "progress added")
-            progresses.add(Progress(date, progressImages, summary, progressVideos))
-        }
-        */
-
-        var summary: String = dS.child("summary").value.toString()
-        var tool: String = dS.child("tool").value.toString()
-        var uid: String = dS.child("uid").value.toString()
-        var user: String = dS.child("user").value.toString()
-
-        var videos: ArrayList<Video> = java.util.ArrayList()
-        var numberVideos:Long = dS.child("videos").childrenCount
+        val videos: ArrayList<Video> = java.util.ArrayList()
         dS.child("videos").children.forEach {
             videos.add(Video(it.child("videoid").value.toString(), it.child("videoUrl").value.toString(), it.child("title").value.toString()))
         }
 
-        var workspace: String = dS.child("workspace").value.toString()
+        val workspace: String = dS.child("workspace").value.toString()
 
         return Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace)
     }
