@@ -78,14 +78,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/update"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:textColor="@color/colorWhite"/>
 
                 <Button
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cancel"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:textColor="@color/colorWhite"/>
 
             </LinearLayout>
 
