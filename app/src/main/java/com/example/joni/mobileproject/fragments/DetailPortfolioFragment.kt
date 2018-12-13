@@ -116,10 +116,12 @@ class DetailPortfolioFragment : Fragment() {
             binding.summaryText.text = portfolios[position].summary
         }
         else{
+            binding.summaryText.text = ""
             binding.summary.visibility = View.INVISIBLE
             binding.summaryText.visibility = View.INVISIBLE
         }
         */
+
 
 
         binding.btnAddImage.setOnClickListener {
@@ -153,6 +155,10 @@ class DetailPortfolioFragment : Fragment() {
         summaryImageVideoModelArrayList = populateList(mySummaryImageList)
 
         if (portfolios[position].images != null || portfolios[position].videos != null) {
+            binding.noImageVideoMessage.visibility = View.INVISIBLE
+            binding.summaryImagePager.visibility = View.VISIBLE
+            binding.summaryImageIndicator.visibility = View.VISIBLE
+
             summaryImageVideoArrayList = ArrayList()
             summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
 
@@ -188,8 +194,9 @@ class DetailPortfolioFragment : Fragment() {
             })
         }
         else{
-            binding.summaryImagePager.visibility = View.VISIBLE
+            binding.summaryImagePager.visibility = View.INVISIBLE
             binding.summaryImageIndicator.visibility = View.INVISIBLE
+            binding.noImageVideoMessage.visibility = View.VISIBLE
         }
 
         binding.btnAddPDF.setOnClickListener {
@@ -203,7 +210,8 @@ class DetailPortfolioFragment : Fragment() {
         }
 
         if (portfolios[position].pdfs != null) {
-            Log.d("DocumentAdapter_pdfs", portfolios[position].pdfs!!.size.toString())
+            binding.noPDFMessage.visibility = View.INVISIBLE
+
             val adapter = DocumentsAdapter(context!!, portfolios[position].pdfs!!, userCreated, portfolios[position])
 
             binding.listViewDocuments.adapter = adapter
