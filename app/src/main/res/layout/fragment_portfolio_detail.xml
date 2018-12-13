@@ -16,17 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/noPDFMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="There is no pdf documents in this project"
-                app:layout_constraintBottom_toBottomOf="@+id/listViewDocuments"
-                app:layout_constraintEnd_toEndOf="@+id/listViewDocuments"
-                app:layout_constraintStart_toStartOf="@+id/listViewDocuments"
-                app:layout_constraintTop_toTopOf="@+id/listViewDocuments" />
-
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
@@ -113,6 +102,31 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imagesAndVideos" />
 
+            <TextView
+                android:id="@+id/imagesAndVideos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Images and Videos"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text" />
+
+            <TextView
+                android:id="@+id/noImageVideoMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="There are no images or videos in this project"
+                app:layout_constraintBottom_toTopOf="@+id/summaryImageIndicator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/summaryImagePager"
+                app:layout_constraintTop_toTopOf="@+id/summaryImagePager" />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/summaryImagePager"
                 android:layout_width="376dp"
@@ -145,6 +159,17 @@
                 app:strokeColor="@color/backgroundStart" />
 
 
+            <TextView
+                android:id="@+id/pdf"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:text="PDFs"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/summaryImageIndicator" />
+
             <Button
                 android:id="@+id/btnAddPDF"
                 android:layout_width="wrap_content"
@@ -153,6 +178,17 @@
                 android:text="Add PDF"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pdf" />
+
+            <TextView
+                android:id="@+id/noPDFMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="There are no pdf documents in this project"
+                app:layout_constraintBottom_toBottomOf="@+id/listViewDocuments"
+                app:layout_constraintEnd_toEndOf="@+id/listViewDocuments"
+                app:layout_constraintStart_toStartOf="@+id/listViewDocuments"
+                app:layout_constraintTop_toTopOf="@+id/listViewDocuments" />
 
             <ListView
                 android:id="@+id/listViewDocuments"
@@ -177,42 +213,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@color/colorWhite"
                 android:foregroundGravity="center"></FrameLayout>
-
-            <TextView
-                android:id="@+id/imagesAndVideos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Images and Videos"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text" />
-
-            <TextView
-                android:id="@+id/pdf"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:text="PDFs"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/summaryImageIndicator" />
-
-            <TextView
-                android:id="@+id/noImageVideoMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="There is no images or videos in this project"
-                app:layout_constraintBottom_toTopOf="@+id/summaryImageIndicator"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/summaryImagePager"
-                app:layout_constraintTop_toTopOf="@+id/summaryImagePager" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

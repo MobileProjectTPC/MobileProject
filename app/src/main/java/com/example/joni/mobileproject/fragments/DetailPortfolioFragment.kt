@@ -154,11 +154,11 @@ class DetailPortfolioFragment : Fragment() {
         summaryImageVideoModelArrayList = ArrayList()
         summaryImageVideoModelArrayList = populateList(mySummaryImageList)
 
-        if (portfolios[position].images != null || portfolios[position].videos != null) {
+        Log.d("DetailPortfoliofragment_test", "imagesize: " + portfolios[position].images.size)
+        Log.d("DetailPortfoliofragment_test", "videosize: " + portfolios[position].videos!!.size)
+        if (portfolios[position].images.size - 1 > 0 || portfolios[position].videos!!.size > 0) {
             binding.noImageVideoMessage.visibility = View.INVISIBLE
-            binding.summaryImagePager.visibility = View.VISIBLE
-            binding.summaryImageIndicator.visibility = View.VISIBLE
-
+            Log.d("DetailPortfoliofragment_test", "portfolios[position].images is not null" )
             summaryImageVideoArrayList = ArrayList()
             summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
 
@@ -194,9 +194,9 @@ class DetailPortfolioFragment : Fragment() {
             })
         }
         else{
+            Log.d("DetailPortfoliofragment_test", "portfolios[position].images is null" )
             binding.summaryImagePager.visibility = View.INVISIBLE
             binding.summaryImageIndicator.visibility = View.INVISIBLE
-            binding.noImageVideoMessage.visibility = View.VISIBLE
         }
 
         binding.btnAddPDF.setOnClickListener {
@@ -209,7 +209,7 @@ class DetailPortfolioFragment : Fragment() {
                     .replace(R.id.placeholder, addPdfFragment).commit()
         }
 
-        if (portfolios[position].pdfs != null) {
+        if (portfolios[position].pdfs!!.size > 0) {
             binding.noPDFMessage.visibility = View.INVISIBLE
 
             val adapter = DocumentsAdapter(context!!, portfolios[position].pdfs!!, userCreated, portfolios[position])
