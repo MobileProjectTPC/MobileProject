@@ -35,7 +35,8 @@
                     android:id="@+id/expandedImage_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorPrimary"
                     android:textAlignment="center"
                     android:textSize="30sp"
                     />
