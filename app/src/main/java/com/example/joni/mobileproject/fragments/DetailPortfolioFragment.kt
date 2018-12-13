@@ -62,9 +62,6 @@ class DetailPortfolioFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("DetailPortfolioFragment_test", "onCreate()")
-
-
 
         arguments?.let {
             position = it.getInt(EXTRA_POSITION)
@@ -166,11 +163,9 @@ class DetailPortfolioFragment : Fragment() {
         summaryImageVideoModelArrayList = ArrayList()
         summaryImageVideoModelArrayList = populateList(mySummaryImageList)
 
-        Log.d("DetailPortfoliofragment_test", "imagesize: " + portfolios[position].images.size)
-        Log.d("DetailPortfoliofragment_test", "videosize: " + portfolios[position].videos!!.size)
         if (portfolios[position].images.size - 1 > 0 || portfolios[position].videos!!.size > 0) {
             binding.noImageVideoMessage.visibility = View.INVISIBLE
-            Log.d("DetailPortfoliofragment_test", "portfolios[position].images is not null" )
+
             summaryImageVideoArrayList = ArrayList()
             summaryImageVideoArrayList = makeList(portfolios[position].images, portfolios[position].videos!!)
 
@@ -208,7 +203,6 @@ class DetailPortfolioFragment : Fragment() {
             })
         }
         else{
-            Log.d("DetailPortfoliofragment_test", "portfolios[position].images is null" )
             binding.summaryImagePager.visibility = View.INVISIBLE
             binding.summaryImageIndicator.visibility = View.INVISIBLE
         }
