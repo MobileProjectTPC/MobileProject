@@ -64,6 +64,7 @@ class UpdateUserDataFragment: Fragment() {
                     .child(user)
                     .child("firstName")
                     .setValue(newFirstName)
+            Toast.makeText(context, "User data updated", Toast.LENGTH_SHORT).show()
         }
 
         if (!TextUtils.isEmpty(newLastName)){
@@ -71,6 +72,7 @@ class UpdateUserDataFragment: Fragment() {
                     .child(user)
                     .child("lastName")
                     .setValue(newLastName)
+            Toast.makeText(context, "User data updated", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -85,13 +87,15 @@ class UpdateUserDataFragment: Fragment() {
                                     .child("email")
                                     .setValue(newEmail)
                             firebaseAuth.currentUser!!.sendEmailVerification()
+                            Toast.makeText(context, "User data updated", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener {
                             Log.d("UpdateUserDataFragment", "Foggening $it")
+                            Toast.makeText(context, "Email not updated!", Toast.LENGTH_SHORT).show()
                         }
             }
             else {
-                Toast.makeText(context, "Emails does not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "New emails does not match", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -102,13 +106,15 @@ class UpdateUserDataFragment: Fragment() {
                 firebaseAuth.currentUser!!.updatePassword(newPassword)
                         .addOnSuccessListener {
                             Log.d("UpdateUserDataFragment", "Password updated!")
+                            Toast.makeText(context, "User data updated", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener {
                             Log.d("UpdateUserDataFragment", "Foggening $it")
+                            Toast.makeText(context, "Password not updated!", Toast.LENGTH_SHORT).show()
                         }
             }
             else{
-                Toast.makeText(context, "Passwords does not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "New passwords does not match", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -124,7 +130,7 @@ class UpdateUserDataFragment: Fragment() {
                         updatePassword(edtUpdatePass.text.toString(), edtConfirmUpdatePass.text.toString())
                         Handler().post { dialog!!.dismiss() }
                         fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, ProfileFragment()).commit()
-                        Toast.makeText(context, "User info updated", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(context, "User info updated", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
                         Log.d("UpdateUserDataFragment", "Foggening $it")

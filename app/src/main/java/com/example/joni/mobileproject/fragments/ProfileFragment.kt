@@ -92,7 +92,7 @@ class ProfileFragment: Fragment() {
             bundle.putStringArrayList("userInfo", userInfoArray)
             val updateFragment = UpdateUserDataFragment()
             updateFragment.arguments = bundle
-            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, updateFragment).commit()
+            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, updateFragment).addToBackStack(null).commit()
         }
 
 
