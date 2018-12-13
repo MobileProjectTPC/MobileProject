@@ -64,6 +64,8 @@ class DetailPortfolioFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.d("DetailPortfolioFragment_test", "onCreate()")
 
+
+
         arguments?.let {
             position = it.getInt(EXTRA_POSITION)
             page = it.getInt(EXTRA_PAGE)
@@ -73,6 +75,14 @@ class DetailPortfolioFragment : Fragment() {
             nfcTrue = it.getBoolean(NFC_TRUE)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!nfcTrue) {
+            activity!!.finish()
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_portfolio_detail, container, false)
@@ -103,7 +113,7 @@ class DetailPortfolioFragment : Fragment() {
 
             val arguments = Bundle()
             arguments.putSerializable("Project", portfolios[position])
-            arguments.putInt("Position", position)
+            arguments.putString("position", position.toString())
 
             editMainPictureFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
@@ -122,6 +132,7 @@ class DetailPortfolioFragment : Fragment() {
             val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
             arguments.putSerializable("Project", portfolios[position])
+            arguments.putString("position", position.toString())
 
             addPictureFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
@@ -132,6 +143,7 @@ class DetailPortfolioFragment : Fragment() {
             val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new pictures from existing project
             arguments.putSerializable("Project", portfolios[position])
+            arguments.putString("position", position.toString())
 
             addVideoFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
@@ -157,7 +169,9 @@ class DetailPortfolioFragment : Fragment() {
                     this.summaryImageVideoArrayList!!,
                     this,
                     userCreated,
-                    portfolios[position]
+                    portfolios[position],
+                    position,
+                    activity!!
             )
 
             binding.summaryImageIndicator.setViewPager(binding.summaryImagePager)
@@ -192,6 +206,7 @@ class DetailPortfolioFragment : Fragment() {
             val arguments = Bundle()
             arguments.putInt("Mode", 1) // Mode: 1 = Add new PDFs from existing project
             arguments.putSerializable("Project", portfolios[position])
+            arguments.putString("position", position.toString())
 
             addPdfFragment.arguments = arguments
             fragmentManager!!.beginTransaction()
@@ -469,4 +484,7 @@ class DetailPortfolioFragment : Fragment() {
 
         return Portfolio(date, images, name, pdfs, progresses, summary, tool, uid, user, videos, workspace)
     }
+
+
+
 }

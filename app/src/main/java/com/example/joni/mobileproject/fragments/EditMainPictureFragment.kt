@@ -1,6 +1,8 @@
 package com.example.joni.mobileproject.fragments
 
 import android.app.Activity
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -56,12 +58,21 @@ class EditMainPictureFragment: Fragment() {
     private val viewGroup: ViewGroup? = null
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    private var position: Int = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
 
+        val myproject = arguments!!.getSerializable("Project") as Portfolio
 
-        var myproject = arguments!!.getSerializable("Project") as Portfolio
-        val position = arguments!!.getInt("position")
+        val pos = arguments!!.getString("position")
+        position = pos.toInt()
+
+        Log.d("tää", "position: $position")
 
 
         pictureButton = rootView.findViewById(R.id.picture)
@@ -118,7 +129,7 @@ class EditMainPictureFragment: Fragment() {
                             Log.d("TAG", "Something went wrong when loading the file")
                         }
 
-                activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+                //activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
                 showUploadDialog("Uploading file")
                 Log.d("DetailPortfolioFragment_test", "position: " + position)
                 //Toast.makeText(context!!, "Picture added to the project ${projectName.text}", Toast.LENGTH_SHORT).show()
@@ -171,6 +182,16 @@ class EditMainPictureFragment: Fragment() {
         builder.setCancelable(false)
         dialog = builder.create()
         dialog!!.show()
+
+        dialog!!.setOnDismissListener {
+            val intent = Intent(context!!, PortfolioActivity::class.java)
+            activity!!.finish()
+            intent.putExtra("origin",1)
+            intent.putExtra("position", position)
+            startActivity(intent)
+
+        }
     }
+
 
 }

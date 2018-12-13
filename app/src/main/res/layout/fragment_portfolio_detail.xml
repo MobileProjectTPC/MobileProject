@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -40,7 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="120dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="50dp"
                 android:textAlignment="textStart"
                 android:textAllCaps="true"
                 android:textSize="18sp"
@@ -54,6 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_marginBottom="5dp"
+                android:rotation="90"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="28dp"
                 android:text="Summary"
                 android:textAllCaps="false"
                 android:textSize="18sp"
