@@ -103,18 +103,7 @@ class HomeFragment: Fragment() {
 
         Log.d("HomeFragment", "HomeFragment created")
 
-        btnDownloadPdf.setOnClickListener {
-            /*
-            if (workspace != null && tool != null && dataType != null ){
-                getStuffFromFirebaseDB(workspace!!, tool!!, dataType!!)
-            }
-            */
-            createTempFile("pdfs", "5d713890-159b-404e-b5c8-7c630a36d772.pdf")
-        }
 
-        btnDownloadVideo.setOnClickListener {
-            createTempFile("videos", "df3ba79c-7ec2-4136-ab10-e9f52b78f683")
-        }
     }
 
     /* TODO NEVER USED, BUT LEAVE IT HERE IF NEEDED, ERASE LATER

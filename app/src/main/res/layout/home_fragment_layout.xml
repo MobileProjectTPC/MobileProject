@@ -8,28 +8,10 @@
     android:paddingTop="32dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/text_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Scan NFC here or open camera to scan QR code below. Remember to enable it first."
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorWhite" />
-
-    <Button
-        android:id="@+id/button_scan_qr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:background="@drawable/button"
-        android:text="Scan QR code"
-        android:textColor="@color/colorWhite" />
-
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp">
+        android:layout_height="180dp"
+        android:layout_marginBottom="10dp">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
@@ -53,52 +35,61 @@
             app:strokeColor="@color/backgroundStart" />
     </RelativeLayout>
 
-
-
-    <ImageView
-        android:id="@+id/imgView"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_gravity="center_horizontal"
+        android:text="To get tool details scan NFC here or open camera to scan QR code below. Remember to enable it first."
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorWhite" />
 
     <Button
-        android:id="@+id/btnDownloadPdf"
-        android:layout_width="wrap_content"
+        android:id="@+id/button_scan_qr"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DownloadPdf"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="Scan QR code to get tool details"
+        android:textColor="@color/colorWhite" />
+
+
+
+
 
     <Button
         android:id="@+id/btnPortfolio"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Portfolio"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/button"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_tools"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tools"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/button"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnDownloadVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DownloadVideo"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </LinearLayout>

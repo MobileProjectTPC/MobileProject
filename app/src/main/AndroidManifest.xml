@@ -66,11 +66,13 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".ProjectCreateActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".PortfolioActivity"
-            android:label="@string/portfolio">
+            android:label="@string/portfolio"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

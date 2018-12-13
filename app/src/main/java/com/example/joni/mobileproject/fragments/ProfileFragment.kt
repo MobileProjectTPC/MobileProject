@@ -65,24 +65,6 @@ class ProfileFragment: Fragment() {
         getUserInformation(user!!.uid)
 
 
-        btnUploadImage.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, imageRequestCode)
-        }
-
-        btnUploadPDF.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "application/pdf"
-            startActivityForResult(intent, PDFRequestCode)
-        }
-
-        btnUploadVideo.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "video/*"
-            startActivityForResult(intent, videoRequestCode)
-        }
-
         btnSignout.setOnClickListener {
             signOut()
         }

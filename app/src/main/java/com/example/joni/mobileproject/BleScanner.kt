@@ -94,7 +94,7 @@ class BleScan(mHand: Handler, private val bluetoothAdapter: BluetoothAdapter): R
         else if (max.key == "CA:8B:EE:10:E2:6F" && max.value >= -75){
             val msg = myHandler.obtainMessage()
             msg.what = 0
-            msg.obj = "Workspace2"
+            msg.obj = "Metalworking"
             myHandler.sendMessage(msg)
         }
         else {

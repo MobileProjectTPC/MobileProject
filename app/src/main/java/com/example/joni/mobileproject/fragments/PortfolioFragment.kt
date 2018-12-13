@@ -28,13 +28,18 @@ class PortfolioFragment : Fragment() {
 
         val list = myList as java.util.ArrayList<Image>
         val port = arguments!!.getSerializable("Portfolios") as java.util.ArrayList<Portfolio>
-        val arr = arguments!!.getSerializable("fireBaseUser") as java.util.ArrayList<FirebaseUser>
-        val fireBaseUser = arr[0]
+        val arr = arguments?.getSerializable("fireBaseUser") as java.util.ArrayList<FirebaseUser>?
+        var fireBaseUser: FirebaseUser? = null
+
+        if (arr != null) {
+            fireBaseUser = arr[0]
+        }
+
         if (portfolioPosition.toInt() > -1) {
             //PortfolioActivity().goToDetailFromEdit(portfolioPosition.toInt(), list, port, fireBaseUser)
 
 
-            val detailPortfolioFragment = DetailPortfolioFragment.newInstance(portfolioPosition.toInt(), 1, list, port, fireBaseUser.uid, false)
+            val detailPortfolioFragment = DetailPortfolioFragment.newInstance(portfolioPosition.toInt(), 1, list, port, fireBaseUser!!.uid, false)
 
             val transaction = activity!!.supportFragmentManager.beginTransaction()
 
