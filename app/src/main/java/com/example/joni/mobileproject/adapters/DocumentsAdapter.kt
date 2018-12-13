@@ -41,7 +41,7 @@ class DocumentsAdapter(var activity: Context, private var listPDF: ArrayList<PDF
         val pdfDelete: ImageView = view.findViewById(R.id.btnDelete)
 
         if (!userCreated){
-            //PDFdelete.visibility = View.INVISIBLE
+            pdfDelete.visibility = View.INVISIBLE
         }
 
         pdfName.text = listPDF[position].title
