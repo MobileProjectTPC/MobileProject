@@ -284,6 +284,7 @@ class MainActivity : AppCompatActivity() {
                         val myURL = p0.child("image").value.toString()
                         //GetCont().execute(myURL)
                         Picasso.get().load(myURL).into(expandedImage)
+                        expandedImage_text.text = p0.child("name").value.toString()
                     } catch (e:Exception){
                         Log.e("URL", "URL creation",e)
                     }
