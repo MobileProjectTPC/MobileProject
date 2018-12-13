@@ -21,6 +21,7 @@ import com.example.joni.mobileproject.models.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import java.io.Serializable
 
 class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
     private val firebaseDatabase = FirebaseDatabase.getInstance()
@@ -32,6 +33,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
     private var origin: Int? = null  // origin: 0 = From Home, 1 = From Profile
     private var workspace:String? = null
     private var portfolios: ArrayList<Portfolio> = java.util.ArrayList()
+    private var portfolioPosition: Int? = null
 
     companion object {
         const val DETAIL_FRAGMENT_TAG = "DetailPortfolioFragment"
@@ -42,6 +44,8 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         setContentView(R.layout.activity_portfolio)
         Log.d("PortfolioActivity_test", "PortfolioActivity Created")
         origin = intent.getIntExtra("origin", -1)
+        portfolioPosition = intent.getIntExtra("position", -1)
+        Log.d("tää", portfolioPosition.toString())
         Log.d("PortfolioActivity_test", origin.toString())
         user = firebaseAuth.currentUser
         if (origin == 1){
@@ -54,7 +58,10 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         else if (origin == -1){
             Log.d("PortfolioActivity", "Error")
         }
+
+
     }
+
 
     override fun goToDetail(transitionItems: List<View>, position: Int, page: Int) {
 
@@ -65,10 +72,10 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         }
 
         if(user == null){
-            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, "", false)
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, "", true)
         }
         else {
-            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, user!!.uid, false)
+            detailPortfolioFragment = DetailPortfolioFragment.newInstance(position, page, newList, portfolios, user!!.uid, true)
         }
 
         val transitionSet = TransitionSet().apply {
@@ -105,7 +112,7 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 Log.d("PortfolioActivity_Test", p0.toString())
-                if (p0.value == null) {
+                if (p0?.value == null) {
                     if (mode == 1) {
                         Toast.makeText(applicationContext, "You have not created any portfolio yet", Toast.LENGTH_LONG).show()
                     }
@@ -124,13 +131,21 @@ class PortfolioActivity : AppCompatActivity(), TransitionNavigation {
                 val b = Bundle()
                 b.putSerializable("Parcel", newList)
                 b.putSerializable("Portfolios", portfolios)
+
                 if (user == null){
                     b.putString("User", "")
                 }
                 else {
-                    b.putString("User", user?.uid)
+                    b.putString("User", user.uid)
+                    val arr = java.util.ArrayList<FirebaseUser>()
+                    arr.add(user)
+                    b.putSerializable("fireBaseUser", arr)
                 }
+                b.putString("portfolio", portfolioPosition!!.toString())
                 mfc.arguments = b
+
+
+                Log.d("tää", "${mfc.arguments} ja ${b.get("portfolio")} ja $portfolioPosition")
 
                 supportFragmentManager.beginTransaction()
                         .add(R.id.root, mfc)

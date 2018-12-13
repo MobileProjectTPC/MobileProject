@@ -1,7 +1,9 @@
 package com.example.joni.mobileproject.adapters
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Parcelable
 import android.support.v4.view.PagerAdapter
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.joni.mobileproject.PortfolioActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.fragments.DetailPortfolioFragment
 import com.example.joni.mobileproject.models.ImageVideo
@@ -23,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, private var userCreated: Boolean, var project: Portfolio) : PagerAdapter() {
+class SlidingImageVideoAdapter(var context: Context, private val imageVideoArrayList: ArrayList<ImageVideo>, var fragment: DetailPortfolioFragment, private var userCreated: Boolean, var project: Portfolio, val position: Int, val activity: Activity) : PagerAdapter() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     lateinit var idOfImage:String
@@ -84,11 +87,21 @@ class SlidingImageVideoAdapter(var context: Context, private val imageVideoArray
                                 if (realPosition < numberOfImages - 1){
                                     firebaseData.child("portfolio").child(project.uid).child("images").child(idOfImage).removeValue()
                                     Toast.makeText(context, "The image has been deleted", Toast.LENGTH_LONG).show()
+
                                 }
                                 else {
                                     firebaseData.child("portfolio").child(project.uid).child("videos").child(idOfImage).removeValue()
                                     Toast.makeText(context, "The video has been deleted", Toast.LENGTH_LONG).show()
                                 }
+
+                                val intent = Intent(context, PortfolioActivity::class.java)
+
+                                activity.finish()
+                                val pos = position+1
+                                intent.putExtra("origin",1)
+                                intent.putExtra("position", position)
+                                context.startActivity(intent)
+
                             }
                             override fun onCancelled(p0: DatabaseError) {
                             }

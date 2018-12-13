@@ -18,10 +18,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.example.joni.mobileproject.PortfolioActivity
 import com.example.joni.mobileproject.R
 import com.example.joni.mobileproject.models.Image
 import com.example.joni.mobileproject.models.Portfolio
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.core.Context
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.add_image.*
 import java.io.File
@@ -42,14 +44,30 @@ class AddPictureFragment: Fragment() {
     private var dialog: AlertDialog? = null
     private val viewGroup: ViewGroup? = null
 
+    var cont: android.content.Context? = null
+    var act: Activity? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.add_image, container, false)
+
+
+        cont = context!!
+        act = activity!!
 
         val mode: Int = arguments!!.getInt("Mode")
         var myproject: Portfolio? = null
         if (mode == 1){
             myproject = arguments!!.getSerializable("Project") as Portfolio
         }
+
+
+        val pos = arguments?.getString("position")
+        if (pos != null){
+            position = pos.toInt()
+        }
+        Log.d("tää", "$pos")
+        Log.d("tää", position.toString())
+
 
         pictureButton = rootView.findViewById(R.id.picture)
         pictureButton.setOnClickListener {
@@ -149,6 +167,8 @@ class AddPictureFragment: Fragment() {
     }
 
 
+    private var position: Int = 100
+
     private fun showUploadDialog(message: String) {
         val builder = AlertDialog.Builder(context!!)
         val dialogView = layoutInflater.inflate(R.layout.progress_dialog_layout, viewGroup)
@@ -158,6 +178,10 @@ class AddPictureFragment: Fragment() {
         builder.setCancelable(false)
         dialog = builder.create()
         dialog!!.show()
+        dialog!!.setOnDismissListener {
+
+
+        }
     }
 
 }

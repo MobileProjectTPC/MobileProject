@@ -16,4 +16,13 @@
     <string name="no">No</string>
     <string name="sign_out">Sign out?</string>
     <string name="portfolio">Portfolio</string>
+    <string name="new_email">New email</string>
+    <string name="confirm_new_email">Confirm new email</string>
+    <string name="new_first_name">New first name</string>
+    <string name="new_last_name">New last name</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="password">Password</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
 </resources>

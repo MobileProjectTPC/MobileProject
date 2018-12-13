@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.joni.mobileproject.R
-import com.example.joni.mobileproject.databinding.ListItemBinding
+import com.example.joni.mobileproject.databinding.ListItemPortfolioBinding
 import com.example.joni.mobileproject.models.Image
 import com.squareup.picasso.Picasso
 import java.io.Serializable
@@ -27,7 +27,7 @@ class TransitionPortfolioAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_portfolio, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -61,7 +61,7 @@ class TransitionPortfolioAdapter(
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val binding: ListItemBinding = DataBindingUtil.bind(itemView)!!
+        val binding: ListItemPortfolioBinding = DataBindingUtil.bind(itemView)!!
 
         init {
             binding.root.setOnClickListener {
