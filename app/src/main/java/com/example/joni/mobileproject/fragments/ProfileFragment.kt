@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,16 +26,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.profile_fragment_layout.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProfileFragment: Fragment() {
 
     private val imageRequestCode = 0
     private val PDFRequestCode = 1
     private val videoRequestCode = 2
-
-    private var selectedPhotoUri: Uri? = null
-    private var selectedPDFUri: Uri? = null
-    private var selectedVideoUri: Uri? = null
 
     private var dialog: AlertDialog? = null
     private val viewGroup: ViewGroup? = null
@@ -45,10 +41,11 @@ class ProfileFragment: Fragment() {
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val firebaseAuth = FirebaseAuth.getInstance()
 
-    private lateinit var toolbar: Toolbar
+    private var firstname: String? = null
+    private var lastname: String? = null
+    private var email: String? = null
 
-
-
+    private val userInfoArray = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -56,8 +53,7 @@ class ProfileFragment: Fragment() {
             fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, EmailNotVerifiedFragment()).commit()
         }
 
-        val rootView = inflater.inflate(R.layout.profile_fragment_layout, container, false)
-        return rootView
+        return inflater.inflate(R.layout.profile_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,7 +88,11 @@ class ProfileFragment: Fragment() {
         }
 
         btnUpdate.setOnClickListener {
-            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, UpdateUserDataFragment()).commit()
+            val bundle = Bundle()
+            bundle.putStringArrayList("userInfo", userInfoArray)
+            val updateFragment = UpdateUserDataFragment()
+            updateFragment.arguments = bundle
+            fragmentManager!!.beginTransaction().replace(R.id.fragmentContainer, updateFragment).addToBackStack(null).commit()
         }
 
 
@@ -128,7 +128,7 @@ class ProfileFragment: Fragment() {
 
     }
 
-    fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
+    private fun uploadFileToFirebase(uri: Uri, fileType: String, title: String) {
         val filename = UUID.randomUUID().toString()
         val ref = firebaseStorage.getReference("/$fileType/$filename")
         showUploadDialog("Uploading file")
@@ -153,35 +153,37 @@ class ProfileFragment: Fragment() {
     private fun saveFileToDatabase(fileId: String, fileUrl: String, title: String, workSpace: String, tool: String, fileType: String) {
         val ref = firebaseDatabase.getReference("/$workSpace/tools/$tool/$fileType/$fileId")
 
-        if (fileType.equals("images")){
-            val image = Image(fileId, fileUrl, title)
-            ref.setValue(image)
-                    .addOnSuccessListener {
-                        Log.d("TAG", "Image to tool database")
-                    }
-                    .addOnFailureListener {
-                        Log.d("TAG", "Something went wrong with the database")
-                    }
-        }
-        else if (fileType.equals("pdfs")){
-            val pdf = PDF(fileId, fileUrl, title)
-            ref.setValue(pdf)
-                    .addOnSuccessListener {
-                        Log.d("TAG", "PDF to tool database")
-                    }
-                    .addOnFailureListener {
-                        Log.d("TAG", "Something went wrong with the database")
-                    }
-        }
-        else if (fileType.equals("videos")){
-            val video = Video(fileId, fileUrl, title)
-            ref.setValue(video)
-                    .addOnSuccessListener {
-                        Log.d("TAG", "Video to tool database")
-                    }
-                    .addOnFailureListener {
-                        Log.d("TAG", "Something went wrong with the database")
-                    }
+        when (fileType) {
+            "images" -> {
+                val image = Image(fileId, fileUrl, title)
+                ref.setValue(image)
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Image to tool database")
+                        }
+                        .addOnFailureListener {
+                            Log.d("TAG", "Something went wrong with the database")
+                        }
+            }
+            "pdfs" -> {
+                val pdf = PDF(fileId, fileUrl, title)
+                ref.setValue(pdf)
+                        .addOnSuccessListener {
+                            Log.d("TAG", "PDF to tool database")
+                        }
+                        .addOnFailureListener {
+                            Log.d("TAG", "Something went wrong with the database")
+                        }
+            }
+            "videos" -> {
+                val video = Video(fileId, fileUrl, title)
+                ref.setValue(video)
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Video to tool database")
+                        }
+                        .addOnFailureListener {
+                            Log.d("TAG", "Something went wrong with the database")
+                        }
+            }
         }
     }
 
@@ -216,6 +218,18 @@ class ProfileFragment: Fragment() {
                 Log.d("ProfileFragment", "Value: ${p0.value}")
                 Log.d("ProfileFragment", "Child: ${p0.children}")
                 Log.d("ProfileFragment", "Child path firstname: ${p0.child("firstName").value}")
+
+                firstname = p0.child("firstName").value.toString()
+                lastname = p0.child("lastName").value.toString()
+                email = p0.child("email").value.toString()
+
+                if (firstname != null && lastname != null && email != null){
+                    userInfoArray.add(firstname!!)
+                    userInfoArray.add(lastname!!)
+                    userInfoArray.add(email!!)
+                }
+
+                Log.d("PROGILE", "f: $firstname l: $lastname e: $email")
 
                 if (txtProfile != null){
                     txtProfile.text = "First name: ${p0.child("firstName").value} Last name: ${p0.child("lastName").value}"

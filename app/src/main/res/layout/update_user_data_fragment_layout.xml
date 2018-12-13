@@ -1,89 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edtUpdateEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="New email"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp">
 
-    <EditText
-        android:id="@+id/edtConfirmUpdateEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirm new email"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUpdateEmail"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtUpdateEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="@string/new_email"
+                android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/edtUpdateFirst"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="New first name"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtConfirmUpdateEmail"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtConfirmUpdateEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="@string/confirm_new_email"
+                android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/edtUpdateLast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="New last name"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUpdateFirst"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtUpdateFirst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="@string/new_first_name"
+                android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/edtUpdatePass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="New password"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUpdateLast"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtUpdateLast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="@string/new_last_name"
+                android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/edtConfirmUpdatePass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirm new password"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUpdatePass"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtUpdatePass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="@string/new_password"
+                android:layout_weight="1"/>
 
-    <EditText
-        android:id="@+id/edtOldPass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtConfirmUpdatePass"
-        app:layout_constraintRight_toRightOf="parent" />
+            <EditText
+                android:id="@+id/edtConfirmUpdatePass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="@string/confirm_new_password"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/btnUpdateData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtOldPass"
-        app:layout_constraintRight_toLeftOf="@+id/btnCancel"/>
+            <EditText
+                android:id="@+id/edtOldPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtOldPass"
-        app:layout_constraintLeft_toRightOf="@+id/btnUpdateData"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="16dp">
 
+                <Button
+                    android:id="@+id/btnUpdateData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/update"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:textColor="@color/colorWhite"/>
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:textColor="@color/colorWhite"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

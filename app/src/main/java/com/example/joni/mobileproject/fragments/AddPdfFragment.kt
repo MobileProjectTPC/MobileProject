@@ -87,7 +87,7 @@ class AddPdfFragment: Fragment() {
         }
 
         val filename = UUID.randomUUID().toString()
-        val ref = fireBaseStorage.getReference("/portfolio/$project/$filename")
+        val ref = fireBaseStorage.getReference("/pdfs/$filename")
 
         ref.putFile(uri)
                 .addOnSuccessListener { it ->

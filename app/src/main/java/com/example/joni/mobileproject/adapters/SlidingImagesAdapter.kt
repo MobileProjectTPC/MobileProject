@@ -29,7 +29,7 @@ class SlidingImagesAdapter(context: Context, private val urls: Array<String>): P
         val imageView = imageLayout
                 .findViewById(R.id.image) as ImageView
 
-        
+
         Picasso.get()
                 .load(urls[position])
                 .placeholder(R.drawable.progress_animation)

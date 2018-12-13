@@ -110,7 +110,7 @@ class AddPictureFragment: Fragment() {
                 val description = text_picture_description.text.toString()
 
                 val filename = UUID.randomUUID().toString()
-                val ref = firebaseStorage.getReference("/portfolio/$project/$filename")
+                val ref = firebaseStorage.getReference("/images/$filename")
 
                 val file = File(mCurrentPhotoPath!!)
                 val imageUri = Uri.fromFile(file)
